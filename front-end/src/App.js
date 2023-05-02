@@ -1,8 +1,15 @@
+// import libraries
 import { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+// import pages
 import LoginPage from "./pages/LoginPage";
 import BoardPage from "./pages/BoardPage";
+// import components
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+// import etc
 
+// App
 function App() {
   const [user, setUser] = useState(null);
 
@@ -39,7 +46,9 @@ function App() {
 
   return (
     <div className="App">
+      <Header user={user} setUser={setUser} />
       <RouterProvider router={router} />
+      <Footer />
     </div>
   );
 }
