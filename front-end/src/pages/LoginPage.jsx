@@ -1,13 +1,17 @@
 import { useState } from "react";
 import { login } from "../api/api";
+import { useNavigate } from "react-router-dom";
+
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   function onClickLoginButton() {
     login(email, password)
       .then((response) => {
         console.log(response);
+        navigate("/board");
       })
       .catch((error) => {
         alert(error);
