@@ -1,0 +1,5 @@
+{
+  "dependencies": {
+    "@toast-ui/editor": "^3.2.2"
+  }
+}
