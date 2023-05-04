@@ -1,6 +1,8 @@
 // import libraries
 import { useState } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import styled from "styled-components";
+
 // import pages
 import Landing from "./pages/Landing";
 import Register from "./pages/Register";
@@ -13,6 +15,7 @@ import Write from "./pages/Write";
 import Header from "./layouts/Header";
 import Footer from "./layouts/Footer";
 // import etc
+import GlobalStyles from "./styles/GlobalStyles";
 
 // App
 function App() {
@@ -51,6 +54,7 @@ function App() {
 
   return (
     <div className="App">
+      <GlobalStyles />
       <Header user={user} setUser={setUser} />
       <RouterProvider router={router} />
       <Footer />
