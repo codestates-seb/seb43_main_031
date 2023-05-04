@@ -1,6 +1,6 @@
 import { createGlobalStyle } from "styled-components";
 
-export const GlobalStyles = createGlobalStyle`
+const GlobalStyles = createGlobalStyle`
   :root {
     --primary-color: #f48225; 
     --btn-bg-color: #0a95ff; 
@@ -85,3 +85,5 @@ export const GlobalStyles = createGlobalStyle`
     font-size: 14px;
   }
 `;
+
+export default GlobalStyles;
