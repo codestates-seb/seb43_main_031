@@ -1,26 +1,34 @@
-export default function Header(props) {
+import React from "react";
+
+export default function Header({ user, setUser }) {
   return (
     <header>
       <h1>빨간망토</h1>
       <nav>
         <ul>
-          {props.user ? (
-            <li
+          {user ? (
+            <div
               onClick={() => {
-                props.setUser(null);
+                setUser(null);
                 window.location.href = "/login";
+              }}
+              onKeyDown={event => {
+                if (event.key === "Enter" || event.key === " ") {
+                  setUser(null);
+                  window.location.href = "/login";
+                }
               }}
             >
               로그아웃
-            </li>
+            </div>
           ) : (
-            <li
+            <div
               onClick={() => {
                 window.location.href = "/login";
               }}
             >
               로그인
-            </li>
+            </div>
           )}
           <li>
             <a href="/register">회원가입</a>
