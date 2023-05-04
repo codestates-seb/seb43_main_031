@@ -9,7 +9,7 @@
       "airbnb",
       "airbnb/hooks",
       "eslint:recommended",
-      "plugin:prettier/recommended",   
+      "plugin:prettier/recommended",
       "prettier"
     ],
     "overrides": [],
