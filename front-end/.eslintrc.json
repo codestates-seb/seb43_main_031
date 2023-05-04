@@ -1,14 +1,15 @@
 {
     "env": {
       "browser": true,
-      "es2021": true
+      "es2021": true,
+      "node" : true
     },
     "extends": [
       "plugin:react/recommended",
       "airbnb",
       "airbnb/hooks",
       "eslint:recommended",
-      "plugin:prettier/recommended",
+      "plugin:prettier/recommended",   
       "prettier"
     ],
     "overrides": [],
