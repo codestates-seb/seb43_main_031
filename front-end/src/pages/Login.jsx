@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login } from "../api/api";
+import login from "../api/api";
 import { useNavigate } from "react-router-dom";
 
 export default function LoginPage(props) {
@@ -9,11 +9,11 @@ export default function LoginPage(props) {
 
   function onClickLoginButton() {
     login(email, password)
-      .then((response) => {
+      .then(response => {
         props.setUser(response);
         navigate("/board");
       })
-      .catch((error) => {
+      .catch(error => {
         alert(error);
       });
   }
@@ -28,7 +28,7 @@ export default function LoginPage(props) {
           id="email"
           placeholder="이메일을 입력하세요."
           value={email}
-          onChange={(e) => {
+          onChange={e => {
             setEmail(e.target.value);
           }}
         />
@@ -39,7 +39,7 @@ export default function LoginPage(props) {
           id="password"
           placeholder="비밀번호를 입력하세요."
           value={password}
-          onChange={(e) => {
+          onChange={e => {
             setPassword(e.target.value);
           }}
         />

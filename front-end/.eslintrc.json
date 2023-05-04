@@ -10,7 +10,6 @@
       "airbnb/hooks",
       "eslint:recommended",
       "plugin:prettier/recommended",
-    
       "prettier"
     ],
     "overrides": [],
@@ -27,6 +26,8 @@
       "no-console": "warn",
       "react/jsx-props-no-spreading": [1, { "custom": "ignore" }],
       "import/no-extraneous-dependencies": 0,
+      "jsx-a11y/no-static-element-interactions" : "off",
+      "jsx-a11y/click-events-have-key-events" : "off",
       "prettier/prettier": [
         "error",
         {
