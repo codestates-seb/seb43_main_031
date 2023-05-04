@@ -1,11 +1,37 @@
-import React from "react";
+import { useState } from "react";
+import styled from "styled-components";
+import { FaCommentDots } from "react-icons/fa";
 
-function Write() {
+const AlignVertical = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export default function Write() {
+  const [data, setData] = useState({
+    title: "",
+    content: "",
+    cost: "",
+    expiredDate: "",
+    dongTag: "",
+    guTag: "",
+    detailAddress: "",
+  });
+
+  const handleChange = e => {
+    const { name, value } = e.target;
+    setData(prevData => ({ ...prevData, [name]: value }));
+  };
+
   return (
     <div>
-      <p>작성 페이지 입니당</p>
+      <AlignVertical>
+        <label htmlFor="title">
+          <FaCommentDots />
+          제목
+        </label>
+        <input id="title" type="text" name="title" value={data.title} onChange={handleChange} />
+      </AlignVertical>
     </div>
   );
 }
-
-export default Write;
