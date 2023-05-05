@@ -22,6 +22,7 @@
       "react/prop-types": 0,
       "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }],
       "react/react-in-jsx-scope": "off",
+      "react/self-closing-comp": "off",
       "no-unused-vars": "warn",
       "no-console": "warn",
       "react/jsx-props-no-spreading": [1, { "custom": "ignore" }],
