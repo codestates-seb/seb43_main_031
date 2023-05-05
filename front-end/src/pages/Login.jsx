@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import login from "../api/api";
+import login from "../api/login";
 
 export default function LoginPage({ setUser }) {
   const [email, setEmail] = useState("");
@@ -11,7 +11,7 @@ export default function LoginPage({ setUser }) {
     login(email, password)
       .then(response => {
         setUser(response);
-        navigate("/board");
+        navigate("/boards");
       })
       .catch(error => {
         alert(error);

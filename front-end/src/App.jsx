@@ -6,7 +6,7 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Board from "./pages/Board";
+import BoardList from "./pages/BoardList";
 import MyPage from "./pages/MyPage";
 import Detail from "./pages/Detail";
 import Write from "./pages/Write";
@@ -39,8 +39,8 @@ function App() {
       element: <MyPage>My Page</MyPage>,
     },
     {
-      path: "/board",
-      element: <Board user={user} />,
+      path: "/boards",
+      element: <BoardList user={user} />,
     },
     {
       path: "/detail/:id",
