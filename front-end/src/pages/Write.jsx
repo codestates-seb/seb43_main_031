@@ -2,9 +2,11 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
+//아이콘
 import { FaCommentDots, FaWonSign, FaMapPin } from "react-icons/fa";
 import { RxFileText } from "react-icons/rx";
 import { FiClock } from "react-icons/fi";
+//에디터
 import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
@@ -33,7 +35,8 @@ export default function Write() {
     detailAddress: "",
   });
 
-  console.log(data);
+  //중복 제출 방지용
+  const [disabled, setDisabled] = useState(false);
 
   const handleChange = e => {
     if (e.target) {
@@ -45,12 +48,20 @@ export default function Write() {
     }
   };
 
+  //POST 요청 부분
   const handleSubmit = e => {
     e.preventDefault();
+    setDisabled(true);
     axios
       .post("http://localhost:8080/boards", { data })
-      .then(() => navigate("/board"))
-      .catch(() => alert("게시글 등록에 실패했습니다."));
+      .then(() => {
+        navigate("/board");
+        setDisabled(false);
+      })
+      .catch(() => {
+        alert("게시글 등록에 실패했습니다.");
+        setDisabled(false);
+      });
   };
 
   const handleCancle = e => {
@@ -82,7 +93,7 @@ export default function Write() {
         />
         <label htmlFor="cost">
           <FaWonSign />
-          수고비 (원)
+          수고비(원)
         </label>
         <input id="cost" type="number" name="cost" value={data.cost} onChange={handleChange} required />
         <label htmlFor="expiredDate">
@@ -102,7 +113,9 @@ export default function Write() {
           상세주소
         </label>
         <input id="detail" type="text" name="detailAddress" value={data.detailAddress} onChange={handleChange} />
-        <button type="submit">등록하기</button>
+        <button type="submit" disabled={disabled}>
+          등록하기
+        </button>
         <button onClick={handleCancle}>취소하기</button>
       </FormSection>
     </Container>
