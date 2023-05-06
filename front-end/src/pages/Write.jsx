@@ -49,19 +49,29 @@ export default function Write() {
   };
 
   //POST 요청 부분
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
     setDisabled(true);
-    axios
-      .post("http://localhost:8080/boards", { data })
-      .then(() => {
-        navigate("/board");
-        setDisabled(false);
-      })
-      .catch(() => {
-        alert("게시글 등록에 실패했습니다.");
-        setDisabled(false);
-      });
+    try {
+      await axios.post("http://localhost:8080/boards", { data });
+      navigate("/board");
+    } catch (error) {
+      alert("게시글 등록에 실패했습니다.");
+    }
+    setDisabled(false);
+  };
+
+  //에디터 내 이미지 업로드 hooks 수정
+  const uploadImages = async (blob, callback) => {
+    const formData = new FormData();
+    formData.append("image", blob);
+    try {
+      const res = await axios.post("http://localhost:8080/images", formData);
+      //응답받은 url을 넣어준다.
+      callback(res.data.image);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -85,6 +95,9 @@ export default function Write() {
           language="ko-KR"
           ref={editorRef}
           onChange={handleChange}
+          hooks={{
+            addImageBlobHook: uploadImages,
+          }}
         />
         <label htmlFor="cost">
           <FaWonSign />
