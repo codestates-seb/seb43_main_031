@@ -2,13 +2,12 @@ import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
-//아이콘
 import { FaCommentDots, FaWonSign, FaMapPin } from "react-icons/fa";
 import { RxFileText } from "react-icons/rx";
 import { FiClock } from "react-icons/fi";
-//에디터
 import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
+import { guList, dongList } from "../data/SeoulDistricts";
 
 const Container = styled.div`
   background-color: #fae7e7;
@@ -34,6 +33,7 @@ export default function Write() {
     guTag: "",
     detailAddress: "",
   });
+  //console.log(data);
 
   //중복 제출 방지용
   const [disabled, setDisabled] = useState(false);
@@ -112,6 +112,7 @@ export default function Write() {
           <FaMapPin />
           상세주소
         </label>
+        <SeoulDistricts />
         <input id="detail" type="text" name="detailAddress" value={data.detailAddress} onChange={handleChange} />
         <button type="submit" disabled={disabled}>
           등록하기
@@ -119,5 +120,41 @@ export default function Write() {
         <button onClick={handleCancle}>취소하기</button>
       </FormSection>
     </Container>
+  );
+}
+
+function SeoulDistricts() {
+  const [selectedGu, setSelectedGu] = useState(null);
+  const [selectedDong, setSelectedDong] = useState(null);
+
+  function handleGuChange(e) {
+    setSelectedGu(e.target.value);
+    setSelectedDong(dongList[e.target.value][0]);
+  }
+
+  function handleDongChange(e) {
+    setSelectedDong(e.target.value);
+  }
+
+  return (
+    <>
+      <select value={selectedGu || ""} onChange={handleGuChange}>
+        <option value="">{selectedGu ? selectedGu : "지역구"}</option>
+        {guList.map(gu => (
+          <option key={gu} value={gu}>
+            {gu}
+          </option>
+        ))}
+      </select>
+      <select value={selectedDong || ""} onChange={handleDongChange} disabled={!selectedGu}>
+        <option value="">{selectedDong ? selectedDong : "지역동"}</option>
+        {selectedGu &&
+          dongList[selectedGu].map(dong => (
+            <option key={dong} value={dong}>
+              {dong}
+            </option>
+          ))}
+      </select>
+    </>
   );
 }
