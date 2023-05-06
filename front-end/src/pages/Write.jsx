@@ -61,6 +61,11 @@ export default function Write() {
     setDisabled(false);
   };
 
+  const handleCancel = e => {
+    e.preventDefault();
+    confirm("정말로 취소하시겠습니까?") ? navigate("/board") : null;
+  };
+
   //에디터 내 이미지 업로드 hooks 수정
   const uploadImages = async (blob, callback) => {
     const formData = new FormData();
@@ -136,13 +141,7 @@ export default function Write() {
         <button type="submit" disabled={disabled}>
           등록하기
         </button>
-        <button
-          onClick={() => {
-            navigate("/board");
-          }}
-        >
-          취소하기
-        </button>
+        <button onClick={handleCancel}>취소하기</button>
       </FormSection>
     </Container>
   );
