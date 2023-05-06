@@ -53,7 +53,7 @@ export default function Write() {
     e.preventDefault();
     setDisabled(true);
     try {
-      await axios.post("http://localhost:8080/boards", { data });
+      await axios.post("http://localhost:8080/boards", data);
       navigate("/board");
     } catch (error) {
       alert("게시글 등록에 실패했습니다.");
@@ -73,6 +73,17 @@ export default function Write() {
       console.log(error);
     }
   };
+  // const uploadImages = async (blob, callback) => {
+  //   const formData = new FormData();
+  //   formData.append("file", blob);
+  //   formData.append("upload_preset", "ogdqlboj");
+  //   try {
+  //     const res = await axios.post("https://api.cloudinary.com/v1_1/dd9ieutqw/image/upload", formData);
+  //     callback(res.data.secure_url);
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   return (
     <Container>
