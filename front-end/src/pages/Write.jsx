@@ -64,11 +64,6 @@ export default function Write() {
       });
   };
 
-  const handleCancle = e => {
-    e.preventDefault();
-    navigate("/board");
-  };
-
   return (
     <Container>
       <FormSection onSubmit={handleSubmit}>
@@ -112,42 +107,49 @@ export default function Write() {
           <FaMapPin />
           상세주소
         </label>
-        <SeoulDistricts />
+        <SelectGuDong setData={setData} />
         <input id="detail" type="text" name="detailAddress" value={data.detailAddress} onChange={handleChange} />
         <button type="submit" disabled={disabled}>
           등록하기
         </button>
-        <button onClick={handleCancle}>취소하기</button>
+        <button
+          onClick={() => {
+            navigate("/board");
+          }}
+        >
+          취소하기
+        </button>
       </FormSection>
     </Container>
   );
 }
 
-function SeoulDistricts() {
-  const [selectedGu, setSelectedGu] = useState(null);
-  const [selectedDong, setSelectedDong] = useState(null);
+function SelectGuDong(props) {
+  const [selectedGu, setSelectedGu] = useState("");
+  const [selectedDong, setSelectedDong] = useState("");
 
   function handleGuChange(e) {
     setSelectedGu(e.target.value);
-    setSelectedDong(dongList[e.target.value][0]);
+    props.setData(prev => ({ ...prev, guTag: e.target.value }));
   }
 
   function handleDongChange(e) {
     setSelectedDong(e.target.value);
+    props.setData(prev => ({ ...prev, dongTag: e.target.value }));
   }
 
   return (
     <>
-      <select value={selectedGu || ""} onChange={handleGuChange}>
-        <option value="">{selectedGu ? selectedGu : "지역구"}</option>
+      <select value={selectedGu} onChange={handleGuChange} required>
+        {selectedGu === "" ? <option value="">지역구</option> : null}
         {guList.map(gu => (
           <option key={gu} value={gu}>
             {gu}
           </option>
         ))}
       </select>
-      <select value={selectedDong || ""} onChange={handleDongChange} disabled={!selectedGu}>
-        <option value="">{selectedDong ? selectedDong : "지역동"}</option>
+      <select value={selectedDong} onChange={handleDongChange} disabled={!selectedGu} required>
+        {selectedDong === "" ? <option value="">지역동</option> : null}
         {selectedGu &&
           dongList[selectedGu].map(dong => (
             <option key={dong} value={dong}>
