@@ -32,7 +32,7 @@ const BoardListWrapperStyle = styled.div`
   .search-bar {
     width: 100%;
     margin: auto;
-    border: 1px solid #ddd;
+    border: 1px solid #afababed;
     border-radius: 5px;
     display: flex;
     align-items: center;
@@ -55,12 +55,24 @@ const BoardListWrapperStyle = styled.div`
 
   .location-search-dropdown {
     margin-right: 10px;
+    padding: 3px;
+    border-radius: 5px;
+    background-color: #ffd3c2;
+    border: none;
+    color: #bd181f;
   }
+
   .sort-buttons-area {
     float: right;
   }
+
   .sort-button {
     margin-left: 10px;
+    border-radius: 5px;
+    border: none;
+    background-color: #ffd3c2;
+    color: #bd181f;
+    padding: 4px 10px;
   }
 
   .write-button-area {
@@ -69,12 +81,27 @@ const BoardListWrapperStyle = styled.div`
 
   .write-button {
     float: right;
+    border-radius: 5px;
+    border: none;
+    background-color: #f8f8a0;
+    font-weight: bold;
+    padding: 8px 16px;
+    :hover {
+      background-color: yellow;
+      cursor: pointer;
+    }
   }
+
   .board {
-    border: 1px solid blue;
+    border: none;
+    border-radius: 10px;
+    -webkit-box-shadow: 0px 2px 6px 1px rgba(255, 211, 194, 1);
+    -moz-box-shadow: 0px 2px 6px 1px rgba(255, 211, 194, 1);
+    box-shadow: 0px 2px 6px 1px rgba(255, 211, 194, 1);
     display: flex;
     align-items: center;
     padding: 10px;
+    margin-bottom: 15px;
   }
   .board-info {
     flex: 1;
@@ -93,6 +120,7 @@ const BoardListWrapperStyle = styled.div`
     width: 40px;
     margin-left: 20px;
     font-size: 2rem;
+    color: #bd181f;
   }
 `;
 export default function BoardList({ user }) {
@@ -153,7 +181,7 @@ export default function BoardList({ user }) {
         </div>
       </div>
       <div className="write-button-area">
-        <button type="button" className="write-button">
+        <button type="button" className="write-button" onClick={() => navigate("/write")}>
           글 작성하기
         </button>
       </div>
