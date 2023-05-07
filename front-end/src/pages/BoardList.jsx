@@ -127,11 +127,14 @@ export default function BoardList({ user }) {
   const navigate = useNavigate();
   const [selectedGu, setSelectedGu] = useState(areaGu[0]);
   const [boards, setBoards] = useState([]);
+  const [data, setData] = useState([]);
+  const date = new Date("");
 
   useEffect(() => {
     getBoards().then(response => {
-      console.log(response.data);
+      // console.log(response.data);
       setBoards(response.data);
+      setData(response.data);
     });
   }, []);
 
@@ -144,6 +147,20 @@ export default function BoardList({ user }) {
 
   if (!user) {
     return <div>로그인이 필요합니다.</div>;
+  }
+
+  function sortByViews() {
+    const sortedBoards = [...boards].sort((a, b) => b.viewCount - a.viewCount);
+    setBoards(sortedBoards);
+  }
+
+  function sortByDate() {
+    const sortedBoards = [...boards].sort((a, b) => {
+      const dateA = new Date(a.createDate);
+      const dateB = new Date(b.createDate);
+      return dateB - dateA;
+    });
+    setBoards(sortedBoards);
   }
 
   return (
@@ -172,10 +189,10 @@ export default function BoardList({ user }) {
           </select>
         </div>
         <div className="sort-buttons-area">
-          <button type="button" className="sort-button">
+          <button type="button" className="sort-button" onClick={sortByViews}>
             조회순
           </button>
-          <button type="button" className="sort-button">
+          <button type="button" className="sort-button" onClick={sortByDate}>
             최신순
           </button>
         </div>
