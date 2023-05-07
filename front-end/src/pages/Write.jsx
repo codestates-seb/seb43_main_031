@@ -11,6 +11,7 @@ import { guList, dongList } from "../data/SeoulDistricts";
 
 const Container = styled.div`
   background-color: #fae7e7;
+  width: 100vw;
 `;
 
 const FormSection = styled.form`
@@ -18,6 +19,74 @@ const FormSection = styled.form`
   flex-direction: column;
   max-width: 720px;
   margin: auto;
+  padding: calc(50px + 3%) 3%;
+  .label {
+    font-size: 1.1rem;
+    font-weight: 550;
+    margin-bottom: 3%;
+  }
+  .input {
+    border-style: none;
+    border-radius: 5px;
+    height: 30px;
+    margin-bottom: 8%;
+    padding: 0.5rem;
+    &:focus {
+      border: 1px solid #120003;
+      outline: 4px solid #f7eaea;
+    }
+  }
+  .editor {
+    margin-top: 8%;
+  }
+`;
+
+const TagContainer = styled.div`
+  margin-bottom: 3%;
+  .tag {
+    width: 80px;
+    height: 30px;
+    border-radius: 20px;
+    padding: 0.5rem;
+    background-color: #bd181f;
+    border: 1px solid #bd181f;
+    color: #fff;
+    font-weight: 500;
+    margin-right: 10px;
+    cursor: pointer;
+    &:focus {
+      border: 1px solid #120003;
+      outline: 4px solid #f7eaea;
+    }
+  }
+`;
+
+const Buttons = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 12%;
+  gap: 5%;
+  .btn {
+    height: 40px;
+    width: 120px;
+    border-radius: 20px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    border-style: none;
+    box-shadow: #12000358 0px 4px 8px;
+    cursor: pointer;
+    &:active {
+      transform: translateY(2px);
+    }
+  }
+  .red {
+    background-color: #bd181f;
+    color: #fff;
+  }
+  .gray {
+    background-color: #e3e3e3;
+  }
 `;
 
 export default function Write() {
@@ -93,14 +162,20 @@ export default function Write() {
   return (
     <Container>
       <FormSection onSubmit={handleSubmit}>
-        <label htmlFor="title">
-          <FaCommentDots />
-          제목
+        <label className="label" htmlFor="title">
+          <FaCommentDots /> 제목
         </label>
-        <input id="title" type="text" name="title" value={data.title} onChange={handleChange} required />
-        <span>
-          <RxFileText />
-          상세내용
+        <input
+          className="input"
+          id="title"
+          type="text"
+          name="title"
+          value={data.title}
+          onChange={handleChange}
+          required
+        />
+        <span className="label">
+          <RxFileText /> 상세내용
         </span>
         <Editor
           initialValue=" "
@@ -115,16 +190,23 @@ export default function Write() {
             addImageBlobHook: uploadImages,
           }}
         />
-        <label htmlFor="cost">
-          <FaWonSign />
-          수고비(원)
-        </label>
-        <input id="cost" type="number" name="cost" value={data.cost} onChange={handleChange} required />
-        <label htmlFor="expiredDate">
-          <FiClock />
-          만료일
+        <label className="label editor" htmlFor="cost">
+          <FaWonSign /> 수고비(원)
         </label>
         <input
+          className="input"
+          id="cost"
+          type="number"
+          name="cost"
+          value={data.cost}
+          onChange={handleChange}
+          required
+        />
+        <label className="label" htmlFor="expiredDate">
+          <FiClock /> 만료일
+        </label>
+        <input
+          className="input"
           id="expiredDate"
           type="datetime-local"
           name="expiredDate"
@@ -132,16 +214,26 @@ export default function Write() {
           onChange={handleChange}
           required
         />
-        <label htmlFor="detail">
-          <FaMapPin />
-          상세주소
+        <label className="label" htmlFor="detail">
+          <FaMapPin /> 상세주소
         </label>
         <SelectGuDong setData={setData} />
-        <input id="detail" type="text" name="detailAddress" value={data.detailAddress} onChange={handleChange} />
-        <button type="submit" disabled={disabled}>
-          등록하기
-        </button>
-        <button onClick={handleCancel}>취소하기</button>
+        <input
+          className="input"
+          id="detail"
+          type="text"
+          name="detailAddress"
+          value={data.detailAddress}
+          onChange={handleChange}
+        />
+        <Buttons>
+          <button className="red btn" type="submit" disabled={disabled}>
+            등록하기
+          </button>
+          <button className="gray btn" onClick={handleCancel}>
+            취소하기
+          </button>
+        </Buttons>
       </FormSection>
     </Container>
   );
@@ -162,8 +254,8 @@ function SelectGuDong(props) {
   }
 
   return (
-    <>
-      <select value={selectedGu} onChange={handleGuChange} required>
+    <TagContainer>
+      <select className="tag" value={selectedGu} onChange={handleGuChange} required>
         {selectedGu === "" ? <option value="">지역구</option> : null}
         {guList.map(gu => (
           <option key={gu} value={gu}>
@@ -171,7 +263,7 @@ function SelectGuDong(props) {
           </option>
         ))}
       </select>
-      <select value={selectedDong} onChange={handleDongChange} disabled={!selectedGu} required>
+      <select className="tag" value={selectedDong} onChange={handleDongChange} disabled={!selectedGu} required>
         {selectedDong === "" ? <option value="">지역동</option> : null}
         {selectedGu &&
           dongList[selectedGu].map(dong => (
@@ -180,6 +272,6 @@ function SelectGuDong(props) {
             </option>
           ))}
       </select>
-    </>
+    </TagContainer>
   );
 }
