@@ -1,0 +1,66 @@
+{
+  "boards": [
+    {
+      "memberId": 1,
+      "title": "제목",
+      "content": "내용",
+      "cost": "3,000",
+      "viewCount": 10,
+      "createDate": "2001-11-29",
+      "expiredDate": "2001-11-30",
+      "dongTag": "제기동",
+      "guTag": "동대문구",
+      "detailAddress": "301호"
+    },
+    {
+      "memberId": 2,
+      "title": "제목",
+      "content": "내용",
+      "cost": "3,000",
+      "viewCount": 10,
+      "createDate": "2001-11-29",
+      "expiredDate": "2001-11-30",
+      "dongTag": "제기동",
+      "guTag": "동대문구",
+      "detailAddress": "301호"
+    }
+  ],
+  "comments": [
+    {
+      "commentId": 1,
+      "boardId": 1,
+      "memberId": 1,
+      "createdDate": "2023-05-05",
+      "content": "문의 드립니다/!!"
+    },
+    {
+      "commentId": 2,
+      "boardId": 1,
+      "memberId": 2,
+      "createdDate": "2023-05-01",
+      "content": "문의 요청 드립니다"
+    },
+    {
+      "commentId": 3,
+      "boardId": 1,
+      "memberId": 3,
+      "createdDate": "2023-05-10",
+      "content": "여기요 여기~~"
+    }
+  ],
+  "applys": [
+    {
+      "applyId": 1,
+      "boardId": 1,
+      "memberId": 1,
+      "content": "내용",
+      "createdDate": "2001-03-31",
+      "updatedDate": "2001-03-31"
+    }
+  ],
+  "pageInfo": {
+    "page": 1,
+    "size": 10,
+    "totalPages": 1
+  }
+}
