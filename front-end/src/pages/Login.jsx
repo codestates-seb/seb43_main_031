@@ -1,8 +1,8 @@
 import { useState } from "react";
-import login from "../api/api";
 import { useNavigate } from "react-router-dom";
+import login from "../api/login";
 
-export default function LoginPage(props) {
+export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -10,8 +10,8 @@ export default function LoginPage(props) {
   function onClickLoginButton() {
     login(email, password)
       .then(response => {
-        props.setUser(response);
-        navigate("/board");
+        setUser(response);
+        navigate("/boards");
       })
       .catch(error => {
         alert(error);
@@ -22,27 +22,32 @@ export default function LoginPage(props) {
     <div>
       <h1>Login Page</h1>
       <form>
-        <label htmlFor="email">Email</label>
-        <input
-          type="email"
-          id="email"
-          placeholder="이메일을 입력하세요."
-          value={email}
-          onChange={e => {
-            setEmail(e.target.value);
-          }}
-        />
+        <label htmlFor="email">
+          Email
+          <input
+            type="email"
+            id="email"
+            placeholder="이메일을 입력하세요."
+            value={email}
+            onChange={e => {
+              setEmail(e.target.value);
+            }}
+          />
+        </label>
         <br />
-        <label htmlFor="password">Password</label>
-        <input
-          type="password"
-          id="password"
-          placeholder="비밀번호를 입력하세요."
-          value={password}
-          onChange={e => {
-            setPassword(e.target.value);
-          }}
-        />
+        <label htmlFor="password">
+          Password
+          <input
+            type="password"
+            id="password"
+            placeholder="비밀번호를 입력하세요."
+            value={password}
+            onChange={e => {
+              setPassword(e.target.value);
+            }}
+          />
+        </label>
+
         <br />
         <button type="button" onClick={onClickLoginButton}>
           로그인
