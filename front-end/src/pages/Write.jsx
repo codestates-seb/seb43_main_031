@@ -103,9 +103,9 @@ export default function Write() {
     guTag: "",
     detailAddress: "",
   });
-  //console.log(data);
+  // console.log(data);
 
-  //중복 제출 방지용
+  // 중복 제출 방지용
   const [disabled, setDisabled] = useState(false);
 
   const handleChange = e => {
@@ -118,7 +118,7 @@ export default function Write() {
     }
   };
 
-  //POST 요청 부분
+  // POST 요청 부분
   const handleSubmit = async e => {
     e.preventDefault();
     setDisabled(true);
@@ -136,13 +136,13 @@ export default function Write() {
     confirm("정말로 취소하시겠습니까?") ? navigate("/board") : null;
   };
 
-  //에디터 내 이미지 업로드 hooks 수정
+  // 에디터 내 이미지 업로드 hooks 수정
   const uploadImages = async (blob, callback) => {
     const formData = new FormData();
     formData.append("file", blob);
     try {
       const res = await axios.post("http://localhost:8080/images", formData);
-      //응답받은 url을 넣어준다.
+      // 응답받은 url을 넣어준다.
       callback(res.data.image);
     } catch (error) {
       console.log(error);
