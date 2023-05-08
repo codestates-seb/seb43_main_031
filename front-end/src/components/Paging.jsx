@@ -1,4 +1,3 @@
-import ReactDOM from "react-dom";
 import Pagination from "react-js-pagination";
 import { useState } from "react";
 import styled from "styled-components";
@@ -14,33 +13,31 @@ const PagingWrapperStyle = styled.div`
   }
 
   .pagination li {
-    margin: 0 5px;
+    margin: 0 3px;
     padding: 0;
   }
 
   .pagination li a {
-    display: block;
     padding: 10px;
-    border: 1px solid #ccc;
+    border: 1px solid #bd181f;
     border-radius: 3px;
-    text-decoration: none;
-    color: #333;
-    font-size: 14px;
+    color: black;
+    font-size: 13px;
     transition: all 0.3s ease-in-out;
   }
 
   .pagination li.active a {
-    background-color: #3498db;
-    color: #fff;
+    background-color: #ffd3d5;
+    color: red;
   }
 
   .pagination li a:hover {
     background-color: #f0f0f0;
-    border-color: #999;
+    border-color: #f45050;
   }
 
   .pagination li.disabled a {
-    color: #999;
+    color: #f45050;
   }
 `;
 function Paging() {
