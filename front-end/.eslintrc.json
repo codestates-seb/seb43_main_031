@@ -57,6 +57,14 @@
           "endOfLine": "auto"
         }
       ],
+      "jsx-a11y/label-has-associated-control": [
+        "error",
+        {
+          "required": {
+            "some": ["nesting", "id"]
+          }
+        }
+      ], // lagel태그와 input태그의 id값 동기화 시, 요구되는 중첩 id문제 해제
       "jsx-a11y/label-has-for": [
         "error",
         {
