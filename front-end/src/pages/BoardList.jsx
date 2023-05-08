@@ -60,6 +60,9 @@ const BoardListWrapperStyle = styled.div`
     background-color: #ffd3c2;
     border: none;
     color: #bd181f;
+    :hover {
+      cursor: pointer;
+    }
   }
 
   .sort-buttons-area {
