@@ -6,6 +6,7 @@ import blankProfileImg from "../img/blank-profile.png";
 const Container = styled.div`
   background-color: #fae7e7;
   width: 100vw;
+  height: calc(100vh - 120px);
 `;
 
 const ProfileSection = styled.div`
@@ -19,7 +20,7 @@ const ProfileSection = styled.div`
 function MyPage() {
   // const [data, setData] = useState({});
 
-  // 아마 const memberId = userInfo.memberId 이런 식으로 로그인 시 저장해 둔 유저정보 받아올 듯
+  // 아마 const memberId = user.memberId 이런 식으로 로그인 시 저장해 둔 유저정보 받아올 듯
   // useEffect(() => {
   //   const fetchData = async () => {
   //     const res = await axios.get(`http://localhost:8080/members/${memberId}`);
@@ -36,7 +37,6 @@ function MyPage() {
   };
 
   return (
-    // 이미지 없을 때 응답 어떻게 오는 지 확인. get요청시 body에 정보를 담는 것이 맞는 지? image/Image 대소문자 체크
     <Container>
       <ProfileSection>
         {data.image === "" ? (
