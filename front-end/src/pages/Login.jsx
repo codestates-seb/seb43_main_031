@@ -11,7 +11,7 @@ export default function Login({ setUser }) {
     login(email, password)
       .then(response => {
         setUser(response);
-        navigate("/board");
+        navigate("/boards");
       })
       .catch(error => {
         alert(error);

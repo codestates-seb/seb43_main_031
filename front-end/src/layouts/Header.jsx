@@ -51,35 +51,45 @@ export default function Header({ user, setUser }) {
           <div>빨간망토</div>
         </HeaderLogoStyle>
         <HeaderMenuStyle>
-          <HeaderMenuItemStyle>
-            <a href="/write">글 작성하기</a>
-          </HeaderMenuItemStyle>
-          <HeaderMenuItemStyle>
-            <a href="/my-page">마이페이지</a>
-          </HeaderMenuItemStyle>
           {user ? (
-            <HeaderMenuItemStyle
-              onClick={() => {
-                setUser(null);
-                window.location.href = "/login";
-              }}
-              onKeyDown={event => {
-                if (event.key === "Enter" || event.key === " ") {
+            <>
+              <HeaderMenuItemStyle>
+                <a href="/write">글 작성하기</a>
+              </HeaderMenuItemStyle>
+              <HeaderMenuItemStyle>
+                <a href="/my-page">마이페이지</a>
+              </HeaderMenuItemStyle>
+              <HeaderMenuItemStyle
+                onClick={() => {
                   setUser(null);
                   window.location.href = "/login";
-                }
-              }}
-            >
-              로그아웃
-            </HeaderMenuItemStyle>
+                }}
+                onKeyDown={event => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    setUser(null);
+                    window.location.href = "/login";
+                  }
+                }}
+              >
+                로그아웃
+              </HeaderMenuItemStyle>
+            </>
           ) : (
-            <HeaderMenuItemStyle
-              onClick={() => {
-                window.location.href = "/login";
-              }}
-            >
-              로그인
-            </HeaderMenuItemStyle>
+            <>
+              <HeaderMenuItemStyle>
+                <a href="/boards">게시판</a>
+              </HeaderMenuItemStyle>
+              <HeaderMenuItemStyle>
+                <a href="/register">회원가입</a>
+              </HeaderMenuItemStyle>
+              <HeaderMenuItemStyle
+                onClick={() => {
+                  window.location.href = "/login";
+                }}
+              >
+                로그인
+              </HeaderMenuItemStyle>
+            </>
           )}
         </HeaderMenuStyle>
       </HeaderStyle>

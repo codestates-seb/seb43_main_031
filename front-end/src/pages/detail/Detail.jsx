@@ -14,13 +14,16 @@ import dummyData from "../../db.json";
 // 나중에 layouts로 이동 예정
 const Main = styled.div`
   width: 100vw;
+  height: 100%;
+  padding: 3rem 0;
+  background-color: var(--bg-color);
 `;
 
 // 상세페이지 래퍼
 const DetailWrapper = styled.div`
   max-width: 600px;
   display: block;
-  margin: 3rem auto 1rem;
+  margin: 0 auto;
   background-color: #fff;
   border-radius: 0.5rem;
 `;

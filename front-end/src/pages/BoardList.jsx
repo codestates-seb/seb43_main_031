@@ -10,6 +10,23 @@ const areaDong = {
   강동구: ["강일동", "고덕동", "길동"],
 };
 
+// main레이아웃으로 뺄 예정
+const Main = styled.div`
+  width: 100vw;
+  height: 100%;
+  padding: 3rem 0;
+  background-color: var(--bg-color);
+`;
+
+const BoardContainerStyle = styled.div`
+  max-width: 600px;
+  height: 100vh;
+  display: block;
+  margin: 0 auto;
+  background-color: #fff;
+  border-radius: 0.5rem;
+`;
+
 const BoardListWrapperStyle = styled.div`
   /* * {
     border: 1px solid #ddd;
@@ -18,8 +35,10 @@ const BoardListWrapperStyle = styled.div`
   display: flex;
   flex-direction: column;
   max-width: 720px;
-  margin: 30px auto;
+  margin: 0 auto;
   padding: 0 20px;
+  background-color: #fff;
+  border-radius: 0.5rem;
 
   .welcome-message {
     font-size: 1.5rem;
@@ -167,67 +186,71 @@ export default function BoardList({ user }) {
   }
 
   return (
-    <BoardListWrapperStyle>
-      <div className="welcome-message">도와주세요 여러분</div>
-      <div className="search-bar">
-        <input className="input-text" placeholder="여기에 검색어를 입력해주세요." />
-        <div className="search-icon">🔍</div>
-      </div>
-      <div className="sarch-tool-area">
-        <div className="locacation-search-dropdowns-area">
-          <select
-            className="location-search-dropdown"
-            onChange={e => {
-              setSelectedGu(e.target.value);
-            }}
-          >
-            {areaGu.map(gu => (
-              <option key={gu}>{gu}</option>
-            ))}
-          </select>
-          <select className="location-search-dropdown">
-            {areaDong[selectedGu].map(dong => {
-              return <option key={dong}>{dong}</option>;
-            })}
-          </select>
-        </div>
-        <div className="sort-buttons-area">
-          <button type="button" className="sort-button" onClick={sortByViews}>
-            조회순
-          </button>
-          <button type="button" className="sort-button" onClick={sortByDate}>
-            최신순
-          </button>
-        </div>
-      </div>
-      <div className="write-button-area">
-        <button type="button" className="write-button" onClick={() => navigate("/write")}>
-          글 작성하기
-        </button>
-      </div>
-      <div className="board-list-area">
-        <div className="board-list">
-          {boards.map(board => {
-            return (
-              <div className="board">
-                <div className="board-info">
-                  <div className="board-title">{board.title}</div>
-                  <div className="board-meta">
-                    <div>{board.cost}</div>
-                    <div>{board.createDate}</div>
+    <Main>
+      <BoardContainerStyle>
+        <BoardListWrapperStyle>
+          <div className="welcome-message">도와주세요 여러분</div>
+          <div className="search-bar">
+            <input className="input-text" placeholder="여기에 검색어를 입력해주세요." />
+            <div className="search-icon">🔍</div>
+          </div>
+          <div className="sarch-tool-area">
+            <div className="locacation-search-dropdowns-area">
+              <select
+                className="location-search-dropdown"
+                onChange={e => {
+                  setSelectedGu(e.target.value);
+                }}
+              >
+                {areaGu.map(gu => (
+                  <option key={gu}>{gu}</option>
+                ))}
+              </select>
+              <select className="location-search-dropdown">
+                {areaDong[selectedGu].map(dong => {
+                  return <option key={dong}>{dong}</option>;
+                })}
+              </select>
+            </div>
+            <div className="sort-buttons-area">
+              <button type="button" className="sort-button" onClick={sortByViews}>
+                조회순
+              </button>
+              <button type="button" className="sort-button" onClick={sortByDate}>
+                최신순
+              </button>
+            </div>
+          </div>
+          <div className="write-button-area">
+            <button type="button" className="write-button" onClick={() => navigate("/write")}>
+              글 작성하기
+            </button>
+          </div>
+          <div className="board-list-area">
+            <div className="board-list">
+              {boards.map(board => {
+                return (
+                  <div className="board">
+                    <div className="board-info">
+                      <div className="board-title">{board.title}</div>
+                      <div className="board-meta">
+                        <div>{board.cost}</div>
+                        <div>{board.createDate}</div>
+                      </div>
+                    </div>
+                    <div className="completed-checkbox">
+                      {board.completed ? <AiFillCheckCircle /> : <AiOutlineCheckCircle />}
+                    </div>
                   </div>
-                </div>
-                <div className="completed-checkbox">
-                  {board.completed ? <AiFillCheckCircle /> : <AiOutlineCheckCircle />}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </div>
-      <div className="pagination-area">
-        <div className="pagination"></div>
-      </div>
-    </BoardListWrapperStyle>
+                );
+              })}
+            </div>
+          </div>
+          <div className="pagination-area">
+            <div className="pagination">test</div>
+          </div>
+        </BoardListWrapperStyle>
+      </BoardContainerStyle>
+    </Main>
   );
 }
