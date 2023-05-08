@@ -138,7 +138,7 @@ export default function Write() {
   //에디터 내 이미지 업로드 hooks 수정
   const uploadImages = async (blob, callback) => {
     const formData = new FormData();
-    formData.append("image", blob);
+    formData.append("file", blob);
     try {
       const res = await axios.post("http://localhost:8080/images", formData);
       //응답받은 url을 넣어준다.
@@ -147,17 +147,6 @@ export default function Write() {
       console.log(error);
     }
   };
-  // const uploadImages = async (blob, callback) => {
-  //   const formData = new FormData();
-  //   formData.append("file", blob);
-  //   formData.append("upload_preset", "ogdqlboj");
-  //   try {
-  //     const res = await axios.post("https://api.cloudinary.com/v1_1/dd9ieutqw/image/upload", formData);
-  //     callback(res.data.secure_url);
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
 
   return (
     <Container>
