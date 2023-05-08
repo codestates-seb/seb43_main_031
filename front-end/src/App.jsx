@@ -6,13 +6,14 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import Landing from "./pages/Landing";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
-import Board from "./pages/Board";
+import BoardList from "./pages/BoardList";
 import MyPage from "./pages/MyPage";
 import Detail from "./pages/detail/Detail";
 import Write from "./pages/Write";
 // import layouts
 import Header from "./layouts/Header";
 import Footer from "./layouts/Footer";
+
 // import etc
 import GlobalStyles from "./styles/GlobalStyles";
 
@@ -38,8 +39,8 @@ function App() {
       element: <MyPage>My Page</MyPage>,
     },
     {
-      path: "/board",
-      element: <Board user={user} />,
+      path: "/boards",
+      element: <BoardList user={user} />,
     },
     {
       path: "/detail/1",
@@ -56,7 +57,6 @@ function App() {
       <GlobalStyles />
       <Header user={user} setUser={setUser} />
       <RouterProvider router={router} />
-      <Footer />
     </div>
   );
 }
