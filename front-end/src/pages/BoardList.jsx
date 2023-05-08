@@ -4,6 +4,7 @@ import { AiOutlineCheckCircle, AiFillCheckCircle } from "react-icons/ai";
 import styled from "styled-components";
 import getBoards from "../api/getBoards";
 import { guList, dongList } from "../data/SeoulDistricts";
+import Paging from "../components/Paging";
 
 // main레이아웃으로 뺄 예정
 const Main = styled.div`
@@ -236,7 +237,9 @@ export default function BoardList({ user }) {
             </div>
           </div>
           <div className="pagination-area">
-            <div className="pagination">test</div>
+            <div className="pagination">
+              <Paging />
+            </div>
           </div>
         </BoardListWrapperStyle>
       </BoardContainerStyle>
