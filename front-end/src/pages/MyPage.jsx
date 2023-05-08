@@ -40,9 +40,9 @@ function MyPage() {
     <Container>
       <ProfileSection>
         {data.image === "" ? (
-          <img className="profileImg" src={blankProfileImg} alt="blanked user profile image" />
+          <img className="profileImg" src={blankProfileImg} alt="blanked user profile" />
         ) : (
-          <img className="profileImg" src={data.image} alt="user profile image" />
+          <img className="profileImg" src={data.image} alt="user profile" />
         )}
         <span>{data.nickName}</span>
         <span>{data.email}</span>
