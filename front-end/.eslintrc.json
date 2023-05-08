@@ -22,6 +22,7 @@
     "react/prop-types": 0,
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx"] }], // 화살표 함수의 파라미터가 하나일때 괄호 생략
     "react/react-in-jsx-scope": "off",
+    "react/no-array-index-key": "off", // 배열 매핑시 key값에 index값 넣지 않는 속성 제거
     "no-unused-vars": "warn",
     "no-console": "warn",
     "react/jsx-props-no-spreading": [1, { "custom": "ignore" }],
@@ -59,6 +60,8 @@
     "camelcase": "off",
     "no-unused-expressions": "off",
     "arrow-parens": ["warn", "as-needed"], // 사용하지 않는 변수가 있을때 빌드에러가 나던 규칙 해제
-    "no-alert": "off"
+    "no-alert": "off",
+    "no-lables": "off",
+    "no-lone-blocks": "off"
   }
 }
