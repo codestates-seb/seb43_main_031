@@ -50,31 +50,34 @@
       "no-console": "warn",
       "react/jsx-props-no-spreading": [1, { "custom": "ignore" }],
       "import/no-extraneous-dependencies": 0,
-      "jsx-a11y/no-static-element-interactions" : "off",
-      "jsx-a11y/click-events-have-key-events" : "off",
+      "jsx-a11y/no-static-element-interactions": "off",
+      "jsx-a11y/click-events-have-key-events": "off",
       "prettier/prettier": [
         "error",
         {
-            "endOfLine": "auto"}],
-    "jsx-a11y/label-has-for": [
-      "error",
-      {
-        "required": {
-          "some": ["nesting", "id"]
+          "endOfLine": "auto"
         }
-      }
-    ], // lagel태그와 input태그의 id값 동기화 시, 요구되는 중첩 id문제 해제
-    "no-else-return": "off",
-    "consistent-return": "off",
-    "import/no-unresolved": "off",
-    // 인터벌 함수를 실행할 때 생기는 useState변수 이름 중첩 애러 해제
-    "no-shadow": "off",
-    "arrow-body-style": "off",
-    "camelcase": "off",
-    "no-unused-expressions": "off",
-    "arrow-parens": ["warn", "as-needed"], // 사용하지 않는 변수가 있을때 빌드에러가 나던 규칙 해제
-    "no-alert": "off",
-    "no-lables": "off",
-    "no-lone-blocks": "off"
+      ],
+      "jsx-a11y/label-has-for": [
+        "error",
+        {
+          "required": {
+            "some": ["nesting", "id"]
+          }
+        }
+      ], // lagel태그와 input태그의 id값 동기화 시, 요구되는 중첩 id문제 해제
+      "no-else-return": "off",
+      "consistent-return": "off",
+      "import/no-unresolved": "off",
+      // 인터벌 함수를 실행할 때 생기는 useState변수 이름 중첩 애러 해제
+      "no-shadow": "off",
+      "arrow-body-style": "off",
+      "camelcase": "off",
+      "no-unused-expressions": "off",
+      "arrow-parens": ["warn", "as-needed"], // 사용하지 않는 변수가 있을때 빌드에러가 나던 규칙 해제
+      "no-alert": "off",
+      "no-lables": "off",
+      "no-lone-blocks": "off"
+    }
   }
-}}
+}
