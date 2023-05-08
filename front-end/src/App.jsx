@@ -43,7 +43,7 @@ function App() {
       element: <BoardList user={user} />,
     },
     {
-      path: "/detail/1",
+      path: "/detail/:id",
       element: <Detail />,
     },
     {
@@ -53,7 +53,7 @@ function App() {
   ]);
 
   return (
-    <div className="App" style={{ backgroundColor: "#fae7e7" }}>
+    <div className="App" style={{ backgroundColor: "var(--bg-color)" }}>
       <GlobalStyles />
       <Header user={user} setUser={setUser} />
       <RouterProvider router={router} />
