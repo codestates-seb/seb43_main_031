@@ -19,7 +19,7 @@ const FormSection = styled.form`
   flex-direction: column;
   max-width: 720px;
   margin: auto;
-  padding: calc(50px + 3%) 3%;
+  padding: 3rem;
   .label {
     font-size: 1.1rem;
     font-weight: 550;
@@ -42,7 +42,8 @@ const FormSection = styled.form`
 `;
 
 const TagContainer = styled.div`
-  margin-bottom: 3%;
+  margin-top: 2%;
+  margin-bottom: 5%;
   .tag {
     width: 80px;
     height: 30px;
@@ -65,7 +66,7 @@ const Buttons = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-top: 12%;
+  margin: 12% 0 6%;
   gap: 5%;
   .btn {
     height: 40px;
