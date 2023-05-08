@@ -8,7 +8,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import BoardList from "./pages/BoardList";
 import MyPage from "./pages/MyPage";
-import Detail from "./pages/Detail";
+import Detail from "./pages/detail/Detail";
 import Write from "./pages/Write";
 // import layouts
 import Header from "./layouts/Header";
@@ -43,8 +43,8 @@ function App() {
       element: <BoardList user={user} />,
     },
     {
-      path: "/detail/:id",
-      element: <Detail>Detail Page</Detail>,
+      path: "/detail/1",
+      element: <Detail />,
     },
     {
       path: "/write",
@@ -53,7 +53,7 @@ function App() {
   ]);
 
   return (
-    <div className="App">
+    <div className="App" style={{ backgroundColor: "#fae7e7" }}>
       <GlobalStyles />
       <Header user={user} setUser={setUser} />
       <RouterProvider router={router} />

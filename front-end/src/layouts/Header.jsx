@@ -4,6 +4,7 @@ import redHoodImg from "../img/red-hood.png";
 
 const HeaderWrapperStyle = styled.div`
   width: 100vw;
+  background-color: #fff;
   border-bottom: 1px solid #ddd;
 `;
 

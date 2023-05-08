@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import login from "../api/login";
+import login from "../api/api";
 
-export default function LoginPage({ setUser }) {
+export default function Login({ setUser }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ export default function LoginPage({ setUser }) {
     login(email, password)
       .then(response => {
         setUser(response);
-        navigate("/boards");
+        navigate("/board");
       })
       .catch(error => {
         alert(error);

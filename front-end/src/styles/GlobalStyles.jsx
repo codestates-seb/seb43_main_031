@@ -2,10 +2,13 @@ import { createGlobalStyle } from "styled-components";
 
 const GlobalStyles = createGlobalStyle`
   :root {
-    --primary-color: #f48225; 
-    --btn-bg-color: #0a95ff; 
-    --btn-github-bg-color: #2f3337;
-    --btn-facebook-bg-color: #385499; // 페북버튼 색상
+    // 빨간망토
+    --primary-color: #BD181F; // 메인컬러
+    --bg-color: #FAE7E7; // 배경컬러
+    --sub-color: #E4EA7C; // 서브컬러
+    --sub-btn-color : #FFD3D5 // 서브 버튼컬러
+
+    
     --al-color: #0074cc; // 기본 a 링크 색상
     --font-color-light: #525960; // 연한 폰트 기본 색상
     --font-color-bold:#0c0d0e; // 진한 폰트 기본 색상
