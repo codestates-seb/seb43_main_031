@@ -160,16 +160,16 @@ export default function BoardList({ user }) {
     });
   }, []);
 
-  useEffect(() => {
-    if (!user) {
-      alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
-      navigate("/login");
-    }
-  }, [user, navigate]);
+  // useEffect(() => {
+  //   if (!user) {
+  //     alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
+  //     navigate("/login");
+  //   }
+  // }, [user, navigate]);
 
-  if (!user) {
-    return <div>로그인이 필요합니다.</div>;
-  }
+  // if (!user) {
+  //   return <div>로그인이 필요합니다.</div>;
+  // }
 
   function sortByViews() {
     const sortedBoards = [...boards].sort((a, b) => b.viewCount - a.viewCount);
