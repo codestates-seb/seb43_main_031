@@ -127,6 +127,7 @@ const BoardListWrapperStyle = styled.div`
   }
   .board-info {
     flex: 1;
+    cursor: pointer;
   }
   .board-title {
     font-size: 1.2rem;
@@ -154,9 +155,10 @@ export default function BoardList({ user }) {
 
   useEffect(() => {
     getBoards().then(response => {
-      // console.log(response.data);
-      setBoards(response.data);
-      setData(response.data);
+      // console.log(response.boards);
+      // console.log(response.comments);
+      setBoards(response.boards);
+      setData(response.boards);
     });
   }, []);
 
@@ -231,7 +233,7 @@ export default function BoardList({ user }) {
               {boards.map(board => {
                 return (
                   <div className="board">
-                    <div className="board-info">
+                    <div className="board-info" onClick={() => navigate(`/boards/${board.id}`)}>
                       <div className="board-title">{board.title}</div>
                       <div className="board-meta">
                         <div>{board.cost}</div>
