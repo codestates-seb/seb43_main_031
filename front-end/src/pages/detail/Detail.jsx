@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import axios from "axios";
 import { AiFillHeart, AiFillClockCircle } from "react-icons/ai";
@@ -9,7 +10,8 @@ import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import { Viewer } from "@toast-ui/react-editor";
 import RedShoesImg from "../../img/shoes.png";
 import DetailSubSection from "./DetailSubSection";
-import dummyData from "../../db.json";
+import getBoards from "../../api/getBoards";
+import elapsedText from "../../utils/elapsedText";
 
 // 나중에 layouts로 이동 예정
 const Main = styled.div`
@@ -167,6 +169,7 @@ const DetailSubForm = styled.div`
   input {
     width: 100%;
     height: 3rem;
+    padding: 0 1rem;
     border: none;
     border-radius: 0.4rem;
     background-color: var(--bg-color);
@@ -199,26 +202,90 @@ function DetailSubHeader({ count, title }) {
 }
 
 function Detail() {
+  const { id } = useParams();
+  const nextId = useRef(0);
+  const navigate = useNavigate();
   const [isLogin, setIslogin] = useState(true);
   const [isPending, setIsPending] = useState(false);
-  const [data, setData] = useState(dummyData);
-  const [inputValue, setInputValue] = useState("");
 
-  // 렌더링 시 데이터 패칭
-  // useEffect(() => {
-  //   window.scrollTo(0, 0); // 페이지 맨 위로
-  //   async () => {
-  //     try {
-  //       const { data } = await axios(`http://localhost:8080/boards/{boardId}`, {
-  //         headers: {
-  //           Authorization: localStorage.getItem("token"), // 토큰 보내기
-  //         },
-  //       });
-  //     } catch (err) {
-  //       alert("해당 게시글을 불러오지 못했습니다.");
-  //     }
-  //   };
-  // }, []);
+  const [boardsData, setBoardsData] = useState([]); // 해당 게시글 데이터 상태
+  const board = boardsData.find(el => el.id === +id); // 해당 게시글이 작성자가 쓴 게시글과 맞는 게시글 찾기
+
+  const [commentsData, setCommentsData] = useState([]); // 코멘츠 데이터 상태
+  const [applysData, setApplysData] = useState([]); // 신청 데이터 상태
+
+  const [commentValue, setCommentValue] = useState(""); // 코멘츠 인풋 값 상태
+  const [applyValue, setApplyValue] = useState(""); // 신청 인풋 값 상태
+
+  // 데이터 조회
+  useEffect(() => {
+    window.scrollTo(0, 0); // 페이지 맨 위로
+    getBoards().then(res => {
+      // console.log(res.boards);
+      // console.log(res.comments);
+      // console.log(res.applys);
+      setBoardsData(res.boards);
+      setCommentsData(res.comments);
+      setApplysData(res.applys);
+    });
+  }, []);
+
+  // 해당 게시글 수정
+  // const updateBoard = (boardId, body) => {
+  //   axios.patch(`http://localhost:8080/boards/${boardId}`, { ...board, body });
+  // };
+  // 해당 게시글 삭제
+
+  // 새로운 코멘트/신청글 생성
+  const onSubmitHandler = e => {
+    e.preventDefault();
+    if (e.target.value === "comments") {
+      // 새로운 글 정보 담아서 보내기(이 정보들이 필요할까?)
+      const newComment = {
+        commentId: nextId.current,
+        boardId: board.id,
+        memberId: board.memberId,
+        createdDate: new Date(),
+        content: commentValue,
+      };
+      nextId.current += 1;
+      axios
+        .post(`http://localhost:8080/comments`, newComment, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        })
+        .then(res => {
+          navigate(`/boards/:id`);
+          setCommentValue("");
+        })
+        .catch(err => {
+          alert("새로운 문의를 생성하지 못했습니다.");
+        });
+    } else if (e.target.value === "applys") {
+      const newApply = {
+        applyId: nextId.current,
+        boardId: board.id,
+        memberId: board.memberId,
+        createdDate: new Date(),
+        content: applyValue,
+      };
+      nextId.current += 1;
+      axios
+        .post(`http://localhost:8080/applys`, newApply, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        })
+        .then(res => {
+          navigate(`/boards/:id`);
+          setApplyValue("");
+        })
+        .catch(err => {
+          alert("새로운 신청을 생성하지 못했습니다.");
+        });
+    }
+  };
 
   return (
     <>
@@ -227,24 +294,26 @@ function Detail() {
         <Main>
           <DetailWrapper>
             <DetailContentsSection>
-              <ContentsSectionHeader>
-                <div className="header-title">
-                  <div>
-                    <img src={RedShoesImg} alt="title-logo" style={{ width: "40px", height: "40px" }} />
+              {board && (
+                <ContentsSectionHeader>
+                  <div className="header-title">
+                    <div>
+                      <img src={RedShoesImg} alt="title-logo" style={{ width: "40px", height: "40px" }} />
+                    </div>
+                    <h2>{board.title}</h2>
                   </div>
-                  <h2>강아지 산책 해주실 분 구합니다!</h2>
-                </div>
-                <div className="sub-header">
-                  <div className="author-util">
-                    <span style={{ fontWeight: "700" }}>작성자</span>
-                    <span style={{ fontSize: "0.8rem" }}>작성일자</span>
+                  <div className="sub-header">
+                    <div className="author-util">
+                      <span style={{ fontWeight: "700" }}>{board.memberId}</span>
+                      <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(board.createdDate))}</span>
+                    </div>
+                    <div className="interest">
+                      <AiFillHeart style={{ width: "20px", height: "20px", color: "var(--primary-color)" }} />
+                      <div>0</div>
+                    </div>
                   </div>
-                  <div className="interest">
-                    <AiFillHeart style={{ width: "20px", height: "20px", color: "var(--primary-color)" }} />
-                    <div>0</div>
-                  </div>
-                </div>
-              </ContentsSectionHeader>
+                </ContentsSectionHeader>
+              )}
               <ContentsSectionBody>
                 <BodyUtils>
                   <div className="tags">
@@ -262,7 +331,7 @@ function Detail() {
                       <CgFileDocument />
                       <p>상세내용</p>
                     </div>
-                    <Viewer initialValue="여기에 메세지가 보여질껍니다" />
+                    <Viewer initialValue="내용이 들어갑니다" />
                   </section>
                   <section className="main-cost">
                     <div className="main-title">
@@ -288,9 +357,9 @@ function Detail() {
                 </BodyMain>
               </ContentsSectionBody>
             </DetailContentsSection>
-            <DetailSubHeader count={3} title="개의 문의" />
-            {data &&
-              data.comments.map((comment, index) => {
+            <DetailSubHeader count={commentsData.length} title="개의 문의" />
+            {commentsData &&
+              commentsData.map((comment, index) => {
                 return (
                   <DetailSubSection
                     key={index}
@@ -306,12 +375,14 @@ function Detail() {
               })}
             <DetailSubForm>
               <h2>문의합니다</h2>
-              <input type="text" value={inputValue} onChange={e => setInputValue(e.target.value)} />
-              <button type="button">문의하기</button>
+              <input type="text" value={commentValue} onChange={e => setCommentValue(e.target.value)} />
+              <button type="button" value="comments" onClick={onSubmitHandler}>
+                문의하기
+              </button>
             </DetailSubForm>
-            <DetailSubHeader count={3} title="개의 신청" />
-            {data &&
-              data.applys.map((apply, index) => {
+            <DetailSubHeader count={applysData.length} title="개의 신청" />
+            {applysData &&
+              applysData.map((apply, index) => {
                 return (
                   <DetailSubSection
                     key={index}
@@ -328,8 +399,10 @@ function Detail() {
               })}
             <DetailSubForm>
               <h2>신청합니다</h2>
-              <input type="text" />
-              <button type="button">신청하기</button>
+              <input type="text" value={applyValue} onChange={e => setApplyValue(e.target.value)} />
+              <button type="button" value="applys" onClick={onSubmitHandler}>
+                신청하기
+              </button>
             </DetailSubForm>
           </DetailWrapper>
         </Main>

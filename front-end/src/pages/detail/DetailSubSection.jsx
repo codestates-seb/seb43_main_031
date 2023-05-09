@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import { Viewer } from "@toast-ui/react-editor";
+import elapsedText from "../../utils/elapsedText";
 
 // 전체 컨테이너
 const StyledContainer = styled.div`
@@ -77,7 +78,7 @@ function DetailSubSection({ type, el, userId, commentId, applyId, boardId, creat
         <StyledBottomContents>
           <div className="userInfo">
             <div className="author">{userId}</div>
-            <div className="createdAt">{createdDate}</div>
+            <div className="createdAt">{elapsedText(new Date(createdDate))}</div>
           </div>
           <div className="utils">
             <button type="button">수정</button>

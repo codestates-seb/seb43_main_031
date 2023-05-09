@@ -12,7 +12,7 @@ import Detail from "./pages/detail/Detail";
 import Write from "./pages/Write";
 // import layouts
 import Header from "./layouts/Header";
-import Footer from "./layouts/Footer";
+// import Footer from "./layouts/Footer";
 
 // import etc
 import GlobalStyles from "./styles/GlobalStyles";
@@ -43,7 +43,7 @@ function App() {
       element: <BoardList user={user} />,
     },
     {
-      path: "/detail/:id",
+      path: "/boards/:id",
       element: <Detail />,
     },
     {
