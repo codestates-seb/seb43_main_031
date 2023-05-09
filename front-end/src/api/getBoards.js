@@ -11,14 +11,15 @@ export default function getBoards(searchText) {
         reject(new Error("조회된 게시글이 없습니다."));
       }
       resolve({
-        data: [
+        boards: [
           {
+            id: 1,
             memberId: 1,
             title: "우리 집 강아지 산책 시켜주세요",
             content: "내용",
             cost: "50,000",
             viewCount: 10,
-            createDate: "2023-05-05",
+            createdDate: "2023-05-05",
             expiredDate: "2001-11-30",
             dongTag: "제기동",
             guTag: "동대문구",
@@ -26,12 +27,13 @@ export default function getBoards(searchText) {
             completed: true,
           },
           {
+            id: 2,
             memberId: 2,
             title: "바퀴벌레 싫어요ㅠㅠ",
             content: "내용",
             cost: "3,0000000",
             viewCount: 12,
-            createDate: "2001-11-29",
+            createdDate: "2001-11-29",
             expiredDate: "2001-11-30",
             dongTag: "제기동",
             guTag: "동대문구",
@@ -39,12 +41,13 @@ export default function getBoards(searchText) {
             completed: false,
           },
           {
+            id: 3,
             memberId: 3,
             title: "배달 해주세요",
             content: "내용",
             cost: "2,000",
             viewCount: 30,
-            createDate: "2023-05-6",
+            createdDate: "2023-05-6",
             expiredDate: "2001-11-30",
             dongTag: "제기동",
             guTag: "동대문구",
@@ -52,17 +55,59 @@ export default function getBoards(searchText) {
             completed: true,
           },
           {
+            id: 4,
             memberId: 4,
             title: "바퀴벌레 잡아주세요",
             content: "내용",
             cost: "5,000",
             viewCount: 9,
-            createDate: "2021-12-12",
+            createdDate: "2021-12-12",
             expiredDate: "2001-11-30",
             dongTag: "제기동",
             guTag: "동대문구",
             detailAddress: "301호",
             completed: false,
+          },
+        ],
+        comments: [
+          {
+            commentId: 1,
+            boardId: 1,
+            memberId: 1,
+            createdDate: "2023-05-05",
+            content: "문의 드립니다/!!",
+          },
+          {
+            commentId: 2,
+            boardId: 1,
+            memberId: 2,
+            createdDate: "2023-05-01",
+            content: "문의 요청 드립니다",
+          },
+          {
+            commentId: 3,
+            boardId: 1,
+            memberId: 3,
+            createdDate: "2023-05-10",
+            content: "여기요 여기~~",
+          },
+        ],
+        applys: [
+          {
+            applyId: 1,
+            boardId: 1,
+            memberId: 1,
+            content: "신청 요청합니다",
+            createdDate: "2001-02-31",
+            updatedDate: "2001-03-31",
+          },
+          {
+            applyId: 2,
+            boardId: 1,
+            memberId: 2,
+            content: "제가 신청할게요!",
+            createdDate: "2021-03-21",
+            updatedDate: "2022-03-31",
           },
         ],
         pageInfo: {
