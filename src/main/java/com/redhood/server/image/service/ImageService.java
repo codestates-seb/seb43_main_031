@@ -16,35 +16,36 @@ import java.util.Map;
 public class ImageService {
     private AmazonS3 amazonS3;
 
-    public ImageService(AmazonS3 amazonS3) {
-        this.amazonS3 = amazonS3;
-    }
-
     @Value("${amazon.aws.s3.bucket}")
     private String bucketName;
 
+    public ImageService(AmazonS3 amazonS3) { this.amazonS3 = amazonS3; }
+
     public String saveImage(MultipartFile file) throws IOException {
         String fileName = RandomNumber(file.getOriginalFilename());
-        ObjectMetadata metadata = new ObjectMetadata();
-        metadata.setContentLength(file.getSize());
-        metadata.setContentType(file.getContentType());
-
+        ObjectMetadata metadata = setMetadata(file);
         PutObjectRequest request = new PutObjectRequest(bucketName, fileName, file.getInputStream(), metadata)
                     .withCannedAcl(CannedAccessControlList.PublicRead);
         amazonS3.putObject(request);
-        String url = amazonS3.getUrl(bucketName, fileName).toString();
-        return url;
+        return amazonS3.getUrl(bucketName, fileName).toString();
     }
+
     public void deleteImage(Map<String, String> requestBody) {
         String imageUrl = requestBody.get("image");
         String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
         DeleteObjectRequest deleteObjectRequest = new DeleteObjectRequest(bucketName, fileName);
         amazonS3.deleteObject(deleteObjectRequest);
-
     }
+
     private String RandomNumber(String originalFileName) {
         int randomNumber = (int)(Math.random() * 10000);
-        String.valueOf(randomNumber);
         return String.valueOf(randomNumber) + originalFileName;
+    }
+
+    private ObjectMetadata setMetadata(MultipartFile file){
+        ObjectMetadata metadata = new ObjectMetadata();
+        metadata.setContentLength(file.getSize());
+        metadata.setContentType(file.getContentType());
+        return metadata;
     }
 }
