@@ -43,7 +43,7 @@ function App() {
       element: <BoardList user={user} />,
     },
     {
-      path: "/detail/:id",
+      path: "/boards/:id",
       element: <Detail />,
     },
     {
