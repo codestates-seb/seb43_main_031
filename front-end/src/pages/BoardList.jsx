@@ -3,12 +3,8 @@ import { useNavigate } from "react-router-dom";
 import { AiOutlineCheckCircle, AiFillCheckCircle } from "react-icons/ai";
 import styled from "styled-components";
 import getBoards from "../api/getBoards";
-
-const areaGu = ["강남구", "강동구"];
-const areaDong = {
-  강남구: ["개포동", "논현동", "대치동"],
-  강동구: ["강일동", "고덕동", "길동"],
-};
+import { guList, dongList } from "../data/SeoulDistricts";
+import Paging from "../components/Paging";
 
 // main레이아웃으로 뺄 예정
 const Main = styled.div`
@@ -28,10 +24,6 @@ const BoardContainerStyle = styled.div`
 `;
 
 const BoardListWrapperStyle = styled.div`
-  /* * {
-    border: 1px solid #ddd;
-  } */
-
   display: flex;
   flex-direction: column;
   max-width: 720px;
@@ -147,29 +139,16 @@ const BoardListWrapperStyle = styled.div`
 `;
 export default function BoardList({ user }) {
   const navigate = useNavigate();
-  const [selectedGu, setSelectedGu] = useState(areaGu[0]);
+  const [selectedGu, setSelectedGu] = useState(guList[0]);
   const [boards, setBoards] = useState([]);
-  const [data, setData] = useState([]);
   const date = new Date("");
 
   useEffect(() => {
     getBoards().then(response => {
-      // console.log(response.data);
+      console.log(response.data);
       setBoards(response.data);
-      setData(response.data);
     });
   }, []);
-
-  // useEffect(() => {
-  //   if (!user) {
-  //     alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
-  //     navigate("/login");
-  //   }
-  // }, [user, navigate]);
-
-  // if (!user) {
-  //   return <div>로그인이 필요합니다.</div>;
-  // }
 
   function sortByViews() {
     const sortedBoards = [...boards].sort((a, b) => b.viewCount - a.viewCount);
@@ -202,12 +181,12 @@ export default function BoardList({ user }) {
                   setSelectedGu(e.target.value);
                 }}
               >
-                {areaGu.map(gu => (
+                {guList.map(gu => (
                   <option key={gu}>{gu}</option>
                 ))}
               </select>
               <select className="location-search-dropdown">
-                {areaDong[selectedGu].map(dong => {
+                {dongList[selectedGu].map(dong => {
                   return <option key={dong}>{dong}</option>;
                 })}
               </select>
@@ -222,7 +201,18 @@ export default function BoardList({ user }) {
             </div>
           </div>
           <div className="write-button-area">
-            <button type="button" className="write-button" onClick={() => navigate("/write")}>
+            <button
+              type="button"
+              className="write-button"
+              onClick={() => {
+                if (!user) {
+                  alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
+                  navigate("/login");
+                } else {
+                  navigate("/write");
+                }
+              }}
+            >
               글 작성하기
             </button>
           </div>
@@ -247,7 +237,9 @@ export default function BoardList({ user }) {
             </div>
           </div>
           <div className="pagination-area">
-            <div className="pagination">test</div>
+            <div className="pagination">
+              <Paging />
+            </div>
           </div>
         </BoardListWrapperStyle>
       </BoardContainerStyle>
