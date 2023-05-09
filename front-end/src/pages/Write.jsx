@@ -124,7 +124,7 @@ export default function Write() {
     setDisabled(true);
     try {
       await axios.post("http://localhost:8080/boards", data);
-      navigate("/board");
+      navigate("/boards");
     } catch (error) {
       alert("게시글 등록에 실패했습니다.");
     }
@@ -133,7 +133,7 @@ export default function Write() {
 
   const handleCancel = e => {
     e.preventDefault();
-    confirm("정말로 취소하시겠습니까?") ? navigate("/board") : null;
+    confirm("정말로 취소하시겠습니까?") ? navigate("/boards") : null;
   };
 
   // 에디터 내 이미지 업로드 hooks 수정
@@ -220,7 +220,7 @@ export default function Write() {
           <button className="red btn" type="submit" disabled={disabled}>
             등록하기
           </button>
-          <button className="gray btn" onClick={handleCancel}>
+          <button className="gray btn" type="button" onClick={handleCancel}>
             취소하기
           </button>
         </Buttons>
