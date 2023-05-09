@@ -208,8 +208,7 @@ function Detail() {
   const [isLogin, setIslogin] = useState(true);
   const [isPending, setIsPending] = useState(false);
 
-  const [boardsData, setBoardsData] = useState([]); // 해당 게시글 데이터 상태
-  const board = boardsData.find(el => el.id === +id); // 해당 게시글이 작성자가 쓴 게시글과 맞는 게시글 찾기
+  const [boardsData, setBoardsData] = useState({}); // 해당 게시글 데이터 상태
 
   const [commentsData, setCommentsData] = useState([]); // 코멘츠 데이터 상태
   const [applysData, setApplysData] = useState([]); // 신청 데이터 상태
@@ -221,10 +220,10 @@ function Detail() {
   useEffect(() => {
     window.scrollTo(0, 0); // 페이지 맨 위로
     getBoards().then(res => {
-      // console.log(res.boards);
+      console.log(res.boards[0]);
       // console.log(res.comments);
       // console.log(res.applys);
-      setBoardsData(res.boards);
+      setBoardsData(res.boards[0]);
       setCommentsData(res.comments);
       setApplysData(res.applys);
     });
@@ -243,8 +242,8 @@ function Detail() {
       // 새로운 글 정보 담아서 보내기(이 정보들이 필요할까?)
       const newComment = {
         commentId: nextId.current,
-        boardId: board.id,
-        memberId: board.memberId,
+        boardId: boardsData.id,
+        memberId: boardsData.memberId,
         createdDate: new Date(),
         content: commentValue,
       };
@@ -265,8 +264,8 @@ function Detail() {
     } else if (e.target.value === "applys") {
       const newApply = {
         applyId: nextId.current,
-        boardId: board.id,
-        memberId: board.memberId,
+        boardId: boardsData.id,
+        memberId: boardsData.memberId,
         createdDate: new Date(),
         content: applyValue,
       };
@@ -294,18 +293,18 @@ function Detail() {
         <Main>
           <DetailWrapper>
             <DetailContentsSection>
-              {board && (
+              {boardsData && (
                 <ContentsSectionHeader>
                   <div className="header-title">
                     <div>
                       <img src={RedShoesImg} alt="title-logo" style={{ width: "40px", height: "40px" }} />
                     </div>
-                    <h2>{board.title}</h2>
+                    <h2>{boardsData.title}</h2>
                   </div>
                   <div className="sub-header">
                     <div className="author-util">
-                      <span style={{ fontWeight: "700" }}>{board.memberId}</span>
-                      <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(board.createdDate))}</span>
+                      <span style={{ fontWeight: "700" }}>{boardsData.memberId}</span>
+                      <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(boardsData.createdDate))}</span>
                     </div>
                     <div className="interest">
                       <AiFillHeart style={{ width: "20px", height: "20px", color: "var(--primary-color)" }} />

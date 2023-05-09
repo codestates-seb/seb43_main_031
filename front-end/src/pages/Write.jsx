@@ -220,7 +220,7 @@ export default function Write() {
           <button className="red btn" type="submit" disabled={disabled}>
             등록하기
           </button>
-          <button className="gray btn" onClick={handleCancel}>
+          <button className="gray btn" type="button" onClick={handleCancel}>
             취소하기
           </button>
         </Buttons>
