@@ -10,7 +10,7 @@ import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import { Viewer } from "@toast-ui/react-editor";
 import RedShoesImg from "../../img/shoes.png";
 import DetailSubSection from "./DetailSubSection";
-import getBoards from "../../api/getBoards";
+import getBoardById from "../../api/getBoardById";
 import elapsedText from "../../utils/elapsedText";
 
 // 나중에 layouts로 이동 예정
@@ -219,15 +219,15 @@ function Detail() {
   // 데이터 조회
   useEffect(() => {
     window.scrollTo(0, 0); // 페이지 맨 위로
-    getBoards().then(res => {
-      console.log(res.boards[0]);
+    getBoardById(id).then(res => {
+      console.log(res.board);
       // console.log(res.comments);
       // console.log(res.applys);
-      setBoardsData(res.boards[0]);
+      setBoardsData(res.board);
       setCommentsData(res.comments);
       setApplysData(res.applys);
     });
-  }, []);
+  }, [id]);
 
   // 해당 게시글 수정
   // const updateBoard = (boardId, body) => {
@@ -346,13 +346,13 @@ function Detail() {
                     </div>
                     <p>23년 05월 22일</p>
                   </section>
-                  <seciton className="main-location">
+                  <section className="main-location">
                     <div className="main-title">
                       <BiMap />
                       <p>상세주소</p>
                     </div>
                     <p>역삼동 223-2</p>
-                  </seciton>
+                  </section>
                 </BodyMain>
               </ContentsSectionBody>
             </DetailContentsSection>

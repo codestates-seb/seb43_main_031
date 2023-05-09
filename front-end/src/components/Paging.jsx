@@ -10,6 +10,7 @@ const PagingWrapperStyle = styled.div`
   .pagination {
     display: flex;
     margin: 0;
+    margin-top: 20px;
   }
 
   .pagination li {
@@ -40,9 +41,7 @@ const PagingWrapperStyle = styled.div`
     color: #f45050;
   }
 `;
-function Paging() {
-  const [page, setPage] = useState(1);
-
+function Paging({ page, setPage }) {
   const handlePageChange = pageNumber => {
     setPage(pageNumber);
   };
