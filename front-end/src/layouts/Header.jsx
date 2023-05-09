@@ -25,6 +25,9 @@ const HeaderLogoStyle = styled.div`
   display: flex;
   font-size: 1.3rem;
   font-weight: 700;
+  :hover {
+    cursor: pointer;
+  }
 `;
 
 const HeaderMenuStyle = styled.div`
@@ -47,8 +50,20 @@ export default function Header({ user, setUser }) {
     <HeaderWrapperStyle>
       <HeaderStyle>
         <HeaderLogoStyle>
-          <img src={redHoodImg} alt="logo" />
-          <div>빨간망토</div>
+          <img
+            src={redHoodImg}
+            alt="logo"
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          />
+          <div
+            onClick={() => {
+              window.location.href = "/";
+            }}
+          >
+            빨간망토
+          </div>
         </HeaderLogoStyle>
         <HeaderMenuStyle>
           {user ? (
