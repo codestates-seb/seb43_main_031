@@ -11,7 +11,7 @@ spring:
     show-sql: true     
     properties:
       hibernate:
-        format_sql: true 
+        format_sql: true
   sql:
     init:
       data-locations: classpath*:db/h2/data.sql
