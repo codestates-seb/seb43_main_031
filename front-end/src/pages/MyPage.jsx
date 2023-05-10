@@ -4,27 +4,32 @@ import styled from "styled-components";
 import blankProfileImg from "../img/blank-profile.png";
 
 const Container = styled.div`
-  background-color: #fae7e7;
   width: 100vw;
   min-height: calc(100vh - 50px);
-  border: 1px solid red;
+  padding: 5rem 0;
 `;
 
 const ProfileSection = styled.div`
   display: flex;
-  max-width: 720px;
-  margin: auto;
-  padding: calc(3rem + 50px) 3rem;
   align-items: center;
   justify-content: center;
-  border: 1px solid blue;
+  max-width: 720px;
+  margin: auto;
+  padding: 0 3rem;
   gap: 3rem;
   .profileImg {
     height: 20rem;
     width: 20rem;
     border-radius: 70%;
     overflow: hidden;
-    border: 0.5rem solid #fff;
+    border: 0.4rem solid #fff;
+    @media (max-width: 500px) {
+      height: 15rem;
+      width: 15rem;
+    }
+  }
+  @media (max-width: 500px) {
+    flex-direction: column;
   }
 `;
 
@@ -32,9 +37,11 @@ const ProfileInfo = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 20rem;
   gap: 3rem;
   font-size: 1.5rem;
+  @media (max-width: 500px) {
+    gap: 2.5rem;
+  }
   .nickName {
     font-size: 2rem;
     font-weight: 600;
@@ -43,6 +50,19 @@ const ProfileInfo = styled.div`
 
 const Buttons = styled.div`
   display: flex;
+  gap: 2rem;
+  .btn {
+    height: 40px;
+    width: 120px;
+    border-radius: 20px;
+    font-weight: 600;
+    border-style: none;
+    background-color: #fff;
+    cursor: pointer;
+  }
+  .red {
+    color: var(--error-color);
+  }
 `;
 
 function MyPage() {
@@ -61,7 +81,7 @@ function MyPage() {
     email: "test@gmail.com",
     nickName: "nickname",
     phone: "010-1234-5678",
-    image: "https://cdn.pixabay.com/photo/2016/03/04/22/54/animal-1236875__340.jpg",
+    image: "",
   };
 
   return (
@@ -77,8 +97,12 @@ function MyPage() {
           <span>{data.email}</span>
           <span>{data.phone}</span>
           <Buttons>
-            <button type="button">프로필 수정하기</button>
-            <button type="button">회원탈퇴</button>
+            <button className="btn" type="button">
+              프로필 수정하기
+            </button>
+            <button className="red btn" type="button">
+              회원탈퇴
+            </button>
           </Buttons>
         </ProfileInfo>
       </ProfileSection>
