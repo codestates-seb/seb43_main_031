@@ -105,7 +105,7 @@ export default function Login({ setUser }) {
   }
 
   return (
-    <div style={{ minHeight: "80vh" }}>
+    <div style={{ minHeight: "cal(100vh-50px)" }}>
       <LoginWrapperStyle>
         <h1>로그인</h1>
         <form>
