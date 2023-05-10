@@ -63,6 +63,7 @@
     "no-alert": "off",
     "no-lables": "off",
     "no-restricted-globals": ["error", "event", "fdescribe"], // 지정된 전역변수를 허용하지 않는 규칙 해제
-    "react/destructuring-assignment": "off" // 구조분해 할당을 일관되게 사용하는 규칙 해제
+    "react/destructuring-assignment": "off", // 구조분해 할당을 일관되게 사용하는 규칙 해제
+    "import/prefer-default-export": "off" // 단일 내보내기 기본 규칙 해제
   }
 }

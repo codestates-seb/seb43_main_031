@@ -9,7 +9,8 @@ import { BiWon, BiMap, BiDumbbell } from "react-icons/bi";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import { Viewer } from "@toast-ui/react-editor";
 import RedShoesImg from "../../img/shoes.png";
-import DetailSubSection from "./DetailSubSection";
+import ApplySection from "./ApplySection";
+import CommentSection from "./comment/CommentSection";
 import getBoardById from "../../api/getBoardById";
 import elapsedText from "../../utils/elapsedText";
 
@@ -153,44 +154,6 @@ const SubHeaderWrapper = styled.div`
   }
 `;
 
-// 새로운 글 작성 박스
-const DetailSubForm = styled.div`
-  width: 90%;
-  margin: 0 auto;
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1.3rem;
-
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-  input {
-    width: 100%;
-    height: 3rem;
-    padding: 0 1rem;
-    border: none;
-    border-radius: 0.4rem;
-    background-color: var(--bg-color);
-  }
-  button {
-    width: 20%;
-    align-self: end;
-    padding: 0.7rem;
-    background-color: var(--primary-color);
-    border: none;
-    border-radius: 1.5rem;
-    color: #fff;
-    cursor: pointer;
-
-    &:hover {
-      color: var(--primary-color);
-      background-color: var(--sub-btn-color);
-    }
-  }
-`;
-
 // 서브헤더 컴포넌트
 function DetailSubHeader({ count, title }) {
   return (
@@ -213,14 +176,13 @@ function Detail() {
   const [commentsData, setCommentsData] = useState([]); // 코멘츠 데이터 상태
   const [applysData, setApplysData] = useState([]); // 신청 데이터 상태
 
-  const [commentValue, setCommentValue] = useState(""); // 코멘츠 인풋 값 상태
-  const [applyValue, setApplyValue] = useState(""); // 신청 인풋 값 상태
+  // const [commentValue, setCommentValue] = useState(""); // 코멘츠 인풋 값 상태
 
   // 데이터 조회
   useEffect(() => {
     window.scrollTo(0, 0); // 페이지 맨 위로
-    getBoardById(id).then(res => {
-      console.log(res.board);
+    getBoardById().then(res => {
+      // console.log(res.boards[0]);
       // console.log(res.comments);
       // console.log(res.applys);
       setBoardsData(res.board);
@@ -236,55 +198,55 @@ function Detail() {
   // 해당 게시글 삭제
 
   // 새로운 코멘트/신청글 생성
-  const onSubmitHandler = e => {
-    e.preventDefault();
-    if (e.target.value === "comments") {
-      // 새로운 글 정보 담아서 보내기(이 정보들이 필요할까?)
-      const newComment = {
-        commentId: nextId.current,
-        boardId: boardsData.id,
-        memberId: boardsData.memberId,
-        createdDate: new Date(),
-        content: commentValue,
-      };
-      nextId.current += 1;
-      axios
-        .post(`http://localhost:8080/comments`, newComment, {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        })
-        .then(res => {
-          navigate(`/boards/:id`);
-          setCommentValue("");
-        })
-        .catch(err => {
-          alert("새로운 문의를 생성하지 못했습니다.");
-        });
-    } else if (e.target.value === "applys") {
-      const newApply = {
-        applyId: nextId.current,
-        boardId: boardsData.id,
-        memberId: boardsData.memberId,
-        createdDate: new Date(),
-        content: applyValue,
-      };
-      nextId.current += 1;
-      axios
-        .post(`http://localhost:8080/applys`, newApply, {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        })
-        .then(res => {
-          navigate(`/boards/:id`);
-          setApplyValue("");
-        })
-        .catch(err => {
-          alert("새로운 신청을 생성하지 못했습니다.");
-        });
-    }
-  };
+  // const onSubmitHandler = e => {
+  //   e.preventDefault();
+  //   if (e.target.value === "comments") {
+  //     // 새로운 글 정보 담아서 보내기(이 정보들이 필요할까?)
+  //     const newComment = {
+  //       commentId: nextId.current,
+  //       boardId: boardsData.id,
+  //       memberId: boardsData.memberId,
+  //       createdDate: new Date(),
+  //       content: commentValue,
+  //     };
+  //     nextId.current += 1;
+  //     axios
+  //       .post(`http://localhost:8080/comments`, newComment, {
+  //         headers: {
+  //           Authorization: localStorage.getItem("token"),
+  //         },
+  //       })
+  //       .then(res => {
+  //         navigate(`/boards/:id`);
+  //         setCommentValue("");
+  //       })
+  //       .catch(err => {
+  //         alert("새로운 문의를 생성하지 못했습니다.");
+  //       });
+  //   } else if (e.target.value === "applys") {
+  //     const newApply = {
+  //       applyId: nextId.current,
+  //       boardId: boardsData.id,
+  //       memberId: boardsData.memberId,
+  //       createdDate: new Date(),
+  //       content: applyValue,
+  //     };
+  //     nextId.current += 1;
+  //     axios
+  //       .post(`http://localhost:8080/applys`, newApply, {
+  //         headers: {
+  //           Authorization: localStorage.getItem("token"),
+  //         },
+  //       })
+  //       .then(res => {
+  //         navigate(`/boards/:id`);
+  //         setApplyValue("");
+  //       })
+  //       .catch(err => {
+  //         alert("새로운 신청을 생성하지 못했습니다.");
+  //       });
+  //   }
+  // };
 
   return (
     <>
@@ -356,53 +318,10 @@ function Detail() {
                 </BodyMain>
               </ContentsSectionBody>
             </DetailContentsSection>
-            <DetailSubHeader count={commentsData.length} title="개의 문의" />
-            {commentsData &&
-              commentsData.map((comment, index) => {
-                return (
-                  <DetailSubSection
-                    key={index}
-                    type="comments"
-                    el={comment}
-                    userId={comment.memberId}
-                    commentId={comment.commentId}
-                    boardId={comment.boardId}
-                    createdDate={comment.createdDate}
-                    content={comment.content}
-                  />
-                );
-              })}
-            <DetailSubForm>
-              <h2>문의합니다</h2>
-              <input type="text" value={commentValue} onChange={e => setCommentValue(e.target.value)} />
-              <button type="button" value="comments" onClick={onSubmitHandler}>
-                문의하기
-              </button>
-            </DetailSubForm>
             <DetailSubHeader count={applysData.length} title="개의 신청" />
-            {applysData &&
-              applysData.map((apply, index) => {
-                return (
-                  <DetailSubSection
-                    key={index}
-                    type="applys"
-                    el={apply}
-                    userId={apply.memberId}
-                    applyId={apply.applyId}
-                    boardId={apply.boardId}
-                    createdDate={apply.createdDate}
-                    updatedDate={apply.updatedDate}
-                    content={apply.content}
-                  />
-                );
-              })}
-            <DetailSubForm>
-              <h2>신청합니다</h2>
-              <input type="text" value={applyValue} onChange={e => setApplyValue(e.target.value)} />
-              <button type="button" value="applys" onClick={onSubmitHandler}>
-                신청하기
-              </button>
-            </DetailSubForm>
+            {applysData && <ApplySection applysData={applysData} />}
+            <DetailSubHeader count={commentsData.length} title="개의 댓글" />
+            {commentsData && <CommentSection commentsData={commentsData} />}
           </DetailWrapper>
         </Main>
       )}
