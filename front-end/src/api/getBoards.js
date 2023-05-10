@@ -90,7 +90,7 @@ export default function getBoards({ page, searchText, gu, dong, sort }) {
   //     console.error("Error:", error);
   //   });
 
-  console.log(`요청 URL: ${url}`);
+  // console.log(`요청 URL: ${url}`);
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       if (searchText === "실패 테스트") {
