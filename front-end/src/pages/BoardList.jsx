@@ -147,8 +147,7 @@ export default function BoardList({ user }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedSort, setSelectedSort] = useState("createdAt");
   const [boards, setBoards] = useState([]);
-
-  const date = new Date("");
+  // const date = new Date("");
 
   useEffect(() => {
     getBoards({
@@ -166,19 +165,19 @@ export default function BoardList({ user }) {
     setSelectedDong(dongList[selectedGu][0]);
   }, [selectedGu]);
 
-  function sortByViews() {
-    const sortedBoards = [...boards].sort((a, b) => b.viewCount - a.viewCount);
-    setBoards(sortedBoards);
-  }
+  // function sortByViews() {
+  //   const sortedBoards = [...boards].sort((a, b) => b.viewCount - a.viewCount);
+  //   setBoards(sortedBoards);
+  // }
 
-  function sortByDate() {
-    const sortedBoards = [...boards].sort((a, b) => {
-      const dateA = new Date(a.createDate);
-      const dateB = new Date(b.createDate);
-      return dateB - dateA;
-    });
-    setBoards(sortedBoards);
-  }
+  // function sortByDate() {
+  //   const sortedBoards = [...boards].sort((a, b) => {
+  //     const dateA = new Date(a.createDate);
+  //     const dateB = new Date(b.createDate);
+  //     return dateB - dateA;
+  //   });
+  //   setBoards(sortedBoards);
+  // }
 
   return (
     <Main>
