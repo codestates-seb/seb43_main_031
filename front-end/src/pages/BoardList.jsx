@@ -115,7 +115,7 @@ const BoardListWrapperStyle = styled.div`
     display: flex;
     align-items: center;
     padding: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
   .board-info {
     flex: 1;
@@ -140,29 +140,44 @@ const BoardListWrapperStyle = styled.div`
 `;
 export default function BoardList({ user }) {
   const navigate = useNavigate();
+  const [searchText, setSearchText] = useState("");
+  const [searchInputText, setSearchInputText] = useState("");
   const [selectedGu, setSelectedGu] = useState(guList[0]);
+  const [selectedDong, setSelectedDong] = useState(dongList[selectedGu][0]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedSort, setSelectedSort] = useState("createdAt");
   const [boards, setBoards] = useState([]);
-  const date = new Date("");
+  // const date = new Date("");
 
   useEffect(() => {
-    getBoards().then(response => {
+    getBoards({
+      page: currentPage,
+      searchText,
+      gu: selectedGu,
+      dong: selectedDong,
+      sort: selectedSort,
+    }).then(response => {
       setBoards(response.boards);
     });
-  }, []);
+  }, [currentPage, searchText, selectedGu, selectedDong, selectedSort]);
 
-  function sortByViews() {
-    const sortedBoards = [...boards].sort((a, b) => b.viewCount - a.viewCount);
-    setBoards(sortedBoards);
-  }
+  useEffect(() => {
+    setSelectedDong(dongList[selectedGu][0]);
+  }, [selectedGu]);
 
-  function sortByDate() {
-    const sortedBoards = [...boards].sort((a, b) => {
-      const dateA = new Date(a.createDate);
-      const dateB = new Date(b.createDate);
-      return dateB - dateA;
-    });
-    setBoards(sortedBoards);
-  }
+  // function sortByViews() {
+  //   const sortedBoards = [...boards].sort((a, b) => b.viewCount - a.viewCount);
+  //   setBoards(sortedBoards);
+  // }
+
+  // function sortByDate() {
+  //   const sortedBoards = [...boards].sort((a, b) => {
+  //     const dateA = new Date(a.createDate);
+  //     const dateB = new Date(b.createDate);
+  //     return dateB - dateA;
+  //   });
+  //   setBoards(sortedBoards);
+  // }
 
   return (
     <Main>
@@ -170,8 +185,22 @@ export default function BoardList({ user }) {
         <BoardListWrapperStyle>
           <div className="welcome-message">도와주세요 여러분</div>
           <div className="search-bar">
-            <input className="input-text" placeholder="여기에 검색어를 입력해주세요." />
-            <div className="search-icon">🔍</div>
+            <input
+              className="input-text"
+              placeholder="여기에 검색어를 입력해주세요."
+              value={searchInputText}
+              onChange={e => {
+                setSearchInputText(e.target.value);
+              }}
+            />
+            <div
+              className="search-icon"
+              onClick={() => {
+                setSearchText(searchInputText);
+              }}
+            >
+              🔍
+            </div>
           </div>
           <div className="sarch-tool-area">
             <div className="locacation-search-dropdowns-area">
@@ -185,17 +214,35 @@ export default function BoardList({ user }) {
                   <option key={gu}>{gu}</option>
                 ))}
               </select>
-              <select className="location-search-dropdown">
+              <select
+                className="location-search-dropdown"
+                onChange={e => {
+                  console.log(e.target.value);
+                  setSelectedDong(e.target.value);
+                }}
+              >
                 {dongList[selectedGu].map(dong => {
                   return <option key={dong}>{dong}</option>;
                 })}
               </select>
             </div>
             <div className="sort-buttons-area">
-              <button type="button" className="sort-button" onClick={sortByViews}>
+              <button
+                type="button"
+                className="sort-button"
+                onClick={() => {
+                  setSelectedSort("views");
+                }}
+              >
                 조회순
               </button>
-              <button type="button" className="sort-button" onClick={sortByDate}>
+              <button
+                type="button"
+                className="sort-button"
+                onClick={() => {
+                  setSelectedSort("createdDate");
+                }}
+              >
                 최신순
               </button>
             </div>
@@ -238,7 +285,7 @@ export default function BoardList({ user }) {
           </div>
           <div className="pagination-area">
             <div className="pagination">
-              <Paging />
+              <Paging page={currentPage} setPage={setCurrentPage} />
             </div>
           </div>
         </BoardListWrapperStyle>
