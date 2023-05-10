@@ -171,12 +171,10 @@ function Detail() {
   const [isLogin, setIslogin] = useState(true);
   const [isPending, setIsPending] = useState(false);
 
-  const [boardsData, setBoardsData] = useState({}); // 해당 게시글 데이터 상태
+  const [boardData, setBoardData] = useState({}); // 해당 게시글 데이터 상태
 
   const [commentsData, setCommentsData] = useState([]); // 코멘츠 데이터 상태
   const [applysData, setApplysData] = useState([]); // 신청 데이터 상태
-
-  // const [commentValue, setCommentValue] = useState(""); // 코멘츠 인풋 값 상태
 
   // 데이터 조회
   useEffect(() => {
@@ -185,7 +183,7 @@ function Detail() {
       // console.log(res.boards[0]);
       // console.log(res.comments);
       // console.log(res.applys);
-      setBoardsData(res.board);
+      setBoardData(res.board);
       setCommentsData(res.comments);
       setApplysData(res.applys);
     });
@@ -255,18 +253,18 @@ function Detail() {
         <Main>
           <DetailWrapper>
             <DetailContentsSection>
-              {boardsData && (
+              {boardData && (
                 <ContentsSectionHeader>
                   <div className="header-title">
                     <div>
                       <img src={RedShoesImg} alt="title-logo" style={{ width: "40px", height: "40px" }} />
                     </div>
-                    <h2>{boardsData.title}</h2>
+                    <h2>{boardData.title}</h2>
                   </div>
                   <div className="sub-header">
                     <div className="author-util">
-                      <span style={{ fontWeight: "700" }}>{boardsData.memberId}</span>
-                      <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(boardsData.createdDate))}</span>
+                      <span style={{ fontWeight: "700" }}>{boardData.memberId}</span>
+                      <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(boardData.createdDate))}</span>
                     </div>
                     <div className="interest">
                       <AiFillHeart style={{ width: "20px", height: "20px", color: "var(--primary-color)" }} />
@@ -319,9 +317,9 @@ function Detail() {
               </ContentsSectionBody>
             </DetailContentsSection>
             <DetailSubHeader count={applysData.length} title="개의 신청" />
-            {applysData && <ApplySection applysData={applysData} />}
+            {applysData && <ApplySection applysData={applysData} boardData={boardData} />}
             <DetailSubHeader count={commentsData.length} title="개의 댓글" />
-            {commentsData && <CommentSection commentsData={commentsData} />}
+            {commentsData && <CommentSection commentsData={commentsData} boardData={boardData} />}
           </DetailWrapper>
         </Main>
       )}
