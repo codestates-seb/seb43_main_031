@@ -17,25 +17,28 @@ const mockData = {
   },
   comments: [
     {
-      commentId: 1,
       boardId: 1,
+      commentId: 1,
       memberId: 1,
       createdDate: "2023-05-05",
       content: "문의 드립니다/!!",
+      responseTo: "root",
     },
     {
-      commentId: 2,
       boardId: 1,
+      commentId: 2,
       memberId: 2,
       createdDate: "2023-05-01",
       content: "문의 요청 드립니다",
+      responseTo: "root",
     },
     {
-      commentId: 3,
       boardId: 1,
+      commentId: 3,
       memberId: 3,
       createdDate: "2023-05-10",
       content: "여기요 여기~~",
+      responseTo: "root",
     },
   ],
   applys: [
@@ -59,7 +62,7 @@ const mockData = {
 };
 
 export default function getBoardById(id) {
-  console.log("getBoardById", id);
+  // console.log("getBoardById", id);
   return new Promise((resolve, reject) => {
     setTimeout(() => {
       resolve(mockData);
