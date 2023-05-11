@@ -1,21 +1,25 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
-import axios from "axios";
+import { Viewer } from "@toast-ui/react-editor";
+// 아이콘
 import { AiFillHeart, AiFillClockCircle } from "react-icons/ai";
 import { BsFillCaretRightFill } from "react-icons/bs";
 import { CgFileDocument } from "react-icons/cg";
 import { BiWon, BiMap, BiDumbbell } from "react-icons/bi";
+// 라이브러리
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
-import { Viewer } from "@toast-ui/react-editor";
+// 이미지
 import RedShoesImg from "../../img/shoes.png";
+// 컴포넌트
 import ApplySection from "./ApplySection";
 import CommentSection from "./comment/CommentSection";
+// 유틸리티
 import getBoardById from "../../api/getBoardById";
 import elapsedText from "../../utils/elapsedText";
 
 // 나중에 layouts로 이동 예정
-const Main = styled.div`
+const DetailTemplate = styled.div`
   width: 100vw;
   height: 100%;
   padding: 3rem 0;
@@ -171,10 +175,10 @@ function Detail() {
   const [isLogin, setIslogin] = useState(true);
   const [isPending, setIsPending] = useState(false);
 
-  const [boardData, setBoardData] = useState({}); // 해당 게시글 데이터 상태
-
-  const [commentsData, setCommentsData] = useState([]); // 코멘츠 데이터 상태
-  const [applysData, setApplysData] = useState([]); // 신청 데이터 상태
+  const [board, setBoard] = useState({}); // 해당 게시글 데이터 상태
+  const { title, memberId, createdDate } = board; // 게시글 데이터 구조분해할당
+  const [comments, setComments] = useState([]); // 코멘츠 데이터 상태
+  const [applys, setApplys] = useState([]); // 신청 데이터 상태
 
   // 데이터 조회
   useEffect(() => {
@@ -183,148 +187,147 @@ function Detail() {
       // console.log(res.boards[0]);
       // console.log(res.comments);
       // console.log(res.applys);
-      setBoardData(res.board);
-      setCommentsData(res.comments);
-      setApplysData(res.applys);
+      setBoard(res.board);
+      setComments(res.comments);
+      setApplys(res.applys);
     });
-  }, [id]);
+  }, [id, comments, applys]);
 
-  // 해당 게시글 수정
-  // const updateBoard = (boardId, body) => {
-  //   axios.patch(`http://localhost:8080/boards/${boardId}`, { ...board, body });
-  // };
-  // 해당 게시글 삭제
-
-  // 새로운 코멘트/신청글 생성
-  // const onSubmitHandler = e => {
-  //   e.preventDefault();
-  //   if (e.target.value === "comments") {
-  //     // 새로운 글 정보 담아서 보내기(이 정보들이 필요할까?)
-  //     const newComment = {
-  //       commentId: nextId.current,
-  //       boardId: boardsData.id,
-  //       memberId: boardsData.memberId,
-  //       createdDate: new Date(),
-  //       content: commentValue,
-  //     };
-  //     nextId.current += 1;
-  //     axios
-  //       .post(`http://localhost:8080/comments`, newComment, {
-  //         headers: {
-  //           Authorization: localStorage.getItem("token"),
-  //         },
-  //       })
-  //       .then(res => {
-  //         navigate(`/boards/:id`);
-  //         setCommentValue("");
-  //       })
-  //       .catch(err => {
-  //         alert("새로운 문의를 생성하지 못했습니다.");
-  //       });
-  //   } else if (e.target.value === "applys") {
-  //     const newApply = {
-  //       applyId: nextId.current,
-  //       boardId: boardsData.id,
-  //       memberId: boardsData.memberId,
-  //       createdDate: new Date(),
-  //       content: applyValue,
-  //     };
-  //     nextId.current += 1;
-  //     axios
-  //       .post(`http://localhost:8080/applys`, newApply, {
-  //         headers: {
-  //           Authorization: localStorage.getItem("token"),
-  //         },
-  //       })
-  //       .then(res => {
-  //         navigate(`/boards/:id`);
-  //         setApplyValue("");
-  //       })
-  //       .catch(err => {
-  //         alert("새로운 신청을 생성하지 못했습니다.");
-  //       });
-  //   }
-  // };
+  // 얼리리턴(예외처리)
+  if (isPending) return <div>로딩중입니다.</div>;
+  if (!isLogin) return null;
 
   return (
-    <>
-      {isPending && <div>로딩중입니다.</div>}
-      {isLogin && (
-        <Main>
-          <DetailWrapper>
-            <DetailContentsSection>
-              {boardData && (
-                <ContentsSectionHeader>
-                  <div className="header-title">
-                    <div>
-                      <img src={RedShoesImg} alt="title-logo" style={{ width: "40px", height: "40px" }} />
-                    </div>
-                    <h2>{boardData.title}</h2>
-                  </div>
-                  <div className="sub-header">
-                    <div className="author-util">
-                      <span style={{ fontWeight: "700" }}>{boardData.memberId}</span>
-                      <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(boardData.createdDate))}</span>
-                    </div>
-                    <div className="interest">
-                      <AiFillHeart style={{ width: "20px", height: "20px", color: "var(--primary-color)" }} />
-                      <div>0</div>
-                    </div>
-                  </div>
-                </ContentsSectionHeader>
-              )}
-              <ContentsSectionBody>
-                <BodyUtils>
-                  <div className="tags">
-                    <div>지역구</div>
-                    <div>지역동</div>
-                  </div>
-                  <div className="utils">
-                    <button type="button">수정</button>
-                    <button type="button">삭제</button>
-                  </div>
-                </BodyUtils>
-                <BodyMain>
-                  <section className="main-msg">
-                    <div className="main-title">
-                      <CgFileDocument />
-                      <p>상세내용</p>
-                    </div>
-                    <Viewer initialValue="내용이 들어갑니다" />
-                  </section>
-                  <section className="main-cost">
-                    <div className="main-title">
-                      <BiWon />
-                      <p>수고비</p>
-                    </div>
-                    <p>시급 10000원</p>
-                  </section>
-                  <section className="main-expire">
-                    <div className="main-title">
-                      <AiFillClockCircle />
-                      <p>만료일</p>
-                    </div>
-                    <p>23년 05월 22일</p>
-                  </section>
-                  <section className="main-location">
-                    <div className="main-title">
-                      <BiMap />
-                      <p>상세주소</p>
-                    </div>
-                    <p>역삼동 223-2</p>
-                  </section>
-                </BodyMain>
-              </ContentsSectionBody>
-            </DetailContentsSection>
-            <DetailSubHeader count={applysData.length} title="개의 신청" />
-            {applysData && <ApplySection applysData={applysData} boardData={boardData} />}
-            <DetailSubHeader count={commentsData.length} title="개의 댓글" />
-            {commentsData && <CommentSection commentsData={commentsData} boardData={boardData} />}
-          </DetailWrapper>
-        </Main>
-      )}
-    </>
+    <DetailTemplate>
+      <DetailWrapper>
+        <DetailContentsSection>
+          {board && (
+            <ContentsSectionHeader>
+              <div className="header-title">
+                <div>
+                  <img src={RedShoesImg} alt="title-logo" style={{ width: "40px", height: "40px" }} />
+                </div>
+                <h2>{title}</h2>
+              </div>
+              <div className="sub-header">
+                <div className="author-util">
+                  <span style={{ fontWeight: "700" }}>{memberId}</span>
+                  <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(createdDate))}</span>
+                </div>
+                <div className="interest">
+                  <AiFillHeart style={{ width: "20px", height: "20px", color: "var(--primary-color)" }} />
+                  <div>0</div>
+                </div>
+              </div>
+            </ContentsSectionHeader>
+          )}
+          <ContentsSectionBody>
+            <BodyUtils>
+              <div className="tags">
+                <div>지역구</div>
+                <div>지역동</div>
+              </div>
+              <div className="utils">
+                <button type="button">수정</button>
+                <button type="button">삭제</button>
+              </div>
+            </BodyUtils>
+            <BodyMain>
+              <section className="main-msg">
+                <div className="main-title">
+                  <CgFileDocument />
+                  <p>상세내용</p>
+                </div>
+                <Viewer initialValue="내용이 들어갑니다" />
+              </section>
+              <section className="main-cost">
+                <div className="main-title">
+                  <BiWon />
+                  <p>수고비</p>
+                </div>
+                <p>시급 10000원</p>
+              </section>
+              <section className="main-expire">
+                <div className="main-title">
+                  <AiFillClockCircle />
+                  <p>만료일</p>
+                </div>
+                <p>23년 05월 22일</p>
+              </section>
+              <section className="main-location">
+                <div className="main-title">
+                  <BiMap />
+                  <p>상세주소</p>
+                </div>
+                <p>역삼동 223-2</p>
+              </section>
+            </BodyMain>
+          </ContentsSectionBody>
+        </DetailContentsSection>
+        <DetailSubHeader count={applys.length} title="개의 신청" />
+        {applys && <ApplySection applysData={applys} boardData={board} />}
+        <DetailSubHeader count={comments.length} title="개의 댓글" />
+        {comments && <CommentSection commentsData={comments} boardData={board} />}
+      </DetailWrapper>
+    </DetailTemplate>
   );
 }
 
 export default Detail;
+
+// 해당 게시글 수정
+// const updateBoard = (boardId, body) => {
+//   axios.patch(`http://localhost:8080/boards/${boardId}`, { ...board, body });
+// };
+// 해당 게시글 삭제
+
+// 새로운 코멘트/신청글 생성
+// const onSubmitHandler = e => {
+//   e.preventDefault();
+//   if (e.target.value === "comments") {
+//     // 새로운 글 정보 담아서 보내기(이 정보들이 필요할까?)
+//     const newComment = {
+//       commentId: nextId.current,
+//       boardId: boardsData.id,
+//       memberId: boardsData.memberId,
+//       createdDate: new Date(),
+//       content: commentValue,
+//     };
+//     nextId.current += 1;
+//     axios
+//       .post(`http://localhost:8080/comments`, newComment, {
+//         headers: {
+//           Authorization: localStorage.getItem("token"),
+//         },
+//       })
+//       .then(res => {
+//         navigate(`/boards/:id`);
+//         setCommentValue("");
+//       })
+//       .catch(err => {
+//         alert("새로운 문의를 생성하지 못했습니다.");
+//       });
+//   } else if (e.target.value === "applys") {
+//     const newApply = {
+//       applyId: nextId.current,
+//       boardId: boardsData.id,
+//       memberId: boardsData.memberId,
+//       createdDate: new Date(),
+//       content: applyValue,
+//     };
+//     nextId.current += 1;
+//     axios
+//       .post(`http://localhost:8080/applys`, newApply, {
+//         headers: {
+//           Authorization: localStorage.getItem("token"),
+//         },
+//       })
+//       .then(res => {
+//         navigate(`/boards/:id`);
+//         setApplyValue("");
+//       })
+//       .catch(err => {
+//         alert("새로운 신청을 생성하지 못했습니다.");
+//       });
+//   }
+// };

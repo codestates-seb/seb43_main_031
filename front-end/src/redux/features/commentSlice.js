@@ -8,11 +8,20 @@ export const commentSlice = createSlice({
   initialState,
   reducers: {
     addComment(state, action) {
-      const { commentId, content, boardId, responseTo, createdDate } = action.payload;
+      const { commentId, memberId, content, boardId, responseTo, createdDate } = action.payload;
       return [...state, { ...action.payload }];
+    },
+    editComment(state, action) {
+      const { commentId, content } = action.payload;
+      return state.map(item => (item.commentId === commentId ? (item.content = content) : item));
+    },
+    deleteComment(state, action) {
+      if (state.find(item => item.commentId === action.payload)) {
+        return state.filter(item => item.commentId !== action.payload.commentId);
+      }
     },
   },
 });
 
-export const { addComment } = commentSlice.actions;
+export const { addComment, editComment, deleteComment } = commentSlice.actions;
 export default commentSlice.reducer;
