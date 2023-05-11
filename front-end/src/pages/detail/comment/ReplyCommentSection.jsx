@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+
 import styled from "styled-components";
 import uuid from "react-uuid";
+
+import UserBox from "../UserBox";
 import { addComment } from "../../../redux/features/commentSlice";
 
 // 대댓글 컨테이너
@@ -62,18 +66,73 @@ const ReplyFormBox = styled.div`
   }
 `;
 
+// 대댓글 아이템
+const ReplyItem = styled.div`
+  margin: 2rem 0;
+  padding: 0.5rem;
+  border-bottom: 1px solid var(--primary-color);
+
+  .utils {
+    display: flex;
+    justify-content: space-between;
+
+    & > .fixAndDelete {
+      display: flex;
+      justify-content: center;
+      & > button {
+        margin: 0.3rem;
+        color: var(--sub-btn-color);
+        font-size: 0.8rem;
+        background-color: transparent; // 투명하게
+        border: none;
+        cursor: pointer;
+        &:hover {
+          color: var(--primary-color);
+        }
+      }
+    }
+  }
+
+  .reply-msg {
+    margin: 1rem;
+    padding: 1rem;
+  }
+`;
+
 function ReplyCommentSection({ responseTo }) {
   const [display, setDisplay] = useState(false); // 대댓글 폼 박스 활성화 상태
   const [local, setLocal] = useState([]);
   const [text, setText] = useState("");
+  const [user, setUser] = useState({
+    memberId: 1,
+    email: "test@gmail.com",
+    nickName: "nickname",
+    phone: "010-1234-5678",
+    image: "",
+  });
 
+  const { id } = useParams();
   const dispatch = useDispatch();
-  const comments = useSelector(s => s.comment);
+  const comments = useSelector(state => state.comment);
 
   useEffect(() => {
-    localStorage.setItem("reply", JSON.stringify(comments));
-    setLocal(comments.filter(comment => comment.responseTo === "child"));
-  }, [comments]);
+    localStorage.setItem("comments", JSON.stringify(comments));
+    setLocal(comments.filter(comment => comment.responseTo === responseTo));
+  }, [comments, responseTo]);
+
+  // 새로운 대댓글 작성
+  const handleSubmit = e => {
+    e.preventDefault();
+    const newData = {
+      boardId: id, // params로 받은 id
+      commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
+      content: text,
+      responseTo, // 대댓글 연결을 위한 상태 추가
+      createdDate: `${new Date()}`,
+    };
+    dispatch(addComment(newData));
+    setText("");
+  };
 
   return (
     <ReplyContainer>
@@ -84,19 +143,35 @@ function ReplyCommentSection({ responseTo }) {
           setDisplay(!display);
         }}
       >
-        대댓글 달기
+        {display && "숨기기"}
+        {!display && (local.length === 0 ? "대댓글 달기" : `${local.length} 개의 대댓글 보기`)}
       </button>
       {display && (
         <ReplyFormBox>
+          {local?.map(comment => (
+            <ReplyItem key={comment.commnetId}>
+              <div className="utils">
+                <UserBox infoData={comment} />
+                {user === comment.memberId && (
+                  <div className="fixAndDelete">
+                    <button type="button">수정</button>
+                    <button type="button">삭제</button>
+                  </div>
+                )}
+              </div>
+              <div className="reply-msg">{comment.content}</div>
+            </ReplyItem>
+          ))}
           <input
             type="text"
             className="replyInput"
             value={text}
             placeholder="댓글추가"
             onChange={e => setText(e.target.value)}
+            onClick={handleSubmit}
           />
           <div className="utils">
-            <button type="button" className="cancle">
+            <button type="button" className="cancle" onClick={() => setDisplay(!display)}>
               취소
             </button>
             <button type="button" className="add">
