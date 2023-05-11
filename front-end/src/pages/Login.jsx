@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import styled from "styled-components";
+
 import login from "../api/login";
+
 import kakaoLogin from "../img/kakao_login.png";
 
 const LoginWrapperStyle = styled.div`
@@ -93,8 +96,8 @@ export default function Login({ setUser }) {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  function onClickLoginButton() {
-    login(email, password)
+  async function onClickLoginButton() {
+    const response = await login(email, password)
       .then(response => {
         setUser(response);
         navigate("/boards");
@@ -105,7 +108,7 @@ export default function Login({ setUser }) {
   }
 
   return (
-    <div style={{ minHeight: "cal(100vh-50px)" }}>
+    <div style={{ minHeight: "100vh" }}>
       <LoginWrapperStyle>
         <h1>로그인</h1>
         <form>
