@@ -1,7 +1,10 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 import { AiOutlineCheckCircle, AiFillCheckCircle } from "react-icons/ai";
+
 import styled from "styled-components";
+
 import getBoards from "../api/getBoards";
 import { guList, dongList } from "../data/SeoulDistricts";
 import Paging from "../components/Paging";
@@ -145,7 +148,7 @@ export default function BoardList({ user }) {
   const [selectedGu, setSelectedGu] = useState(guList[0]);
   const [selectedDong, setSelectedDong] = useState(dongList[selectedGu][0]);
   const [currentPage, setCurrentPage] = useState(1);
-  const [selectedSort, setSelectedSort] = useState("createdAt");
+  const [sortType, setSortType] = useState("createdDate");
   const [boards, setBoards] = useState([]);
   // const date = new Date("");
 
@@ -155,11 +158,11 @@ export default function BoardList({ user }) {
       searchText,
       gu: selectedGu,
       dong: selectedDong,
-      sort: selectedSort,
+      sort: sortType,
     }).then(response => {
       setBoards(response.boards);
     });
-  }, [currentPage, searchText, selectedGu, selectedDong, selectedSort]);
+  }, [currentPage, searchText, selectedGu, selectedDong, sortType]);
 
   useEffect(() => {
     setSelectedDong(dongList[selectedGu][0]);
@@ -179,6 +182,10 @@ export default function BoardList({ user }) {
   //   setBoards(sortedBoards);
   // }
 
+  const onChange = pageNumber => {
+    setCurrentPage(pageNumber);
+  };
+
   return (
     <Main>
       <BoardContainerStyle>
@@ -189,8 +196,8 @@ export default function BoardList({ user }) {
               className="input-text"
               placeholder="여기에 검색어를 입력해주세요."
               value={searchInputText}
-              onChange={e => {
-                setSearchInputText(e.target.value);
+              onChange={event => {
+                setSearchInputText(event.target.value);
               }}
             />
             <div
@@ -206,8 +213,8 @@ export default function BoardList({ user }) {
             <div className="locacation-search-dropdowns-area">
               <select
                 className="location-search-dropdown"
-                onChange={e => {
-                  setSelectedGu(e.target.value);
+                onChange={event => {
+                  setSelectedGu(event.target.value);
                 }}
               >
                 {guList.map(gu => (
@@ -216,9 +223,9 @@ export default function BoardList({ user }) {
               </select>
               <select
                 className="location-search-dropdown"
-                onChange={e => {
-                  console.log(e.target.value);
-                  setSelectedDong(e.target.value);
+                onChange={event => {
+                  console.log(event.target.value);
+                  setSelectedDong(event.target.value);
                 }}
               >
                 {dongList[selectedGu].map(dong => {
@@ -231,7 +238,7 @@ export default function BoardList({ user }) {
                 type="button"
                 className="sort-button"
                 onClick={() => {
-                  setSelectedSort("views");
+                  setSortType("views");
                 }}
               >
                 조회순
@@ -240,7 +247,7 @@ export default function BoardList({ user }) {
                 type="button"
                 className="sort-button"
                 onClick={() => {
-                  setSelectedSort("createdDate");
+                  setSortType("createdDate");
                 }}
               >
                 최신순
@@ -255,9 +262,9 @@ export default function BoardList({ user }) {
                 if (!user) {
                   alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
                   navigate("/login");
-                } else {
-                  navigate("/write");
+                  return;
                 }
+                navigate("/write");
               }}
             >
               글 작성하기
@@ -265,18 +272,18 @@ export default function BoardList({ user }) {
           </div>
           <div className="board-list-area">
             <div className="board-list">
-              {boards.map(board => {
+              {boards.map(({ id, title, cost, createDate, completed }) => {
                 return (
                   <div className="board">
-                    <div className="board-info" onClick={() => navigate(`/boards/${board.id}`)}>
-                      <div className="board-title">{board.title}</div>
+                    <div className="board-info" onClick={() => navigate(`/boards/${id}`)}>
+                      <div className="board-title">{title}</div>
                       <div className="board-meta">
-                        <div>{board.cost}</div>
-                        <div>{board.createDate}</div>
+                        <div>{cost}</div>
+                        <div>{createDate}</div>
                       </div>
                     </div>
                     <div className="completed-checkbox">
-                      {board.completed ? <AiFillCheckCircle /> : <AiOutlineCheckCircle />}
+                      {completed ? <AiFillCheckCircle /> : <AiOutlineCheckCircle />}
                     </div>
                   </div>
                 );

@@ -1,5 +1,5 @@
 import Pagination from "react-js-pagination";
-import { useState } from "react";
+
 import styled from "styled-components";
 
 const PagingWrapperStyle = styled.div`
@@ -41,11 +41,7 @@ const PagingWrapperStyle = styled.div`
     color: #f45050;
   }
 `;
-function Paging({ page, setPage }) {
-  const handlePageChange = pageNumber => {
-    setPage(pageNumber);
-  };
-
+function Paging({ page, onChange }) {
   return (
     <PagingWrapperStyle>
       <Pagination
@@ -56,7 +52,7 @@ function Paging({ page, setPage }) {
         pageRangeDisplayed={5}
         prevPageText="<"
         nextPageText=">"
-        onChange={handlePageChange}
+        onChange={onChange}
         itemClass="page-item"
         linkClass="page-link"
       />
