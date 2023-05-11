@@ -8,7 +8,7 @@ const EntireContainer = styled.div`
   width: 100vw;
   min-height: calc(100vh - 50px);
   padding: 5rem 0;
-  border: 1px solid red;
+  color: var(--font-color-bold);
 `;
 
 const ProfileSection = styled.div`
@@ -19,13 +19,12 @@ const ProfileSection = styled.div`
   margin: auto;
   padding: 0 2rem;
   gap: 3rem;
-  border: 1px solid red;
   @media (max-width: 500px) {
     gap: 1.5rem;
   }
   > img {
-    height: 20rem;
-    width: 20rem;
+    height: 16rem;
+    width: 16rem;
     border: 0.4rem solid #fff;
     border-radius: 70%;
     overflow: hidden;
@@ -40,8 +39,8 @@ const ProfileInformation = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 3rem;
-  font-size: 1.5rem;
+  gap: 2.5rem;
+  font-size: 1.3rem;
   @media (max-width: 500px) {
     gap: 1.5rem;
     font-size: 1rem;
@@ -83,8 +82,46 @@ const ButtonContainer = styled.div`
 `;
 
 const TabContainer = styled.div`
-  width: 80%;
-  border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  max-width: 720px;
+  margin: auto;
+  padding: calc(4% + 3rem) 0 2rem;
+  > ul {
+    display: flex;
+    > li {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 3rem;
+      width: 20rem;
+      color: var(--font-color-light);
+      font-weight: 600;
+      background-color: #e7d1d1;
+      border-radius: 40px 40px 0 0;
+      cursor: pointer;
+      &.active {
+        background-color: #fff;
+        color: var(--primary-color);
+      }
+      @media (max-width: 500px) {
+        height: 2.5rem;
+        width: 12rem;
+      }
+    }
+  }
+`;
+
+const TabContent = styled.div`
+  height: 25rem;
+  width: 40rem;
+  background-color: #fff;
+  @media (max-width: 500px) {
+    height: 16rem;
+    width: 24rem;
+  }
 `;
 
 export default function MyPage() {
@@ -145,7 +182,7 @@ function Tab() {
     <TabContainer>
       <ul>
         {tabs.map(tab => (
-          <li key={tab.id} onClick={() => setActiveTab(tab.id)}>
+          <li key={tab.id} onClick={() => setActiveTab(tab.id)} className={activeTab === tab.id ? "active" : ""}>
             {tab.name}
           </li>
         ))}
@@ -153,7 +190,7 @@ function Tab() {
       {tabs
         .filter(tab => activeTab === tab.id)
         .map(tab => (
-          <div key={tab.id}>{tab.content}</div>
+          <TabContent key={tab.id}>{tab.content}</TabContent>
         ))}
     </TabContainer>
   );
