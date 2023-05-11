@@ -82,6 +82,11 @@ const ButtonContainer = styled.div`
   }
 `;
 
+const TabContainer = styled.div`
+  width: 80%;
+  border: 1px solid red;
+`;
+
 export default function MyPage() {
   // const [profile, setProfile] = useState({});
 
@@ -124,6 +129,32 @@ export default function MyPage() {
           </ButtonContainer>
         </ProfileInformation>
       </ProfileSection>
+      <Tab />
     </EntireContainer>
+  );
+}
+
+function Tab() {
+  const [activeTab, setActiveTab] = useState(0);
+  const tabs = [
+    { id: 0, name: "의뢰한 심부름", content: <div>첫번째 탭내용</div> },
+    { id: 1, name: "수행한 심부름", content: <div>두번째 탭내용</div> },
+  ];
+
+  return (
+    <TabContainer>
+      <ul>
+        {tabs.map(tab => (
+          <li key={tab.id} onClick={() => setActiveTab(tab.id)}>
+            {tab.name}
+          </li>
+        ))}
+      </ul>
+      {tabs
+        .filter(tab => activeTab === tab.id)
+        .map(tab => (
+          <div key={tab.id}>{tab.content}</div>
+        ))}
+    </TabContainer>
   );
 }
