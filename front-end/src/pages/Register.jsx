@@ -164,6 +164,20 @@ export default function Register() {
   };
   // console.log(isPhoneNumberValid, phoneNumberErrorMessage);
 
+  const handleRegister = event => {
+    event.preventDefault();
+    if (!isNickNameValid || !isEmailValid || !isPasswordValid || !isPasswordCheckValid || !isPhoneNumberValid) {
+      alert("회원가입에 실패하였습니다. 다시 입력해주세요.");
+      return;
+    }
+    alert("회원가입이 완료되었습니다.");
+    navigate("/login");
+  };
+
+  const handleKakaoLogin = () => {
+    alert("준비중입니다.");
+  };
+
   return (
     <div style={{ minHeight: "100vh" }}>
       <RegisterWrapperStyle>
@@ -225,18 +239,11 @@ export default function Register() {
             {isPhoneNumberValid ? null : <div style={{ color: "red", padding: "3px" }}>{phoneNumberErrorMessage}</div>}
           </label>
 
-          <button className="registerButton" type="button" onClick={() => navigate("/boards")}>
+          <button className="registerButton" type="button" onClick={handleRegister}>
             가입하기
           </button>
         </form>
-        <img
-          className="kakaoLoginButton"
-          src={kakaoLogin}
-          alt="logo"
-          onClick={() => {
-            navigate("/kakao-login");
-          }}
-        />
+        <img className="kakaoLoginButton" src={kakaoLogin} alt="logo" onClick={handleKakaoLogin} />
       </RegisterWrapperStyle>
       <LoginToGoStyle>
         <div>이미 계정이 있으신가요?</div>
