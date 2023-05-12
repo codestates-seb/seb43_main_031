@@ -32,7 +32,7 @@ export const validatePasswordCheck = (userInputPassword, userInputPasswordCheck)
 };
 
 export const validatePhoneNumber = userInputPhoneNumber => {
-  const phoneNumberRegex = /^\d{3}\d{3,4}\d{4}$/;
+  const phoneNumberRegex = /^(010|011|019)\d{3,4}\d{4}$/;
   if (phoneNumberRegex.test(userInputPhoneNumber)) {
     return { isPhoneNumberValid: true, phoneNumberErrorMessage: "" };
   }
