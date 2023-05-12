@@ -96,7 +96,7 @@ const ModalContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 25rem;
-  height: 20rem;
+  height: 35rem;
   z-index: 999;
   position: absolute;
   top: 50%;
@@ -104,7 +104,58 @@ const ModalContainer = styled.div`
   transform: translate(-50%, -50%);
   border-radius: 20px;
   padding: 2rem;
+  gap: 0.6rem;
+  font-size: 1rem;
   background-color: #fff;
+  > input {
+    height: 2rem;
+    margin-bottom: 0.6rem;
+    border-style: none;
+    border-radius: 5px;
+    background-color: var(--bg-color);
+  }
+  > button {
+    all: unset;
+    text-align: center;
+    height: 2.5rem;
+    margin-top: 1rem;
+    border-radius: 10px;
+    font-weight: 600;
+    color: #fff;
+    background-color: var(--primary-color);
+    cursor: pointer;
+  }
+`;
+
+const CancleButton = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  margin-bottom: 0.4rem;
+  > button {
+    all: unset;
+    font-size: 1.5rem;
+    transform: scaleX(1.5);
+    cursor: pointer;
+    &:hover {
+      color: var(--primary-color);
+    }
+  }
+`;
+
+const ImagebuttonContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: 1rem 0;
+  gap: 1rem;
+  > button {
+    all: unset;
+    text-align: center;
+    height: 2rem;
+    width: 10rem;
+    border-radius: 10px;
+    background-color: var(--sub-color);
+    cursor: pointer;
+  }
 `;
 
 const TabContainer = styled.div`
@@ -139,6 +190,9 @@ const TabContainer = styled.div`
 `;
 
 const TabContent = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
   height: 25rem;
   width: 40rem;
   background-color: #fff;
@@ -204,7 +258,7 @@ function Modal({ setModal, nickName, phone }) {
     {
       id: "nickName",
       title: "닉네임",
-      children: <input type="text" id="nickName" placeholder={nickName} maxLength="8" required />,
+      children: <input type="text" id="nickName" placeholder={nickName} minLength="2" maxLength="8" required />,
     },
     {
       id: "phone",
@@ -219,8 +273,8 @@ function Modal({ setModal, nickName, phone }) {
           type="password"
           id="password"
           placeholder="비밀번호를 입력하세요."
-          pattern="^[A-Za-z\d!@#$%^&()_+~-=]{8,40}$"
-          title="영문 대/소문자, 숫자, 특수문자 중 하나를 포함해야 합니다. (최소 8자 / 최대 40자)"
+          pattern="/^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9])(?=\S+$).{8,16}$/"
+          title="영문,숫자,특문을 조합해서 8자 이상 입력해주세요"
           required
         />
       ),
@@ -235,9 +289,15 @@ function Modal({ setModal, nickName, phone }) {
   return (
     <ModalBackground>
       <ModalContainer>
-        <button type="button" onClick={() => setModal(false)}>
-          X
-        </button>
+        <CancleButton>
+          <button type="button" onClick={() => setModal(false)}>
+            X
+          </button>
+        </CancleButton>
+        <ImagebuttonContainer>
+          <button type="button">이미지 등록하기</button>
+          <button type="button">이미지 삭제하기</button>
+        </ImagebuttonContainer>
         {labels.map(label => (
           <>
             <label htmlFor={label.id}>{label.title}</label>
