@@ -84,23 +84,7 @@ const ImagebuttonContainer = styled.div`
   }
 `;
 
-export default function Modal({ setModal, member, onSubmit, onChange }) {
-  // 비밀번호 확인
-  const [passwordCheck, setpasswordCheck] = useState("");
-
-  const handleChange = event => {
-    const passwordCheckValue = event.target.value;
-    setpasswordCheck(passwordCheckValue);
-  };
-
-  const handleInvalid = event => {
-    if (passwordCheck === member.password) {
-      event.target.setCustomValidity("");
-    } else {
-      event.target.setCustomValidity("비밀번호가 일치하지 않습니다.");
-    }
-  };
-
+export default function Modal({ setModal, member, onSubmit, onChange, onPasswordCheck }) {
   const labels = [
     {
       id: "nickName",
@@ -158,8 +142,7 @@ export default function Modal({ setModal, member, onSubmit, onChange }) {
         <input
           type="password"
           id="passwordCheck"
-          onChange={handleChange}
-          onInvalid={handleInvalid}
+          onChange={onPasswordCheck}
           placeholder="비밀번호를 다시 한 번 입력해주세요."
           required
         />

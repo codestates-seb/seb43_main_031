@@ -119,6 +119,13 @@ export default function MyPage() {
   });
   console.log(member);
 
+  const [passwordCheck, setpasswordCheck] = useState("");
+
+  const onPasswordCheck = event => {
+    const passwordCheckValue = event.target.value;
+    setpasswordCheck(passwordCheckValue);
+  };
+
   const onChange = event => {
     const { name, value } = event.target;
     setMember(previous => ({ ...previous, [name]: value }));
@@ -127,12 +134,17 @@ export default function MyPage() {
   // patch 요청 부분
   const onSubmit = async event => {
     event.preventDefault();
-    try {
-      await axios.patch(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`, member);
-      alert("회원 정보가 수정되었습니다.");
-    } catch (error) {
-      alert("회원 정보 수정에 실패했습니다.");
-      console.log(error);
+    if (passwordCheck !== member.password) {
+      alert("비밀번호가 일치하지 않습니다.");
+    }
+    if (passwordCheck === member.password) {
+      try {
+        await axios.patch(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`, member);
+        alert("회원 정보가 수정되었습니다.");
+      } catch (error) {
+        alert("회원 정보 수정에 실패했습니다.");
+        console.log(error);
+      }
     }
   };
 
@@ -149,7 +161,15 @@ export default function MyPage() {
           <span>{email}</span>
           <span>{phone}</span>
           <ButtonContainer>
-            {modal && <MyPageModal setModal={setModal} member={member} onSubmit={onSubmit} onChange={onChange} />}
+            {modal && (
+              <MyPageModal
+                setModal={setModal}
+                member={member}
+                onSubmit={onSubmit}
+                onChange={onChange}
+                onPasswordCheck={onPasswordCheck}
+              />
+            )}
             <button type="button" onClick={() => setModal(true)}>
               수정하기
             </button>
