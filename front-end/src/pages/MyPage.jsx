@@ -81,13 +81,37 @@ const ButtonContainer = styled.div`
   }
 `;
 
+const ModalBackground = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 1;
+  backdrop-filter: blur(5px);
+`;
+
+const ModalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 25rem;
+  height: 20rem;
+  z-index: 999;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 20px;
+  padding: 2rem;
+  background-color: #fff;
+`;
+
 const TabContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  max-width: 720px;
-  margin: auto;
   padding: calc(4% + 3rem) 0 2rem;
   > ul {
     display: flex;
@@ -127,15 +151,16 @@ const TabContent = styled.div`
 export default function MyPage() {
   // const [profile, setProfile] = useState({});
 
+  const [modal, setModal] = useState(false);
+
   // 아마 const memberId = user.memberId 이런 식으로 로그인 시 저장해 둔 유저정보 받아올 듯
   // useEffect(() => {
-  //   const fetchData = async () => {
+  //   const fetchMember = async () => {
   //     const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`);
   //     setProfile(res.data);
   //   };
-  //   fetchData();
+  //   fetchMember();
   // }, []);
-
   const profile = {
     memberId: 1,
     email: "test@gmail.com",
@@ -159,7 +184,10 @@ export default function MyPage() {
           <span>{email}</span>
           <span>{phone}</span>
           <ButtonContainer>
-            <button type="button">수정하기</button>
+            {modal && <Modal setModal={setModal} nickName={nickName} phone={phone} />}
+            <button type="button" onClick={() => setModal(true)}>
+              수정하기
+            </button>
             <button className="deleteButton" type="button">
               회원탈퇴
             </button>
@@ -168,6 +196,57 @@ export default function MyPage() {
       </ProfileSection>
       <Tab />
     </EntireContainer>
+  );
+}
+
+function Modal({ setModal, nickName, phone }) {
+  const labels = [
+    {
+      id: "nickName",
+      title: "닉네임",
+      children: <input type="text" id="nickName" placeholder={nickName} maxLength="8" required />,
+    },
+    {
+      id: "phone",
+      title: "휴대폰 번호",
+      children: <input type="tel" id="phone" placeholder={phone} required />,
+    },
+    {
+      id: "password",
+      title: "비밀번호",
+      children: (
+        <input
+          type="password"
+          id="password"
+          placeholder="비밀번호를 입력하세요."
+          pattern="^[A-Za-z\d!@#$%^&()_+~-=]{8,40}$"
+          title="영문 대/소문자, 숫자, 특수문자 중 하나를 포함해야 합니다. (최소 8자 / 최대 40자)"
+          required
+        />
+      ),
+    },
+    {
+      id: "passwordCheck",
+      title: "비밀번호 확인",
+      children: <input type="password" id="passwordCheck" placeholder="비밀번호를 다시 한 번 입력해주세요." required />,
+    },
+  ];
+
+  return (
+    <ModalBackground>
+      <ModalContainer>
+        <button type="button" onClick={() => setModal(false)}>
+          X
+        </button>
+        {labels.map(label => (
+          <>
+            <label htmlFor={label.id}>{label.title}</label>
+            {label.children}
+          </>
+        ))}
+        <button type="button">수정하기</button>
+      </ModalContainer>
+    </ModalBackground>
   );
 }
 
