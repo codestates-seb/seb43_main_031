@@ -119,16 +119,26 @@ export default function MyPage() {
   });
   console.log(member);
 
-  const [passwordCheck, setpasswordCheck] = useState("");
-
-  const onPasswordCheck = event => {
-    const passwordCheckValue = event.target.value;
-    setpasswordCheck(passwordCheckValue);
+  const onCancle = () => {
+    setModal(false);
+    setMember({
+      nickName,
+      password: "",
+      phone,
+      images,
+    });
   };
 
   const onChange = event => {
     const { name, value } = event.target;
     setMember(previous => ({ ...previous, [name]: value }));
+  };
+
+  const [passwordCheck, setpasswordCheck] = useState("");
+
+  const onPasswordCheck = event => {
+    const passwordCheckValue = event.target.value;
+    setpasswordCheck(passwordCheckValue);
   };
 
   // patch 요청 부분
@@ -141,6 +151,7 @@ export default function MyPage() {
       try {
         await axios.patch(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`, member);
         alert("회원 정보가 수정되었습니다.");
+        window.location.reload();
       } catch (error) {
         alert("회원 정보 수정에 실패했습니다.");
         console.log(error);
@@ -163,8 +174,8 @@ export default function MyPage() {
           <ButtonContainer>
             {modal && (
               <MyPageModal
-                setModal={setModal}
                 member={member}
+                onCancle={onCancle}
                 onSubmit={onSubmit}
                 onChange={onChange}
                 onPasswordCheck={onPasswordCheck}
