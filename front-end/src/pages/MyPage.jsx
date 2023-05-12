@@ -112,6 +112,7 @@ const ModalContainer = styled.div`
     margin-bottom: 0.6rem;
     border-style: none;
     border-radius: 5px;
+    padding: 0.5rem;
     background-color: var(--bg-color);
   }
   > button {
