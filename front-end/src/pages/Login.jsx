@@ -107,6 +107,10 @@ export default function Login({ setUser }) {
       });
   }
 
+  const handleKakaoLogin = () => {
+    alert("준비중입니다.");
+  };
+
   return (
     <div style={{ minHeight: "100vh" }}>
       <LoginWrapperStyle>
@@ -143,14 +147,7 @@ export default function Login({ setUser }) {
             로그인
           </button>
         </form>
-        <img
-          className="kakaoLoginButton"
-          src={kakaoLogin}
-          alt="logo"
-          onClick={() => {
-            navigate("/kakao-login");
-          }}
-        />
+        <img className="kakaoLoginButton" src={kakaoLogin} alt="logo" onClick={handleKakaoLogin} />
       </LoginWrapperStyle>
       <RegisterStyle>
         <div>혹시 회원이 아니신가요?</div>

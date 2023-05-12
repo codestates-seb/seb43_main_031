@@ -10,7 +10,6 @@ import BoardList from "./pages/BoardList";
 import MyPage from "./pages/MyPage";
 import Detail from "./pages/detail/Detail";
 import Write from "./pages/Write";
-import KakaoLogin from "./pages/KakaoLogin";
 // import layouts
 import Header from "./layouts/Header";
 // import Footer from "./layouts/Footer";
@@ -30,10 +29,6 @@ function App() {
     {
       path: "/login",
       element: <Login setUser={setUser} />,
-    },
-    {
-      path: "/kakao-login",
-      element: <KakaoLogin />,
     },
     {
       path: "/register",

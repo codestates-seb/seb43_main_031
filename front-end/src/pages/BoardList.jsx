@@ -292,7 +292,7 @@ export default function BoardList({ user }) {
           </div>
           <div className="pagination-area">
             <div className="pagination">
-              <Paging page={currentPage} setPage={setCurrentPage} />
+              <Paging page={currentPage} setPage={setCurrentPage} onChange={onChange} />
             </div>
           </div>
         </BoardListWrapperStyle>
