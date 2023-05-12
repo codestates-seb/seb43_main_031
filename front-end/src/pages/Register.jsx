@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import styled from "styled-components";
 
@@ -97,6 +98,7 @@ const LoginToGoStyle = styled.div`
 
 export default function Register() {
   const navigate = useNavigate();
+  const BASE_URL = "http://localhost:8080";
 
   const [nickName, setNickName] = useState("");
   const [email, setEmail] = useState("");
@@ -106,7 +108,9 @@ export default function Register() {
 
   const [nickNameErrorMessage, setNickNameErrorMessage] = useState("닉네임을 2자 이상 입력해주세요");
   const [emailErrorMessage, setEmailErrorMessage] = useState("이메일 형식을 확인해주세요");
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState("영문,숫자,특문을 조합해서 8자 이상 입력해주세요");
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState(
+    "영문,숫자,특수문자를 조합해서 8자 이상 입력해주세요"
+  );
   const [passwordCheckErrorMessage, setPasswordCheckErrorMessage] = useState("비밀번호가 일치하지 않습니다");
   const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState("휴대폰 번호를 확인해주세요");
 
@@ -171,7 +175,26 @@ export default function Register() {
       return;
     }
     alert("회원가입이 완료되었습니다.");
-    navigate("/login");
+
+    axios({
+      method: "post",
+      url: `${BASE_URL}/members`,
+      data: {
+        nickName,
+        email,
+        password,
+        passwordCheck,
+        phoneNumber,
+      },
+    })
+      .then(function (response) {
+        console.log(response);
+        navigate("/login");
+      })
+      .catch(function (error) {
+        console.log(error);
+        alert(error.response.data.message);
+      });
   };
 
   const handleKakaoLogin = () => {

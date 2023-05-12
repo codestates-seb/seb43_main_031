@@ -93,6 +93,7 @@ const RegisterStyle = styled.div`
 `;
 
 export default function Login({ setUser }) {
+  const BASE_URL = "http://localhost:8080";
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -110,7 +111,7 @@ export default function Login({ setUser }) {
   const onClickLoginButton = () => {
     axios({
       method: "post",
-      url: "http://localhost:8080/login",
+      url: `${BASE_URL}/members/login`,
       data: {
         email,
         password,
