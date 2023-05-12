@@ -19,7 +19,6 @@ public class ApplyDto {
         @NotNull
         private long boardId;
 
-        @NotNull
         private String content;
     }
     @NoArgsConstructor

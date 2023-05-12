@@ -27,5 +27,7 @@ public class Comment extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "BOARD_ID")
     private Board board;
-
+    @ManyToOne
+    @JoinColumn(name = "REPLY_ID")
+    private Comment comment;
 }

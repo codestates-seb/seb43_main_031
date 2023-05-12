@@ -28,12 +28,22 @@ public class CommentService {
         this.memberRepository = memberRepository;
     }
 
-    public Comment createComment(Comment comment){
-        comment.setBoard(findVerifiedBoard(comment.getBoard().getBoardId()));
-        //멤버 조회(jwt적용 후 수정)
-        comment.setMember(findVerifiedMember(1));
-        ///
-        return commentRepository.save(comment);
+    public Comment createComment(Comment comment) {
+        Comment savecomment = new Comment();
+        if (comment.getBoard() != null) {
+            comment.setBoard(findVerifiedBoard(comment.getBoard().getBoardId()));
+            //멤버 조회(jwt적용 후 수정)
+            comment.setMember(findVerifiedMember(1));
+            ///
+            savecomment = commentRepository.save(comment);
+        } else if (comment.getComment() != null){
+            comment.setComment(findVerifiedComment(comment.getComment().getCommentId()));
+            //멤버 조회(jwt적용 후 수정)
+            comment.setMember(findVerifiedMember(1));
+            ///
+            savecomment = commentRepository.save(comment);
+        }
+        return savecomment;
     }
     public Comment updateComment(Comment comment) {
         Comment findComment = findVerifiedComment(comment.getCommentId());
@@ -43,6 +53,10 @@ public class CommentService {
     }
     public List<Comment> findComments(long boardId){
         List<Comment> findComments = commentRepository.findByBoardBoardId(boardId);
+        return findComments;
+    }
+    public List<Comment> findReplys(long commentId){
+        List<Comment> findComments = commentRepository.findByCommentCommentId(commentId);
         return findComments;
     }
     public Comment findComment(long commentId){

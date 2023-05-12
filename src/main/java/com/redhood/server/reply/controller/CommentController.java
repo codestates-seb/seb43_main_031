@@ -35,9 +35,16 @@ public class CommentController {
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.commentTocommentDtoResponse(saveComment)),HttpStatus.OK);
     }
-    @GetMapping("/boardId/{boardId}")
+    @GetMapping("/comments/{boardId}")
     public ResponseEntity getComments(@PathVariable("boardId") @Positive long boardId) {
         List<Comment> findComments = commentService.findComments(boardId);
+
+        return new ResponseEntity<>(
+                new MultiResponseDto<>(mapper.commentsTocommentDtoResponses(findComments)),HttpStatus.OK);
+    }
+    @GetMapping("/replys/{commentId}")
+    public ResponseEntity getreplys(@PathVariable("commentId") @Positive long commentId) {
+        List<Comment> findComments = commentService.findReplys(commentId);
 
         return new ResponseEntity<>(
                 new MultiResponseDto<>(mapper.commentsTocommentDtoResponses(findComments)),HttpStatus.OK);

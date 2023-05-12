@@ -18,9 +18,9 @@ public class CommentDto {
     @Getter
     @Setter
     public static class Post {
-        @NotNull
-        private long boardId;
 
+        private long boardId;
+        private long commentId;
         @NotNull
         private String content;
     }
@@ -47,6 +47,16 @@ public class CommentDto {
         private MemberDto.Response member;
 
         private BoardDto.Response board;
+        private CommentDto.Reply comment;
+
+    }
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    public static class Reply {
+
+        private Long commentId;
+
 
     }
 }
