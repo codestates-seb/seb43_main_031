@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import { AiOutlineCheckCircle, AiFillCheckCircle } from "react-icons/ai";
 
@@ -163,6 +164,26 @@ export default function BoardList({ user }) {
       setBoards(response.boards);
     });
   }, [currentPage, searchText, selectedGu, selectedDong, sortType]);
+
+  // useEffect(() => {
+  //   axios({
+  //     method: "post",
+  //     url: "http://localhost:8080/boards",
+  //     data: {
+  //       page: currentPage,
+  //       searchText,
+  //       gu: selectedGu,
+  //       dong: selectedDong,
+  //       sort: sortType,
+  //     },
+  //   })
+  //     .then(response => {
+  //       setBoards(response.boards);
+  //     })
+  //     .catch(error => {
+  //       alert(error);
+  //     });
+  // }, [currentPage, searchText, selectedGu, selectedDong, sortType]);
 
   useEffect(() => {
     setSelectedDong(dongList[selectedGu][0]);
