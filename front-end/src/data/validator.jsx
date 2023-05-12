@@ -1,8 +1,8 @@
 export const validateNickName = userInputNickName => {
-  if (userInputNickName.length >= 2) {
+  if (userInputNickName.length >= 2 && userInputNickName.length <= 8) {
     return { isNickNameValid: true, nickNameErrorMessage: "" };
   }
-  return { isNickNameValid: false, nickNameErrorMessage: "닉네임을 2자 이상 입력해주세요" };
+  return { isNickNameValid: false, nickNameErrorMessage: "닉네임을 2자 이상 8자 이하로 입력해주세요" };
 };
 
 export const validateEmail = userInputEmail => {
