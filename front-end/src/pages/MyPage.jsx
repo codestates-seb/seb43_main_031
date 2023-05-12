@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
@@ -84,6 +85,8 @@ const ButtonContainer = styled.div`
 `;
 
 export default function MyPage() {
+  const navigate = useNavigate();
+
   const [modal, setModal] = useState(false);
 
   // const [profile, setProfile] = useState({});
@@ -117,7 +120,6 @@ export default function MyPage() {
     phone,
     images,
   });
-  console.log(member);
 
   const onCancle = () => {
     setModal(false);
@@ -159,6 +161,16 @@ export default function MyPage() {
     }
   };
 
+  const handleClick = async () => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`);
+      // 로그아웃 처리?
+      navigate("/");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <EntireContainer>
       <ProfileSection>
@@ -184,7 +196,11 @@ export default function MyPage() {
             <button type="button" onClick={() => setModal(true)}>
               수정하기
             </button>
-            <button className="deleteButton" type="button">
+            <button
+              className="deleteButton"
+              type="button"
+              onClick={() => (confirm("정말로 탈퇴하시겠습니까?") ? handleClick() : null)}
+            >
               회원탈퇴
             </button>
           </ButtonContainer>
