@@ -17,28 +17,56 @@ const mockData = {
   },
   comments: [
     {
-      boardId: 1,
       commentId: 1,
-      memberId: 1,
-      createdDate: "2023-05-05",
-      content: "문의 드립니다/!!",
-      responseTo: "root",
+      content: "강아지 종이 뭐에요?",
+      createdDate: "2023-05-12T15:18:38.88841",
+      updateDate: "2023-05-12T15:18:46.366386",
+      member: {
+        memberId: 1,
+      },
+      board: {
+        boardId: 1,
+      },
+      comment: null,
     },
     {
-      boardId: 1,
       commentId: 2,
-      memberId: 2,
-      createdDate: "2023-05-01",
-      content: "문의 요청 드립니다",
-      responseTo: "root",
+      content: "치와와",
+      createdDate: "2023-05-12T15:18:41.318525",
+      updateDate: "2023-05-12T15:18:41.318525",
+      member: {
+        memberId: 1,
+      },
+      board: {
+        boardId: 1,
+      },
+      comment: null,
     },
     {
-      boardId: 1,
       commentId: 3,
-      memberId: 3,
-      createdDate: "2023-05-10",
-      content: "여기요 여기~~",
-      responseTo: "root",
+      content: "고양이 종류가 뭐에요요",
+      createdDate: "2023-05-12T15:21:56.416221",
+      updateDate: "2023-05-12T15:21:56.416221",
+      member: {
+        memberId: 1,
+      },
+      board: null,
+      comment: {
+        commentId: 1,
+      },
+    },
+    {
+      commentId: 4,
+      content: "길고양이요",
+      createdDate: "2023-05-12T15:22:02.057088",
+      updateDate: "2023-05-12T15:22:02.057088",
+      member: {
+        memberId: 1,
+      },
+      board: null,
+      comment: {
+        commentId: 1,
+      },
     },
   ],
   applys: [
