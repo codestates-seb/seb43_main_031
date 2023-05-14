@@ -86,21 +86,21 @@ const ButtonContainer = styled.div`
 
 export default function MyPage() {
   const navigate = useNavigate();
+  // 아마 const memberId = user.memberId 이런 식으로 로그인 시 저장해 둔 유저정보 받아올 듯
+  const memberId = 1;
 
   const [modal, setModal] = useState(false);
-
+  const [passwordCheck, setPasswordCheck] = useState("");
   // const [profile, setProfile] = useState({});
 
   // get 요청 부분
   // useEffect(() => {
   //   const fetchMember = async () => {
   //     const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`);
-  //     setProfile(res.data);
+  //     setProfile(response.data);
   //   };
   //   fetchMember();
   // }, []);
-  // 아마 const memberId = user.memberId 이런 식으로 로그인 시 저장해 둔 유저정보 받아올 듯
-  const memberId = 1;
   const profile = {
     memberId: 1,
     email: "test@gmail.com",
@@ -123,40 +123,52 @@ export default function MyPage() {
 
   const onCancle = () => {
     setModal(false);
-    setMember({
-      nickName,
+    setMember(member => ({
+      ...member,
       password: "",
-      phone,
-      images,
-    });
+    }));
   };
 
   // 이미지 post, delete 요청 부분
   const deleteImage = async url => {
     try {
       await axios.delete(`${process.env.REACT_APP_BASE_URL}/images`, { data: { image: url } });
+      return "success";
     } catch (error) {
       console.log(error);
     }
   };
 
-  const onImageUpload = () => {
+  const onImageUpload = async event => {
+    const formData = new FormData();
+    formData.append("file", event.target.files[0]);
     if (member.images !== "" && member.images !== null) {
       deleteImage(member.images);
     }
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/images`, formData);
+      setMember(previous => ({ ...previous, images: response.data.image }));
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const onImageDelete = () => {
-    setMember(previous => ({ ...previous, images: "" }));
-    deleteImage(member.images);
+  const onImageDelete = async () => {
+    if (member.images === "" || member.images === null) {
+      alert("삭제할 이미지가 없습니다.");
+      return;
+    }
+    const result = await deleteImage(member.images);
+    if (result === "success") {
+      setMember(previous => ({ ...previous, images: "" }));
+      alert("이미지가 삭제되었습니다.");
+    }
   };
 
   const onChange = event => {
     const { name, value } = event.target;
     setMember(previous => ({ ...previous, [name]: value }));
   };
-
-  const [passwordCheck, setPasswordCheck] = useState("");
 
   const onPasswordCheck = event => {
     const passwordCheckValue = event.target.value;
@@ -168,16 +180,15 @@ export default function MyPage() {
     event.preventDefault();
     if (passwordCheck !== member.password) {
       alert("비밀번호가 일치하지 않습니다.");
+      return;
     }
-    if (passwordCheck === member.password) {
-      try {
-        await axios.patch(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`, member);
-        alert("회원 정보가 수정되었습니다.");
-        window.location.reload();
-      } catch (error) {
-        alert("회원 정보 수정에 실패했습니다.");
-        console.log(error);
-      }
+    try {
+      await axios.patch(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`, member);
+      alert("회원 정보가 수정되었습니다.");
+      window.location.reload();
+    } catch (error) {
+      alert("회원 정보 수정에 실패했습니다.");
+      console.log(error);
     }
   };
 

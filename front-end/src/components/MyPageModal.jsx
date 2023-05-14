@@ -72,14 +72,20 @@ const ImagebuttonContainer = styled.div`
   justify-content: center;
   margin: 1rem 0;
   gap: 1rem;
-  > button {
+  > button,
+  label {
     all: unset;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     height: 2rem;
     width: 10rem;
     border-radius: 10px;
     background-color: var(--sub-color);
     cursor: pointer;
+  }
+  > input {
+    display: none;
   }
 `;
 
@@ -159,10 +165,9 @@ export default function Modal({ member, onCancle, onSubmit, onChange, onPassword
         </CancleButton>
         <form onSubmit={onSubmit}>
           <ImagebuttonContainer>
-            <button type="button" onClick={onImageUpload}>
-              이미지 등록하기
-            </button>
-            <button type="button" onClick={onImageDelete}>
+            <label htmlFor="ImageUpload">이미지 등록하기</label>
+            <input id="ImageUpload" type="file" accept="image/*" onChange={onImageUpload} />
+            <button type="button" onClick={() => (confirm("이미지를 삭제하시겠습니까?") ? onImageDelete() : null)}>
               이미지 삭제하기
             </button>
           </ImagebuttonContainer>
