@@ -131,16 +131,36 @@ export default function MyPage() {
     });
   };
 
+  // 이미지 post, delete 요청 부분
+  const deleteImage = async url => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_BASE_URL}/images`, { data: { image: url } });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onImageUpload = () => {
+    if (member.images !== "" && member.images !== null) {
+      deleteImage(member.images);
+    }
+  };
+
+  const onImageDelete = () => {
+    setMember(previous => ({ ...previous, images: "" }));
+    deleteImage(member.images);
+  };
+
   const onChange = event => {
     const { name, value } = event.target;
     setMember(previous => ({ ...previous, [name]: value }));
   };
 
-  const [passwordCheck, setpasswordCheck] = useState("");
+  const [passwordCheck, setPasswordCheck] = useState("");
 
   const onPasswordCheck = event => {
     const passwordCheckValue = event.target.value;
-    setpasswordCheck(passwordCheckValue);
+    setPasswordCheck(passwordCheckValue);
   };
 
   // patch 요청 부분
@@ -161,6 +181,7 @@ export default function MyPage() {
     }
   };
 
+  // delete 요청 부분
   const handleClick = async () => {
     try {
       await axios.delete(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`);
@@ -191,6 +212,8 @@ export default function MyPage() {
                 onSubmit={onSubmit}
                 onChange={onChange}
                 onPasswordCheck={onPasswordCheck}
+                onImageUpload={onImageUpload}
+                onImageDelete={onImageDelete}
               />
             )}
             <button type="button" onClick={() => setModal(true)}>

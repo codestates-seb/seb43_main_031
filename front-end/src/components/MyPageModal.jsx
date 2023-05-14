@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styled from "styled-components";
 
 const ModalBackground = styled.div`
@@ -84,7 +83,7 @@ const ImagebuttonContainer = styled.div`
   }
 `;
 
-export default function Modal({ member, onCancle, onSubmit, onChange, onPasswordCheck }) {
+export default function Modal({ member, onCancle, onSubmit, onChange, onPasswordCheck, onImageUpload, onImageDelete }) {
   const labels = [
     {
       id: "nickName",
@@ -160,8 +159,12 @@ export default function Modal({ member, onCancle, onSubmit, onChange, onPassword
         </CancleButton>
         <form onSubmit={onSubmit}>
           <ImagebuttonContainer>
-            <button type="button">이미지 등록하기</button>
-            <button type="button">이미지 삭제하기</button>
+            <button type="button" onClick={onImageUpload}>
+              이미지 등록하기
+            </button>
+            <button type="button" onClick={onImageDelete}>
+              이미지 삭제하기
+            </button>
           </ImagebuttonContainer>
           {labels.map(label => (
             <>
