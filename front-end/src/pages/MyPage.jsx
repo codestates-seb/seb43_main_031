@@ -148,17 +148,18 @@ export default function MyPage() {
     try {
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/images`, formData);
       setMember(previous => ({ ...previous, images: response.data.image }));
-    } catch (error) {
-      console.log(error);
+      alert("이미지가 등록되었습니다.");
+    } catch {
+      alert("이미지 등록에 실패했습니다.");
     }
   };
 
-  const onImageDelete = async () => {
+  const onImageDelete = () => {
     if (member.images === "" || member.images === null) {
       alert("삭제할 이미지가 없습니다.");
       return;
     }
-    const result = await deleteImage(member.images);
+    const result = deleteImage(member.images);
     if (result === "success") {
       setMember(previous => ({ ...previous, images: "" }));
       alert("이미지가 삭제되었습니다.");
@@ -186,9 +187,16 @@ export default function MyPage() {
       await axios.patch(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`, member);
       alert("회원 정보가 수정되었습니다.");
       window.location.reload();
-    } catch (error) {
+      // 새로고침 없이 화면의 정보를 갱신하는 방법?
+      // 1. patch 요청 시 받은 응답 데이터를 활용
+      // const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`);
+      // alert("회원 정보가 수정되었습니다.");
+      // setModal(false);
+      // const { nickName, phone, images } = response.data;
+      // setProfile({ nickName, phone, images });
+      // 2. get 요청을 담은 useEffect의 의존성 배열을 이용 -> 어떤 상태를 사용?
+    } catch {
       alert("회원 정보 수정에 실패했습니다.");
-      console.log(error);
     }
   };
 
