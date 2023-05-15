@@ -8,9 +8,9 @@ public enum ExceptionCode {
     EMAIL_EXISTS(409, "Email exists"),
     PASSWORD_NOT_MATCH(404, "Password does not match"),
     NICKNAME_EXISTS(409, "Nickname exists"),
-    QUESTION_NOT_FOUND(404, "Question not found"),
-    QUESTION_AUTHOR_NOT_MATCH(404, "The author of the question does not match"),
-    ANSWER_NOT_FOUND(404,"Answer not found"),
+    BOARD_NOT_FOUND(404, "Board not found"),
+    APPLY_NOT_FOUND(404, "Apply not found"),
+    COMMENT_NOT_FOUND(404,"Comment not found"),
     ANSWER_AUTHOR_NOT_MATCH(404,"The author of the answer does not match");
 
     @Getter
