@@ -1,14 +1,18 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import styled from "styled-components";
-import { Viewer } from "@toast-ui/react-editor";
+import axios from "axios";
 // 아이콘
-import { AiFillHeart, AiFillClockCircle } from "react-icons/ai";
+import { AiFillHeart } from "react-icons/ai";
 import { BsFillCaretRightFill } from "react-icons/bs";
-import { CgFileDocument } from "react-icons/cg";
-import { BiWon, BiMap, BiDumbbell } from "react-icons/bi";
+import { FaWonSign, FaMapPin } from "react-icons/fa";
+import { RxFileText } from "react-icons/rx";
+import { FiClock } from "react-icons/fi";
+
 // 라이브러리
+
+import styled from "styled-components";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
+import { Editor, Viewer } from "@toast-ui/react-editor";
 // 이미지
 import RedShoesImg from "../../img/shoes.png";
 // 컴포넌트
@@ -122,8 +126,8 @@ const BodyMain = styled.div`
   display: flex;
   flex-direction: column;
   padding-left: 1rem;
-  margin-top: 1rem;
-  .main-title {
+  margin: 1rem 0 1rem;
+  & > label {
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
@@ -132,11 +136,8 @@ const BodyMain = styled.div`
     font-weight: 600;
   }
 
-  .main-msg,
-  .main-cost,
-  .main-expire,
-  .main-location {
-    margin-bottom: 2em;
+  & > p {
+    margin: 1rem;
   }
 `;
 
@@ -170,13 +171,16 @@ function DetailSubHeader({ count, title }) {
 
 function Detail() {
   const { id } = useParams();
-  const nextId = useRef(0);
   const navigate = useNavigate();
+
+  const editorRef = useRef();
   const [isLogin, setIslogin] = useState(true);
   const [isPending, setIsPending] = useState(false);
+  const [isEdit, setIsEdit] = useState(false); // 게시글 수정창 상태
 
   const [board, setBoard] = useState({}); // 해당 게시글 데이터 상태
-  const { title, memberId, createdDate } = board; // 게시글 데이터 구조분해할당
+  const { title, memberId, createdDate, content, cost, expiredDate, dongTag, guTag, detailAddress } = board; // 게시글 구조분해할당
+
   const [comments, setComments] = useState([]); // 코멘츠 데이터 상태
   const [applys, setApplys] = useState([]); // 신청 데이터 상태
 
@@ -184,14 +188,97 @@ function Detail() {
   useEffect(() => {
     window.scrollTo(0, 0); // 페이지 맨 위로
     getBoardById().then(res => {
-      // console.log(res.boards[0]);
-      // console.log(res.comments);
-      // console.log(res.applys);
       setBoard(res.board);
       setComments(res.comments);
       setApplys(res.applys);
     });
   }, [id, comments, applys]);
+
+  // 게시글 수정
+  const handleEdit = () => {};
+
+  // 게시글 삭제
+  const handleDelete = id => {};
+
+  // 수정할 인풋 이벤트
+  const handleChange = event => {
+    const { name, defaultValue } = event.target;
+    setBoard(previous => ({ ...previous, [name]: defaultValue }));
+  };
+
+  const handleEditorChange = () => {
+    const editorInstance = editorRef.current.getInstance();
+    setBoard(previous => ({ ...previous, content: editorInstance.getMarkdown() }));
+  };
+
+  const uploadImages = async (blob, callback) => {
+    const formData = new FormData();
+    formData.append("file", blob);
+    try {
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/images`, formData);
+      callback(response.data.image);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  // 게시글 배열
+  const labels = [
+    {
+      id: "editor",
+      title: "상세내용",
+      icon: <RxFileText />,
+      children: <Viewer initialValue={content} />,
+      editChildren: (
+        <Editor
+          initialValue={content}
+          previewStyle="vertical"
+          height="350px"
+          initialEditType="wysiwyg"
+          useCommandShortcut={false}
+          language="ko-KR"
+          ref={editorRef}
+          onChange={handleEditorChange}
+          hooks={{
+            addImageBlobHook: uploadImages,
+          }}
+        />
+      ),
+    },
+    {
+      id: "cost",
+      title: "수고비(원)",
+      icon: <FaWonSign />,
+      children: <p>{cost}</p>,
+      editChildren: (
+        <input id="cost" type="number" name="cost" defaultValue={cost} key={cost} onChange={handleChange} required />
+      ),
+    },
+    {
+      id: "expiredDate",
+      title: "만료일",
+      icon: <FiClock />,
+      children: <p>{expiredDate}</p>,
+      editChildren: (
+        <input
+          id="expiredDate"
+          type="datetime-local"
+          name="expiredDate"
+          defaultValue={expiredDate}
+          onChange={handleChange}
+          required
+        />
+      ),
+    },
+    {
+      id: "detail",
+      title: "상세주소",
+      icon: <FaMapPin />,
+      children: <p>{detailAddress}</p>,
+      editChildren: (
+        <input id="detail" type="text" name="detailAddress" defaultValue={detailAddress} onChange={handleChange} />
+      ),
+    },
+  ];
 
   // 얼리리턴(예외처리)
   if (isPending) return <div>로딩중입니다.</div>;
@@ -224,44 +311,29 @@ function Detail() {
           <ContentsSectionBody>
             <BodyUtils>
               <div className="tags">
-                <div>지역구</div>
-                <div>지역동</div>
+                <div>{guTag}</div>
+                <div>{dongTag}</div>
               </div>
               <div className="utils">
-                <button type="button">수정</button>
-                <button type="button">삭제</button>
+                <button type="button" onClick={() => setIsEdit(!isEdit)}>
+                  수정
+                </button>
+                <button type="button" onClick={() => handleDelete(id)}>
+                  삭제
+                </button>
               </div>
             </BodyUtils>
-            <BodyMain>
-              <section className="main-msg">
-                <div className="main-title">
-                  <CgFileDocument />
-                  <p>상세내용</p>
-                </div>
-                <Viewer initialValue="내용이 들어갑니다" />
-              </section>
-              <section className="main-cost">
-                <div className="main-title">
-                  <BiWon />
-                  <p>수고비</p>
-                </div>
-                <p>시급 10000원</p>
-              </section>
-              <section className="main-expire">
-                <div className="main-title">
-                  <AiFillClockCircle />
-                  <p>만료일</p>
-                </div>
-                <p>23년 05월 22일</p>
-              </section>
-              <section className="main-location">
-                <div className="main-title">
-                  <BiMap />
-                  <p>상세주소</p>
-                </div>
-                <p>역삼동 223-2</p>
-              </section>
-            </BodyMain>
+            {labels.map(label => {
+              return (
+                <BodyMain>
+                  <label htmlFor={label.id}>
+                    {label.icon}
+                    {label.title}
+                  </label>
+                  {isEdit ? <p>{label.editChildren}</p> : <p>{label.children}</p>}
+                </BodyMain>
+              );
+            })}
           </ContentsSectionBody>
         </DetailContentsSection>
         <DetailSubHeader count={applys.length} title="개의 신청" />
@@ -274,6 +346,35 @@ function Detail() {
 }
 
 export default Detail;
+
+// <section className="main-msg">
+//   <div className="main-title">
+//     <CgFileDocument />
+//     <p>상세내용</p>
+//   </div>
+//   <Viewer initialValue={content} />
+// </section>
+// <section className="main-cost">
+//   <div className="main-title">
+//     <BiWon />
+//     <p>수고비</p>
+//   </div>
+//   <p>{cost}</p>
+// </section>
+// <section className="main-expire">
+//   <div className="main-title">
+//     <AiFillClockCircle />
+//     <p>만료일자</p>
+//   </div>
+//   <p>{expiredDate}</p>
+// </section>
+// <section className="main-location">
+//   <div className="main-title">
+//     <BiMap />
+//     <p>상세주소</p>
+//   </div>
+//   <p>{detailAddress}</p>
+// </section>
 
 // 해당 게시글 수정
 // const updateBoard = (boardId, body) => {
