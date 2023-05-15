@@ -18,7 +18,7 @@ export const validatePassword = userInputPassword => {
   if (passwordRegex.test(userInputPassword)) {
     return { isPasswordValid: true, passwordErrorMessage: "" };
   }
-  return { isPasswordValid: false, passwordErrorMessage: "영문,숫자,특문을 조합해서 8자 이상 입력해주세요" };
+  return { isPasswordValid: false, passwordErrorMessage: "영문,숫자,특수문자를 조합해서 8자 이상 입력해주세요" };
 };
 
 export const validatePasswordCheck = (userInputPassword, userInputPasswordCheck) => {

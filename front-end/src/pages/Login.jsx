@@ -93,24 +93,15 @@ const RegisterStyle = styled.div`
 `;
 
 export default function Login({ setUser }) {
+  const BASE_URL = `http://127.0.0.1:6001`;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  // async function onClickLoginButton() {
-  //   const response = await login(email, password)
-  //     .then(response => {
-  //       setUser(response);
-  //       navigate("/boards");
-  //     })
-  //     .catch(error => {
-  //       alert(error);
-  //     });
-
   const onClickLoginButton = () => {
     axios({
       method: "post",
-      url: "http://localhost:8080/login",
+      url: `${BASE_URL}/members/login`,
       data: {
         email,
         password,
