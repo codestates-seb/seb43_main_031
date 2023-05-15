@@ -57,6 +57,9 @@ public class ErrorResponse {
     public static ExceptionStatus exceptionStatus(HttpStatus httpStatus, String message) {
         return new ExceptionStatus(httpStatus.value(), message);
     }
+    public static ExceptionStatus exceptionStatus(int statusCode, String errorMessage) {
+        return new ExceptionStatus(statusCode,errorMessage);
+    }
     @Getter
     public static class ExceptionStatus {
         private int status;
