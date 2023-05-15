@@ -98,7 +98,6 @@ const LoginToGoStyle = styled.div`
 
 export default function Register() {
   const navigate = useNavigate();
-  const BASE_URL = "http://localhost:8080";
 
   const [nickName, setNickName] = useState("");
   const [email, setEmail] = useState("");
@@ -178,13 +177,15 @@ export default function Register() {
 
     axios({
       method: "post",
-      url: `${BASE_URL}/members`,
+      url: `http://127.0.0.1:6001/members`,
+      headers: {
+        "Content-Type": "application/json",
+      },
       data: {
         nickName,
         email,
         password,
-        passwordCheck,
-        phoneNumber,
+        phone: phoneNumber,
       },
     })
       .then(function (response) {
@@ -192,8 +193,8 @@ export default function Register() {
         navigate("/login");
       })
       .catch(function (error) {
-        console.log(error);
-        alert(error.response.data.message);
+        // console.log(error);
+        alert(error);
       });
   };
 
