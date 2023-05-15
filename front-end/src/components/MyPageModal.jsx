@@ -117,8 +117,8 @@ export default function Modal({ member, onCancle, onSubmit, onChange, onPassword
           name="phone"
           value={member.phone}
           onChange={onChange}
-          //   pattern="^(010|011|019)\d{3,4}\d{4}$"
-          //   title="휴대폰 번호를 확인해주세요"
+          pattern="^(010|011|019)\d{3,4}\d{4}$"
+          title="휴대폰 번호를 확인해주세요"
           required
         />
       ),
