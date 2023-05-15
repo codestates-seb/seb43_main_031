@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 import styled from "styled-components";
 
@@ -96,16 +97,42 @@ export default function Login({ setUser }) {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  async function onClickLoginButton() {
-    const response = await login(email, password)
+  // async function onClickLoginButton() {
+  //   const response = await login(email, password)
+  //     .then(response => {
+  //       setUser(response);
+  //       navigate("/boards");
+  //     })
+  //     .catch(error => {
+  //       alert(error);
+  //     });
+
+  const onClickLoginButton = () => {
+    axios({
+      method: "post",
+      url: "http://localhost:8080/login",
+      data: {
+        email,
+        password,
+      },
+    })
       .then(response => {
-        setUser(response);
+        setUser(response.data);
         navigate("/boards");
       })
       .catch(error => {
-        alert(error);
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error &&
+          error.response.data.error.message === "인증에 실패했습니다."
+        ) {
+          alert("이메일 또는 비밀번호가 틀렸습니다.");
+        } else {
+          alert(error);
+        }
       });
-  }
+  };
 
   const handleKakaoLogin = () => {
     alert("준비중입니다.");
