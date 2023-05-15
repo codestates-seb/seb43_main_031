@@ -1,11 +1,10 @@
-import React from "react";
+import Footer from "../layouts/Footer";
 
-function Landing() {
+export default function Landing() {
   return (
     <div>
       <p>랜딩 페이지 입니당</p>
+      <Footer />
     </div>
   );
 }
-
-export default Landing;

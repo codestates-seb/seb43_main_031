@@ -9,12 +9,15 @@ const FooterStyle = styled.footer`
   background-color: #120003;
   color: white;
   padding: 10px;
+  position: relative;
+  height: 120px;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 5px;
 `;
 
 const CopyrightText = styled.p`
