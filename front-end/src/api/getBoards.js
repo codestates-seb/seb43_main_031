@@ -1,6 +1,7 @@
 // TODO: API에 게시글 목록 조회 요청을 보낼 때, 검색어 정보, 지역 정보와 정렬 정보를 함께 보낼 수 있어야한다.
 // http://localhost:8080/boards?page=1&size=10&search-text=산책&gu=강남구&dong=논현동&sort=views
 // http://localhost:8080/boards?page=1&size=10&search-text=컴퓨터&gu=강동구&dong=고덕동&sort=createdDate
+import axios from "axios";
 
 const API_BASE_URL = `http://localhost:8080`;
 
@@ -79,24 +80,13 @@ const mockData = {
   ],
 };
 
-export default function getBoards({ page, searchText, gu, dong, sort }) {
+export default async function getBoards({ page, searchText, gu, dong, sort }) {
   const url = `${API_BASE_URL}/boards?page=${page}&size=5&search-text=${searchText}&gu=${gu}&dong=${dong}&sort=${sort}`;
-  // fetch(url)
-  //   .then(response => response.json())
-  //   .then(data => {
-  //     return data;
-  //   })
-  //   .catch(error => {
-  //     console.error("Error:", error);
-  //   });
-
-  // console.log(`요청 URL: ${url}`);
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      if (searchText === "실패 테스트") {
-        reject(new Error("조회된 게시글이 없습니다."));
-      }
-      resolve(mockData);
-    });
-  }, 100);
+  try {
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    return [];
+  }
 }
