@@ -127,6 +127,7 @@ export default function MyPage() {
       ...member,
       password: "",
     }));
+    // 이미지 서버로 보낸 이미지가 있다면, 해당 이미지를 삭제하는 로직이 추가되어야 할 듯.
   };
 
   // 이미지 post, delete 요청 부분
@@ -195,6 +196,7 @@ export default function MyPage() {
       // const { nickName, phone, images } = response.data;
       // setProfile({ nickName, phone, images });
       // 2. get 요청을 담은 useEffect의 의존성 배열을 이용 -> 어떤 상태를 사용?
+      // 3. 요청시 별개로 상태값(profile)도 업데이트(요청 실패시 예외 처리 잘 해줘야 할 듯)
     } catch {
       alert("회원 정보 수정에 실패했습니다.");
     }
