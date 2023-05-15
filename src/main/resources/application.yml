@@ -25,3 +25,10 @@ server:
   servlet:
     encoding:
       force-response: true
+amazon:
+  aws:
+    accesskey: AKIAZAIMFDB7OM3KT35A
+    secretkey: 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
+    s3:
+      region: ap-northeast-2
+      bucket: redhood

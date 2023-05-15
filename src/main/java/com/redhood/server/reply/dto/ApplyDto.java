@@ -1,7 +1,6 @@
 package com.redhood.server.reply.dto;
 
-
-import com.redhood.server.board.BoardDto;
+import com.redhood.server.board.dto.BoardResponseDto;
 import com.redhood.server.member.MemberDto;
 import com.redhood.server.reply.entity.Apply;
 import lombok.Getter;
@@ -45,7 +44,7 @@ public class ApplyDto {
 
         private MemberDto.Response member;
 
-        private BoardDto.Response board;
+        private BoardResponseDto.ReplyResponse board;
 
     }
 

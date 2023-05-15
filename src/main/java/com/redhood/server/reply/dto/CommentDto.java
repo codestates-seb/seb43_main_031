@@ -1,15 +1,11 @@
 package com.redhood.server.reply.dto;
 
-import com.redhood.server.board.BoardDto;
-import com.redhood.server.board.entity.Board;
+import com.redhood.server.board.dto.BoardResponseDto;
 import com.redhood.server.member.MemberDto;
-import com.redhood.server.member.entity.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.LastModifiedDate;
 
-import javax.persistence.Column;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
@@ -46,7 +42,7 @@ public class CommentDto {
 
         private MemberDto.Response member;
 
-        private BoardDto.Response board;
+        private BoardResponseDto.ReplyResponse board;
         private CommentDto.Reply comment;
 
     }

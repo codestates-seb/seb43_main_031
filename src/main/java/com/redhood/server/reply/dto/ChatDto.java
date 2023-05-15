@@ -1,14 +1,14 @@
 package com.redhood.server.reply.dto;
 
-import com.redhood.server.board.BoardDto;
+
 import com.redhood.server.member.MemberDto;
-import com.redhood.server.reply.entity.Apply;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
+
 
 public class ChatDto {
     @NoArgsConstructor

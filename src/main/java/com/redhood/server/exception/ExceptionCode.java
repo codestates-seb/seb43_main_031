@@ -11,7 +11,7 @@ public enum ExceptionCode {
     BOARD_NOT_FOUND(404, "Board not found"),
     APPLY_NOT_FOUND(404, "Apply not found"),
     COMMENT_NOT_FOUND(404,"Comment not found"),
-    ANSWER_AUTHOR_NOT_MATCH(404,"The author of the answer does not match");
+    BOARD_EXISTS(409, "Board exists");
 
     @Getter
     private int status;

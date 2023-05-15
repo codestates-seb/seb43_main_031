@@ -1,7 +1,7 @@
 package com.redhood.server.reply.service;
 
-import com.redhood.server.board.BoardRepository;
 import com.redhood.server.board.entity.Board;
+import com.redhood.server.board.repository.BoardRepository;
 import com.redhood.server.exception.BusinessLogicException;
 import com.redhood.server.exception.ExceptionCode;
 import com.redhood.server.member.MemberRepository;
