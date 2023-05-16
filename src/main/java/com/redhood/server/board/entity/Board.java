@@ -1,7 +1,6 @@
 package com.redhood.server.board.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.redhood.server.board.mapper.BoardMapper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

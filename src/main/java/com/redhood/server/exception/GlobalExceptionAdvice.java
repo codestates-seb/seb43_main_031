@@ -1,5 +1,7 @@
 package com.redhood.server.exception;
 
+import com.amazonaws.AmazonServiceException;
+import com.amazonaws.SdkClientException;
 import com.redhood.server.response.ErrorResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,5 +33,16 @@ public class GlobalExceptionAdvice {
     public ResponseEntity handleBusinessLogicException(BusinessLogicException e) {
         final ErrorResponse.ExceptionStatus response = ErrorResponse.exceptionStatus(e.getExceptionCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
+    }
+    @ExceptionHandler
+    public ResponseEntity handleAmazonServiceException(AmazonServiceException e) {
+        final ErrorResponse.ExceptionStatus response = ErrorResponse.exceptionStatus(e.getStatusCode(),e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.valueOf(e.getStatusCode()));
+    }
+    @ExceptionHandler
+    public ResponseEntity handleSdkClientException(SdkClientException e) {
+        final ErrorResponse.ExceptionStatus response =
+                ErrorResponse.exceptionStatus(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

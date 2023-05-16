@@ -6,7 +6,7 @@ import com.redhood.server.board.dto.BoardResponseDto;
 import com.redhood.server.board.entity.Board;
 import com.redhood.server.board.mapper.BoardMapper;
 import com.redhood.server.board.service.BoardService;
-import lombok.Getter;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -21,8 +21,6 @@ import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @CrossOrigin
 @RestController

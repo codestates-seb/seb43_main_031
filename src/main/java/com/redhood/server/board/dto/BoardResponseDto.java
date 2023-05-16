@@ -1,6 +1,5 @@
 package com.redhood.server.board.dto;
 
-import com.redhood.server.board.entity.Board;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -26,5 +25,13 @@ public class BoardResponseDto {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Getter
+    @Setter
+    public static class ReplyResponse{
+    public long boardId;
     }
+}
+
 
