@@ -39,7 +39,7 @@ function UserBox({ infoData }) {
         <FaUserAlt size="70%" />
       </div>
       <div className="info">
-        <div className="author">{infoData.memberId}</div>
+        <div className="author">{infoData.member.memberId}</div>
         <div className="createdAt">{elapsedText(new Date(infoData.createdDate))}</div>
       </div>
     </UserInfoWrapper>

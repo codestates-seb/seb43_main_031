@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import uuid from "react-uuid";
 import axios from "axios";
@@ -10,10 +9,11 @@ import styled from "styled-components";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
 import { addComment, editComment, deleteComment, setComment } from "../../../redux/features/commentSlice";
+
 import ReplyCommentSection from "./ReplyCommentSection";
 import UserBox from "../UserBox";
+import DetailSubHeader from "../SubHeader";
 
-const BASE_URL = `http://localhost:8080`;
 // 전체 컨테이너
 const StyledContainer = styled.div`
   width: 90%;
@@ -109,7 +109,6 @@ const EditForm = styled.div`
       justify-content: center;
       & > button {
         margin: 0.3rem;
-        color: var(--sub-btn-color);
         font-size: 0.8rem;
         background-color: transparent; // 투명하게
         border: none;
@@ -124,15 +123,17 @@ const EditForm = styled.div`
 
 // 댓글 컴포넌트
 // 댓글과 대댓글 연결을 위한 상태(responseTo)를 추가하여 "root" 는 댓글, "responseTo"는 대댓글로 인식하게 했다.
-function CommentSection() {
+function CommentSection({ boardData }) {
   // 왜 초기값인 boardInComments가 local상태로 안들어 가질까?
   // boardInComments는 있을수도 있고 없을수도 있는걸 유념해야한다.
   // const boardInComments = commentData?.filter(comment => comment.boardId === boardData.id) || []; // 해당 게시판에 속한 코멘츠들만 불러오기(초기값)
+  const { id, memberId } = boardData;
 
-  const [local, setLocal] = useState([]); // 코멘츠 데이터들 배열 상태
+  const inputRef = useRef(null);
   const [text, setText] = useState(""); // 댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
-  const [edit, setEdit] = useState(false); // 댓글 수정버튼 토글 상태
+  const [openEditor, setOpenEditor] = useState(""); // 댓글 고유id값 담는 상태
+
   const [user, setUser] = useState({
     memberId: 1,
     email: "test@gmail.com",
@@ -140,66 +141,79 @@ function CommentSection() {
     phone: "010-1234-5678",
     image: "",
   });
-  const [openEditor, setOpenEditor] = useState(""); // 댓글 고유id값 담는 상태
 
-  const { id } = useParams();
   const dispatch = useDispatch();
   const comments = useSelector(state => state.comment);
 
-  const inputRef = useRef(null);
-
-  // useEffect안에 적용하는 deps는 원시값처럼 간단한 상태를 적용해야 올바르게 돌아갈 수 있다.(공장처럼 코드를 수거해가서 대신 수행하는 느낌) ***
+  // 댓글 조회
   useEffect(() => {
-    setLocal(comments.filter(comment => comment.responseTo === "root")); // 코멘트(댓글)만 필터링해서 코멘츠 데이터 업데이트
-  }, [comments]);
+    window.scrollTo(0, 0);
+    async () => {
+      try {
+        const { comments } = await axios(`${process.env.REACT_APP_API_URL}/comments/comments/${id}}`, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        });
+        dispatch(setComment(comments.filter(comment => comment.board.boardId === id))); // 코멘트(댓글)만 필터링해서 코멘츠 데이터 업데이트
+      } catch (err) {
+        alert("질문을 불러오지 못했습니다.");
+      }
+    };
+  }, [dispatch, id]);
 
-  // 새로운 댓글 생성
-  const handleSubmit = e => {
+  // 댓글 생성하기
+  const handleSubmit = async e => {
     e.preventDefault();
-    if (text === "") {
-      alert("댓글을 작성해 주세요");
-    } else {
-      const newData = {
-        boardId: id, // params로 받은 id
-        memberId: user.memberId,
-        commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
-        content: text,
-        responseTo: "root", // 대댓글 연결을 위한 상태 추가
-        createdDate: `${new Date()}`,
-        isEditing: false,
-      };
-      dispatch(addComment(newData));
-      setText("");
-    }
+    if (text === "") return alert("댓글을 작성해 주세요");
+    const newComment = {
+      boardId: id, // params로 받은 id
+      memberId: user.memberId,
+      commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
+      content: text,
+      responseTo: "root", // 대댓글 연결을 위한 상태 추가
+      createdDate: `${new Date()}`,
+    };
+    await axios
+      .post(`{${process.env.REACT_APP_API_URL}/comments`, newComment)
+      .then(response => {
+        dispatch(addComment(response.data));
+        setText("");
+      })
+      .catch(err => {
+        alert("댓글을 생성하지 못했습니다.");
+      });
   };
 
   // 댓글 수정하기
   const handleEdit = (id, editText) => {
     const editData = { commentId: id, content: editText };
-    dispatch(editComment(editData));
+    axios
+      .patch(`${process.env.REACT_APP_API_URL}/comments/${id}`, editData)
+      .then(res => {
+        dispatch(editComment(res.data));
+      })
+      .catch(err => {
+        alert("댓글 수정을 실패하였습니다.");
+      });
   };
 
   // 댓글 삭제하기
   const handleDelete = id => {
-    dispatch(deleteComment(id));
-  };
-
-  // 수정버튼 클릭시 수정가능한 코멘트만 수정창 오픈
-  const handleEditClick = commentId => {
-    setEdit(!edit); // 수정 버튼 토글
-    setLocal(
-      comments.map(comment => {
-        if (comment.commentId === commentId) {
-          return { ...comment, isEditing: true };
-        } else {
-          return { ...comment, isEditing: false };
-        }
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/comments/${id}`)
+      .then(res => {
+        console.log(res.status);
+        dispatch(deleteComment(res.data));
       })
-    );
+      .catch(err => {
+        alert("댓글 삭제를 실패하였습니다.");
+      });
   };
 
   return (
     <StyledContainer>
+      <DetailSubHeader count={comments.length} title="개의 댓글" />
       <DetailSubForm>
         <input
           ref={inputRef}
@@ -212,14 +226,14 @@ function CommentSection() {
           댓글작성
         </button>
       </DetailSubForm>
-      {local?.map(comment => {
+      {comments?.map(comment => {
         return (
           <StyledListBlock key={comment.commentId}>
             <StyledItemContents>
               <UserBox infoData={comment} />
               <div className="msg">{comment.content}</div>
               {/* 유저가 해당 댓글의 작성자일 경우만 */}
-              {user.memberId === comment.memberId && (
+              {user.memberId === comment.member.memberId && (
                 // 해당 댓글/대댓글 id가 빈문자가 아니면 수정버튼 클릭시 수정인풋창 보이게
                 <EditForm>
                   {openEditor === comment.commentId && (
@@ -256,7 +270,7 @@ function CommentSection() {
               )}
             </StyledItemContents>
             {/* 코멘트(부모)의 고유 아이디를 대댓글에서 저장할수 있도록 props전달  */}
-            <ReplyCommentSection responseTo={comment.commentId} />
+            <ReplyCommentSection parentCommentId={comment.commentId} boardId={id} />
           </StyledListBlock>
         );
       })}
@@ -265,3 +279,17 @@ function CommentSection() {
 }
 
 export default CommentSection;
+
+// 수정버튼 클릭시 수정가능한 코멘트만 수정창 오픈
+// const handleEditClick = commentId => {
+//   setEdit(!edit); // 수정 버튼 토글
+//   setLocal(
+//     comments.map(comment => {
+//       if (comment.commentId === commentId) {
+//         return { ...comment, isEditing: true };
+//       } else {
+//         return { ...comment, isEditing: false };
+//       }
+//     })
+//   );
+// };
