@@ -40,7 +40,7 @@ public class MemberMapper {
 		response.setNickName(member.getNickName());
 		response.setImages(member.getImages());
 		response.setPhone(member.getPhone());
-		//response.setRoles(member.getRoles());
+		response.setRoles(member.getRoles());
 		response.setCreatedDate(member.getCreatedDate());
 		response.setUpdateDate(member.getUpdateDate());
 		response.setMemberStatus(member.getMemberStatus());

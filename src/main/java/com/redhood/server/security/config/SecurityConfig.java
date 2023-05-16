@@ -7,11 +7,17 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
+
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -21,6 +27,9 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.Collections;
+
+import static org.springframework.transaction.TransactionDefinition.withDefaults;
 
 
 @Configuration
@@ -29,7 +38,7 @@ import java.util.Arrays;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final JwtTokenProvider jwtTokenProvider;
-	// private UserOAuth2Service userOAuth2Service;
+	//private UserOAuth2Service userOAuth2Service;
 
 	// 암호화에 필요한 passwordEncoder 를 Bean으로 등록
 	@Bean
@@ -65,20 +74,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.and()
 				//URL 관리(요청에 대한 사용 권한 체크)
 				.authorizeHttpRequests(authorize -> authorize
-//					.antMatchers(HttpMethod.GET, "/members/**").hasRole("USER")
-//					.antMatchers(HttpMethod.PATCH, "/members/**").hasRole("USER")
-//					.antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
-//					.antMatchers(HttpMethod.GET, "/board/**").hasRole("USER")
-//					.antMatchers(HttpMethod.PATCH, "/board/**").hasRole("USER")
-//					.antMatchers(HttpMethod.DELETE, "/board/**").hasRole("USER")
-//					.antMatchers(HttpMethod.GET, "/reply/**").hasRole("USER")
-//					.antMatchers(HttpMethod.PATCH, "/reply/**").hasRole("USER")
-//					.antMatchers(HttpMethod.DELETE, "/reply/**").hasRole("USER")
+					.antMatchers(HttpMethod.GET, "/members/**").hasRole("USER")
+					.antMatchers(HttpMethod.PATCH, "/members/**").hasRole("USER")
+					.antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
+
+					.antMatchers(HttpMethod.GET, "/board/**").hasRole("USER")
+					.antMatchers(HttpMethod.PATCH, "/board/**").hasRole("USER")
+					.antMatchers(HttpMethod.DELETE, "/board/**").hasRole("USER")
+
+					.antMatchers(HttpMethod.GET, "/reply/**").hasRole("USER")
+					.antMatchers(HttpMethod.PATCH, "/reply/**").hasRole("USER")
+					.antMatchers(HttpMethod.DELETE, "/reply/**").hasRole("USER")
+
+					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
 						.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-						.antMatchers("/members/**").permitAll()
-						.antMatchers("/board/**").permitAll()
-						.antMatchers("/reply/**").permitAll()
+//						.antMatchers("/members/**").permitAll()
+//						.antMatchers("/board/**").permitAll()
+//						.antMatchers("/reply/**").permitAll()
 						.anyRequest().permitAll()  // 그외 나머지 요청은 누구나 접근 가능
 					)
 
@@ -89,26 +102,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //				.userInfoEndpoint()
 //				.userService(userOAuth2Service);
 
-
-
-
 	}
-
-
 	//cors 허용 적용
 	@Bean
-	public CorsConfigurationSource corsConfigurationSource() {
-		CorsConfiguration corsConfiguration = new CorsConfiguration();
-		corsConfiguration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
-		corsConfiguration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-		corsConfiguration.setAllowedHeaders(Arrays.asList("content-type", "*"));
-		corsConfiguration.setExposedHeaders(Arrays.asList("Authorization"));
-		corsConfiguration.setAllowCredentials(true);
-
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOriginPatterns(Collections.singletonList(""));
+		configuration.addAllowedMethod("");
+		configuration.addAllowedHeader("*");
+		configuration.addAllowedHeader("content-type");
+		configuration.addExposedHeader("Authorization");
+		configuration.setAllowCredentials(true);
 		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-		source.registerCorsConfiguration("/**", corsConfiguration);
+		source.registerCorsConfiguration("/**", configuration);
 
 		return source;
 	}
+
+
+
 
 }
