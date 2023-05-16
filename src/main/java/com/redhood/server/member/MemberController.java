@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 @Validated
 @CrossOrigin
 @RestController
-@RequestMapping("/members")
+@RequestMapping(path = "/members", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class MemberController {
 	private final MemberService memberService;

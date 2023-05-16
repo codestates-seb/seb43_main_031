@@ -2,6 +2,7 @@ package com.redhood.server.member;
 
 import com.redhood.server.exception.BusinessLogicException;
 import com.redhood.server.exception.ExceptionCode;
+import com.redhood.server.security.CustomAuthorityUtils;
 import com.redhood.server.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,7 +24,7 @@ import java.util.Optional;
 public class MemberService {
 	private final MemberRepository memberRepository;
 	private final PasswordEncoder passwordEncoder;
-	private final ApplicationEventPublisher publisher;
+	private final CustomAuthorityUtils customAuthorityUtils;
 
 
 	public Member signUp(Member member) {
@@ -31,8 +32,8 @@ public class MemberService {
 		String encryptedPassword  = passwordEncoder.encode(member.getPassword());
 		member.setPassword(encryptedPassword);
 		member.setCreatedDate(LocalDateTime.now());
+		member.setRoles(customAuthorityUtils.createRoles(member.getEmail()));
 		Member saveMember = memberRepository.save(member);
-		publisher.publishEvent(new MemberRegistrationApplicationEvent(saveMember));
 		return saveMember;
 	}
 

@@ -1,30 +1,10 @@
-#spring:
-#  profiles: production
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3308/main_project?serverTimezone=UTC&characterEncoding=UTF-8
-#    username: root
-#    password: wldud0879*
-#  jpa:
-#    hibernate:
-#      ddl-auto: create
-#    show-sql: true
-#    properties:
-#      hibernate:
-#        format_sql: true
-#
-#---
-
 spring:
   h2:
     console:
       enabled: true
       path: /h2
   datasource:
-    driver-class-name: org.h2.Driver
     url: jdbc:h2:mem:test
-    username: sa
-    password:
   jpa:
     hibernate:
       ddl-auto: create
@@ -32,7 +12,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
-        show_sql: true
+  http:
+    encoding:
+      force-request-content-type: true
+  mvc:
+    media:
+      default-content-type: application/json
   sql:
     init:
       data-locations: classpath*:db/h2/data.sql
@@ -46,17 +31,14 @@ server:
   servlet:
     encoding:
       force-response: true
-#---
-#
-#spring:
-#  profiles: default
-#  datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://localhost:3308/main_project?serverTimezone=UTC&characterEncoding=UTF-8
-#    username: root
-#    password: wldud0879*
-
-
+      charset: UTF-8
+amazon:
+  aws:
+    accesskey: AKIAZAIMFDB7DGYXHOGG
+    secretkey: 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
+    s3:
+      region: ap-northeast-2
+      bucket: redhood
 mail:
   address:
     admin: admin@gmail.com
