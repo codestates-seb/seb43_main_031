@@ -7,7 +7,7 @@ import java.util.List;
 
 @Component
 public class CustomAuthorityUtils {
-	@Value("${mail.address.admin}")
+	@Value("${email.address.admin}")
 	private String adminEmail;
 	private final List<String> ADMIN_ROLES_STRING = List.of("ROLE_ADMIN", "ROLE_USER");
 	private final List<String> USER_ROLES_STRING = List.of("ROLE_USER");

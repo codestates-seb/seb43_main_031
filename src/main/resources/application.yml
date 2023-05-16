@@ -39,7 +39,7 @@ amazon:
     s3:
       region: ap-northeast-2
       bucket: redhood
-mail:
+email:
   address:
     admin: admin@gmail.com
 

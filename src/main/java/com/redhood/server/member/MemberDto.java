@@ -69,7 +69,7 @@ public class MemberDto {
 		//private String password;
 		private String phone;
 		private String images;
-		//private List<String> roles;
+		private List<String> roles;
 		private Member.MemberStatus memberStatus;
 		private LocalDateTime createdDate;
 		private LocalDateTime updateDate;
