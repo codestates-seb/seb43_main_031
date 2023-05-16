@@ -42,7 +42,7 @@ public class ApplyDto {
 
         private LocalDateTime updateDate;
 
-        private MemberDto.Response member;
+        private MemberDto.ReplyResponse member;
 
         private BoardResponseDto.ReplyResponse board;
 

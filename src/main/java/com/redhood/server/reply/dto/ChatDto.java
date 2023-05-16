@@ -30,7 +30,7 @@ public class ChatDto {
 
         private String content;
 
-        private MemberDto.Response member;
+        private MemberDto.ReplyResponse member;
 
     }
 }

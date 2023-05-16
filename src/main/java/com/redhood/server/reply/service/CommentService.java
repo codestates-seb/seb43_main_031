@@ -5,7 +5,7 @@ import com.redhood.server.board.repository.BoardRepository;
 import com.redhood.server.exception.BusinessLogicException;
 import com.redhood.server.exception.ExceptionCode;
 import com.redhood.server.member.MemberRepository;
-import com.redhood.server.member.entity.Member;
+import com.redhood.server.member.Member;
 import com.redhood.server.reply.entity.Comment;
 import com.redhood.server.reply.repository.CommentRepository;
 import org.springframework.stereotype.Service;

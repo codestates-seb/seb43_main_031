@@ -40,7 +40,7 @@ public class CommentDto {
 
         private LocalDateTime updateDate;
 
-        private MemberDto.Response member;
+        private MemberDto.ReplyResponse member;
 
         private BoardResponseDto.ReplyResponse board;
         private CommentDto.Reply comment;
