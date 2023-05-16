@@ -93,8 +93,8 @@ export default function Write() {
   const [board, setBoard] = useState({
     title: "",
     content: "",
-    cost: "",
-    expiredDate: "",
+    cost: 0,
+    expiredDateTime: "",
     dongTag: "",
     guTag: "",
     detailAddress: "",
@@ -118,9 +118,14 @@ export default function Write() {
     setDisabled(true);
     // try-catch문이 지저분해 보여 잘 안 쓰려고 하는 경향이 있다. -> 그럼 어떻게??
     try {
-      await axios.post(`${process.env.REACT_APP_BASE_URL}/boards`, board);
+      await axios.post("/boards", board, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
       navigate("/boards");
     } catch (error) {
+      console.log(error);
       alert("게시글 등록에 실패했습니다.");
     } finally {
       setDisabled(false);
@@ -144,8 +149,13 @@ export default function Write() {
   const uploadImages = async (blob, callback) => {
     const formData = new FormData();
     formData.append("file", blob);
+    formData.append("Content-Type", "multipart/form-data");
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/images`, formData);
+      const response = await axios.post("/images", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       callback(response.data.image);
     } catch (error) {
       console.log(error);
@@ -177,6 +187,7 @@ export default function Write() {
             hooks={{
               addImageBlobHook: uploadImages,
             }}
+            required
           />
         </EditorContainer>
       ),
@@ -188,15 +199,15 @@ export default function Write() {
       children: <input id="cost" type="number" name="cost" value={board.cost} onChange={handleChange} required />,
     },
     {
-      id: "expiredDate",
+      id: "expiredDateTime",
       title: "만료일",
       icon: <FiClock />,
       children: (
         <input
-          id="expiredDate"
+          id="expiredDateTime"
           type="datetime-local"
-          name="expiredDate"
-          value={board.expiredDate}
+          name="expiredDateTime"
+          value={board.expiredDateTime}
           onChange={handleChange}
           required
         />
@@ -209,7 +220,14 @@ export default function Write() {
       children: (
         <>
           <SelectGuDong onGuChange={value => onGuChange(value)} onDongChange={value => onDongChange(value)} />
-          <input id="detail" type="text" name="detailAddress" value={board.detailAddress} onChange={handleChange} />
+          <input
+            id="detail"
+            type="text"
+            name="detailAddress"
+            value={board.detailAddress}
+            onChange={handleChange}
+            required
+          />
         </>
       ),
     },
