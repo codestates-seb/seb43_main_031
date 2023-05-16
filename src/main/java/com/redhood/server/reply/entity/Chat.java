@@ -1,6 +1,6 @@
 package com.redhood.server.reply.entity;
 
-import com.redhood.server.member.entity.Member;
+import com.redhood.server.member.Member;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
