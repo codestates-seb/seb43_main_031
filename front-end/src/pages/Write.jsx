@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import styled from "styled-components";
 import { FaCommentDots, FaWonSign, FaMapPin } from "react-icons/fa";
 import { RxFileText } from "react-icons/rx";
@@ -10,6 +9,8 @@ import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import { guList, dongList } from "../data/SeoulDistricts";
+import { postBoard } from "../api/board";
+import { postImage } from "../api/image";
 
 const FormSection = styled.form`
   display: flex;
@@ -93,8 +94,8 @@ export default function Write() {
   const [board, setBoard] = useState({
     title: "",
     content: "",
-    cost: "",
-    expiredDate: "",
+    cost: 0,
+    expiredDateTime: "",
     dongTag: "",
     guTag: "",
     detailAddress: "",
@@ -112,19 +113,19 @@ export default function Write() {
     setBoard(previous => ({ ...previous, content: editorInstance.getMarkdown() }));
   };
 
-  // POST 요청 부분
-  const handleSubmit = async event => {
+  const handleSubmit = event => {
     event.preventDefault();
     setDisabled(true);
-    // try-catch문이 지저분해 보여 잘 안 쓰려고 하는 경향이 있다. -> 그럼 어떻게??
-    try {
-      await axios.post(`${process.env.REACT_APP_BASE_URL}/boards`, board);
-      navigate("/boards");
-    } catch (error) {
-      alert("게시글 등록에 실패했습니다.");
-    } finally {
-      setDisabled(false);
-    }
+    postBoard(board).then(response => {
+      if (response === "success") {
+        navigate("/boards");
+        setDisabled(false);
+      }
+      if (response === "fail") {
+        alert("게시글 등록에 실패했습니다.");
+        setDisabled(false);
+      }
+    });
   };
 
   const handleCancel = event => {
@@ -141,15 +142,13 @@ export default function Write() {
   }
 
   // 에디터 내 이미지 업로드 hooks 수정
-  const uploadImages = async (blob, callback) => {
+  const uploadImages = (blob, callback) => {
     const formData = new FormData();
     formData.append("file", blob);
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/images`, formData);
+    formData.append("Content-Type", "multipart/form-data");
+    postImage(formData).then(response => {
       callback(response.data.image);
-    } catch (error) {
-      console.log(error);
-    }
+    });
   };
 
   const labels = [
@@ -177,6 +176,7 @@ export default function Write() {
             hooks={{
               addImageBlobHook: uploadImages,
             }}
+            required
           />
         </EditorContainer>
       ),
@@ -188,15 +188,15 @@ export default function Write() {
       children: <input id="cost" type="number" name="cost" value={board.cost} onChange={handleChange} required />,
     },
     {
-      id: "expiredDate",
+      id: "expiredDateTime",
       title: "만료일",
       icon: <FiClock />,
       children: (
         <input
-          id="expiredDate"
+          id="expiredDateTime"
           type="datetime-local"
-          name="expiredDate"
-          value={board.expiredDate}
+          name="expiredDateTime"
+          value={board.expiredDateTime}
           onChange={handleChange}
           required
         />
@@ -209,7 +209,14 @@ export default function Write() {
       children: (
         <>
           <SelectGuDong onGuChange={value => onGuChange(value)} onDongChange={value => onDongChange(value)} />
-          <input id="detail" type="text" name="detailAddress" value={board.detailAddress} onChange={handleChange} />
+          <input
+            id="detail"
+            type="text"
+            name="detailAddress"
+            value={board.detailAddress}
+            onChange={handleChange}
+            required
+          />
         </>
       ),
     },
