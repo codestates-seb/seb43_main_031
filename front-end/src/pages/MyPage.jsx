@@ -100,8 +100,8 @@ export default function MyPage() {
 
   const onCancel = () => {
     // 이미지 서버로 보낸 이미지가 있다면, 해당 이미지를 삭제하는 로직이 추가되어야 할 듯.
-    setMember(currentUser);
     setModal(false);
+    setMember(currentUser);
   };
 
   const onImageUpload = event => {
