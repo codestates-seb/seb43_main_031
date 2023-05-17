@@ -153,7 +153,7 @@ function Detail() {
 
   const dispatch = useDispatch();
   const boards = useSelector(state => state.board);
-  const board = boards.find(board => board.id === +id);
+  const board = boards.find(board => board.id === +id) || [];
   // console.log(board);
   const { title, memberId, createdDate, content, cost, expiredDate, dongTag, guTag, detailAddress } = board; // 게시글 구조분해할당
 
@@ -163,11 +163,14 @@ function Detail() {
     // setIsPending(true);
     async () => {
       try {
-        const { boards } = await axios(`${process.env.REACT_APP_API_URL}/boards/${id}`);
+        const { boards } = await axios(`/boards/${id}}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
         dispatch(setBoard(boards));
       } catch (err) {
-        dispatch(setBoard(boards)); // 통신후 교체 예정
-        // alert("게시글을 불러오지 못했습니다.");
+        alert("게시글을 불러오지 못했습니다.");
       }
       // setIsPending(false);
     };
@@ -177,7 +180,7 @@ function Detail() {
   const handleEdit = (id, editText) => {
     const editData = { id, content: editText };
     axios
-      .patch(`${process.env.REACT_APP_API_URL}/boards/${id}`, editData)
+      .patch(`/boards/${id}`, editData)
       .then(res => {
         dispatch(editBoard(res.data));
       })
@@ -189,7 +192,7 @@ function Detail() {
   // 게시글 삭제
   const handleDelete = id => {
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/boards/${id}`)
+      .delete(`/boards/${id}`)
       .then(res => {
         console.log(res.status);
         dispatch(deleteBoard(res.data));

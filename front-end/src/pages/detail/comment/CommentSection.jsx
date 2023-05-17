@@ -150,9 +150,9 @@ function CommentSection({ boardData }) {
     window.scrollTo(0, 0);
     async () => {
       try {
-        const { comments } = await axios(`${process.env.REACT_APP_API_URL}/comments/comments/${id}}`, {
+        const { comments } = await axios(`/comments/comments/${id}}`, {
           headers: {
-            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
           },
         });
         dispatch(setComment(comments.filter(comment => comment.board.boardId === id))); // 코멘트(댓글)만 필터링해서 코멘츠 데이터 업데이트
@@ -167,15 +167,19 @@ function CommentSection({ boardData }) {
     e.preventDefault();
     if (text === "") return alert("댓글을 작성해 주세요");
     const newComment = {
-      boardId: id, // params로 받은 id
-      memberId: user.memberId,
       commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
+      board: {
+        boardId: id, // params로 받은 id
+      },
+      member: {
+        memberId: user.memberId,
+      },
+      comment: null,
       content: text,
-      responseTo: "root", // 대댓글 연결을 위한 상태 추가
       createdDate: `${new Date()}`,
     };
     await axios
-      .post(`{${process.env.REACT_APP_API_URL}/comments`, newComment)
+      .post(`/comments`, newComment)
       .then(response => {
         dispatch(addComment(response.data));
         setText("");
@@ -189,7 +193,7 @@ function CommentSection({ boardData }) {
   const handleEdit = (id, editText) => {
     const editData = { commentId: id, content: editText };
     axios
-      .patch(`${process.env.REACT_APP_API_URL}/comments/${id}`, editData)
+      .patch(`/comments/${id}`, editData)
       .then(res => {
         dispatch(editComment(res.data));
       })
@@ -201,7 +205,7 @@ function CommentSection({ boardData }) {
   // 댓글 삭제하기
   const handleDelete = id => {
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/comments/${id}`)
+      .delete(`/comments/${id}`)
       .then(res => {
         console.log(res.status);
         dispatch(deleteComment(res.data));

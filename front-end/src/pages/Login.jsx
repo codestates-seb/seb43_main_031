@@ -101,7 +101,7 @@ export default function Login({ setUser }) {
   const onClickLoginButton = () => {
     axios({
       method: "post",
-      url: `${BASE_URL}/members/login`,
+      url: `/members/login`,
       data: {
         email,
         password,

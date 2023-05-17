@@ -103,9 +103,9 @@ function ApplySection({ boardData }) {
     window.scrollTo(0, 0);
     async () => {
       try {
-        const { applys } = await axios(`${process.env.REACT_APP_API_URL}/applys/boardId/${id}}`, {
+        const { applys } = await axios(`/applys/boardId/${id}}`, {
           headers: {
-            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
           },
         });
         dispatch(setApply(applys.filter(apply => apply.board.boardId === id)));
@@ -125,7 +125,7 @@ function ApplySection({ boardData }) {
       createdDate: `${new Date()}`,
     };
     await axios
-      .post(`{${process.env.REACT_APP_API_URL}/applys`, newApply)
+      .post(`/applys`, newApply)
       .then(response => {
         dispatch(addApply(response.data));
       })
@@ -137,7 +137,7 @@ function ApplySection({ boardData }) {
   // 신청 삭제하기
   const handleDelete = id => {
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/apply/${id}`)
+      .delete(`/apply/${id}`)
       .then(res => {
         console.log(res.status);
         dispatch(deleteApply(res.data));
