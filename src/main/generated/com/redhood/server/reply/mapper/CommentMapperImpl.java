@@ -2,8 +2,8 @@ package com.redhood.server.reply.mapper;
 
 import com.redhood.server.board.dto.BoardResponseDto;
 import com.redhood.server.board.entity.Board;
+import com.redhood.server.member.Member;
 import com.redhood.server.member.MemberDto;
-import com.redhood.server.member.entity.Member;
 import com.redhood.server.reply.dto.CommentDto;
 import com.redhood.server.reply.entity.Comment;
 import java.util.ArrayList;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-05-15T11:05:37+0900",
+    date = "2023-05-17T16:16:44+0900",
     comments = "version: 1.5.1.Final, compiler: javac, environment: Java 11.0.17 (Azul Systems, Inc.)"
 )
 @Component
@@ -44,7 +44,7 @@ public class CommentMapperImpl implements CommentMapper {
         response.setContent( comment.getContent() );
         response.setCreatedDate( comment.getCreatedDate() );
         response.setUpdateDate( comment.getUpdateDate() );
-        response.setMember( memberToResponse( comment.getMember() ) );
+        response.setMember( memberToReplyResponse( comment.getMember() ) );
         response.setBoard( boardToReplyResponse( comment.getBoard() ) );
         response.setComment( commentToReply( comment.getComment() ) );
 
@@ -65,18 +65,18 @@ public class CommentMapperImpl implements CommentMapper {
         return list;
     }
 
-    protected MemberDto.Response memberToResponse(Member member) {
+    protected MemberDto.ReplyResponse memberToReplyResponse(Member member) {
         if ( member == null ) {
             return null;
         }
 
-        MemberDto.Response response = new MemberDto.Response();
+        MemberDto.ReplyResponse replyResponse = new MemberDto.ReplyResponse();
 
-        if ( member.getMemberId() != null ) {
-            response.setMemberId( member.getMemberId() );
-        }
+        replyResponse.setMemberId( member.getMemberId() );
+        replyResponse.setEmail( member.getEmail() );
+        replyResponse.setNickName( member.getNickName() );
 
-        return response;
+        return replyResponse;
     }
 
     protected BoardResponseDto.ReplyResponse boardToReplyResponse(Board board) {

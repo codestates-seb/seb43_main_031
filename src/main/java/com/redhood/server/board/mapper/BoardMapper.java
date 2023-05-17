@@ -4,7 +4,10 @@ import com.redhood.server.board.dto.BoardPatchDto;
 import com.redhood.server.board.dto.BoardPostDto;
 import com.redhood.server.board.dto.BoardResponseDto;
 import com.redhood.server.board.entity.Board;
+import com.redhood.server.member.Member;
+import com.redhood.server.member.MemberMapper;
 import lombok.Builder;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.stereotype.Component;
@@ -14,7 +17,9 @@ import java.util.stream.Collectors;
 
 @Builder
 @Component
+@RequiredArgsConstructor
 public class BoardMapper {
+    private final MemberMapper memberMapper;
 
     public Board boardPostDtoToBoard(BoardPostDto boardPostDto) {
         Board board = new Board();
@@ -44,25 +49,26 @@ public class BoardMapper {
     }
 
     public BoardResponseDto boardToBoardResponseDto(Board board) {
-        return new BoardResponseDto(board.getBoardId(),
-                board.getMemberId(),
-                board.getNickName(),
-                board.getTitle(),
-                board.getContent(),
-                board.getCost(),
-                board.getViewCount(),
-                board.getExpiredDateTime(),
-                board.getDongTag(),
-                board.getGuTag(),
-                board.getDetailAddress(),
-                board.isCompleted(),
-                board.getCreatedDate(),
-                board.getUpdatedDate());
+        BoardResponseDto boardResponseDto = new BoardResponseDto();
+                boardResponseDto.setBoardId(board.getBoardId());
+                boardResponseDto.setNickName(board.getNickName());
+                boardResponseDto.setTitle(board.getTitle());
+                boardResponseDto.setContent(board.getContent());
+                boardResponseDto.setCost(board.getCost());
+                boardResponseDto.setViewCount(board.getViewCount());
+                boardResponseDto.setExpiredDateTime(board.getExpiredDateTime());
+                boardResponseDto.setDongTag(board.getDongTag());
+                boardResponseDto.setGuTag(board.getGuTag());
+                boardResponseDto.setDetailAddress(board.getDetailAddress());
+                boardResponseDto.setCompleted(board.isCompleted());
+                boardResponseDto.setMember(memberMapper.memberToMemberResponseDto(board.getMember()));
+                boardResponseDto.setCreatedDate(board.getCreatedDate());
+                boardResponseDto.setUpdatedDate(board.getUpdatedDate());
+                return boardResponseDto;
     }
 
-    public BoardResponseDto mapToBoardResponseDto(Board board) {
+    /*public BoardResponseDto mapToBoardResponseDto(Board board) {
         return new BoardResponseDto(board.getBoardId(),
-                board.getMemberId(),
                 board.getNickName(),
                 board.getTitle(),
                 board.getContent(),
@@ -74,17 +80,23 @@ public class BoardMapper {
                 board.getDetailAddress(),
                 board.isCompleted(),
                 board.getCreatedDate(),
-                board.getUpdatedDate());
-    }
+                board.getUpdatedDate()
+
+        );
+    }*/
 
 
 
     public Page<BoardResponseDto> boardPageToBoardResponseDtoPage(Page<Board> boardPage) {
-        List<BoardResponseDto> dtoList = boardPage.stream()
+        Page<BoardResponseDto> map = boardPage.map(board -> boardToBoardResponseDto(board));
+
+        return map;
+    }
+       /* List<BoardResponseDto> dtoList = boardPage.stream()
                 .map(this::mapToBoardResponseDto)
                 .collect(Collectors.toList());
 
         return new PageImpl<>(dtoList, boardPage.getPageable(),boardPage.getTotalElements());
-    }
+    }*/
 }
 

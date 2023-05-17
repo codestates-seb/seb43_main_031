@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
+/*
 @Getter
 @Setter
 @NoArgsConstructor
@@ -18,3 +19,4 @@ public class Member {
     @Column(nullable = false)
     private String name;
 }
+*/

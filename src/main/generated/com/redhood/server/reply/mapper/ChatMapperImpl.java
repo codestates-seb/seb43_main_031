@@ -1,7 +1,7 @@
 package com.redhood.server.reply.mapper;
 
+import com.redhood.server.member.Member;
 import com.redhood.server.member.MemberDto;
-import com.redhood.server.member.entity.Member;
 import com.redhood.server.reply.dto.ChatDto;
 import com.redhood.server.reply.entity.Chat;
 import java.util.ArrayList;
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-05-15T11:05:37+0900",
+    date = "2023-05-16T11:10:50+0900",
     comments = "version: 1.5.1.Final, compiler: javac, environment: Java 11.0.17 (Azul Systems, Inc.)"
 )
 @Component
@@ -27,7 +27,7 @@ public class ChatMapperImpl implements ChatMapper {
 
         response.setChatId( chat.getChatId() );
         response.setContent( chat.getContent() );
-        response.setMember( memberToResponse( chat.getMember() ) );
+        response.setMember( memberToReplyResponse( chat.getMember() ) );
 
         return response;
     }
@@ -46,17 +46,17 @@ public class ChatMapperImpl implements ChatMapper {
         return list;
     }
 
-    protected MemberDto.Response memberToResponse(Member member) {
+    protected MemberDto.ReplyResponse memberToReplyResponse(Member member) {
         if ( member == null ) {
             return null;
         }
 
-        MemberDto.Response response = new MemberDto.Response();
+        MemberDto.ReplyResponse replyResponse = new MemberDto.ReplyResponse();
 
-        if ( member.getMemberId() != null ) {
-            response.setMemberId( member.getMemberId() );
-        }
+        replyResponse.setMemberId( member.getMemberId() );
+        replyResponse.setEmail( member.getEmail() );
+        replyResponse.setNickName( member.getNickName() );
 
-        return response;
+        return replyResponse;
     }
 }
