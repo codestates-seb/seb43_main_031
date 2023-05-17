@@ -1,6 +1,15 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import uuid from "react-uuid";
+import axios from "axios";
+
 import styled from "styled-components";
+
+import { addApply, deleteApply, setApply } from "../../redux/features/applySlice";
+
 import UserBox from "./UserBox";
+import DetailSubHeader from "./SubHeader";
+import ApplyModal from "./ApplyModal";
 
 // 전체 컨테이너
 const StyledContainer = styled.div`
@@ -45,7 +54,6 @@ const UtilBox = styled.div`
     display: flex;
     justify-content: center;
     & > button {
-      color: var(--sub-btn-color);
       font-size: 0.8rem;
       background-color: transparent; // 투명하게
       border: none;
@@ -75,11 +83,10 @@ const ApplyBtn = styled.button`
 `;
 
 // 신청 컴포넌트
-function ApplySection({ applysData, boardData }) {
+function ApplySection({ boardData }) {
   const { id, memberId } = boardData;
-  const findBoardInApplysData = applysData.filter(apply => apply.boardId === boardData.id);
-  // console.log(findBoardInApplysData);
 
+  const [modalOpen, setModalOpen] = useState(false);
   const [user, setUser] = useState({
     memberId: 1,
     email: "test@gmail.com",
@@ -88,22 +95,82 @@ function ApplySection({ applysData, boardData }) {
     image: "",
   });
 
+  const dispatch = useDispatch();
+  const applys = useSelector(state => state.apply);
+
+  // 렌더링 시 모든 신청글 조회
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    async () => {
+      try {
+        const { applys } = await axios(`/applys/boardId/${id}}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        dispatch(setApply(applys.filter(apply => apply.board.boardId === id)));
+      } catch (err) {
+        alert("질문을 불러오지 못했습니다.");
+      }
+    };
+  }, [dispatch, id]);
+
+  // 신청 생성하기
+  const handleSubmit = async e => {
+    e.preventDefault();
+    const newApply = {
+      boardId: id,
+      applyId: uuid(),
+      applyStatus: false,
+      createdDate: `${new Date()}`,
+    };
+    await axios
+      .post(`/applys`, newApply)
+      .then(response => {
+        dispatch(addApply(response.data));
+      })
+      .catch(err => {
+        alert("신청을 성공적으로 보내지 못했습니다.");
+      });
+  };
+
+  // 신청 삭제하기
+  const handleDelete = id => {
+    axios
+      .delete(`/apply/${id}`)
+      .then(res => {
+        console.log(res.status);
+        dispatch(deleteApply(res.data));
+      })
+      .catch(err => {
+        alert("신청 삭제를 실패하였습니다.");
+      });
+  };
+
+  const showModal = () => {
+    setModalOpen(true);
+  };
+
   return (
     <StyledContainer>
-      {applysData.map(apply => {
+      <DetailSubHeader count={applys.length} title="개의 신청" />
+      {applys.map(apply => {
         return (
           <StyledListBlock key={apply.applyId}>
             <StyledItemContents>
               <UserBox infoData={apply} />
               <UtilBox>
-                {user.memberId === apply.boardId ? (
-                  <button className="acceptedBtn" type="button">
+                {user.memberId === apply.board.memberId ? (
+                  <button className="acceptedBtn" type="button" onClick={showModal}>
                     채택하기
                   </button>
                 ) : null}
-                {user.memberId === apply.memberId ? (
+                {modalOpen && <ApplyModal setModalOpen={setModalOpen} />}
+                {user.memberId === apply.board.memberId ? (
                   <div className="fixAndDelete">
-                    <button type="button">삭제</button>
+                    <button type="button" onClick={() => handleDelete(apply.applyId)}>
+                      삭제
+                    </button>
                   </div>
                 ) : null}
               </UtilBox>
@@ -111,7 +178,7 @@ function ApplySection({ applysData, boardData }) {
           </StyledListBlock>
         );
       })}
-      <ApplyBtn>신청하기</ApplyBtn>
+      <ApplyBtn onClick={handleSubmit}>신청하기</ApplyBtn>
     </StyledContainer>
   );
 }

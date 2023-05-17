@@ -1,15 +1,14 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 // 아이콘
 import { AiFillHeart } from "react-icons/ai";
-import { BsFillCaretRightFill } from "react-icons/bs";
 import { FaWonSign, FaMapPin } from "react-icons/fa";
 import { RxFileText } from "react-icons/rx";
 import { FiClock } from "react-icons/fi";
 
 // 라이브러리
-
 import styled from "styled-components";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import { Editor, Viewer } from "@toast-ui/react-editor";
@@ -18,8 +17,8 @@ import RedShoesImg from "../../img/shoes.png";
 // 컴포넌트
 import ApplySection from "./ApplySection";
 import CommentSection from "./comment/CommentSection";
+import { editBoard, deleteBoard, setBoard } from "../../redux/features/boardSlice";
 // 유틸리티
-import getBoardById from "../../api/getBoardById";
 import elapsedText from "../../utils/elapsedText";
 
 // 나중에 layouts로 이동 예정
@@ -109,7 +108,6 @@ const BodyUtils = styled.div`
 
     button {
       flex: 2 0 0;
-      color: var(--sub-btn-color);
       font-size: 0.8rem;
       background-color: transparent; // 투명하게
       border: none;
@@ -141,34 +139,6 @@ const BodyMain = styled.div`
   }
 `;
 
-// 달린 답변 갯수 헤더
-const SubHeaderWrapper = styled.div`
-  display: flex;
-  align-items: end;
-  padding: 1rem 2rem;
-
-  .arrow {
-    width: 2rem;
-    height: 2rem;
-    color: var(--primary-color);
-  }
-
-  h2 {
-    font-size: 1.6rem;
-    font-weight: 500;
-  }
-`;
-
-// 서브헤더 컴포넌트
-function DetailSubHeader({ count, title }) {
-  return (
-    <SubHeaderWrapper>
-      <BsFillCaretRightFill className="arrow" />
-      <h2>{count > 0 && `${count} ${title}`}</h2>
-    </SubHeaderWrapper>
-  );
-}
-
 function Detail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -177,45 +147,80 @@ function Detail() {
   const [isLogin, setIslogin] = useState(true);
   const [isPending, setIsPending] = useState(false);
   const [isEdit, setIsEdit] = useState(false); // 게시글 수정창 상태
+  const [editText, setEditText] = useState(""); // 수정할 인풋값 상태
+  const [openEditor, setOpenEditor] = useState(""); // 게시글 고유id값 담는 상태
 
-  const [board, setBoard] = useState({}); // 해당 게시글 데이터 상태
+  const dispatch = useDispatch();
+  const boards = useSelector(state => state.board);
+  const board = boards.find(board => board.id === +id) || [];
+  // console.log(board);
   const { title, memberId, createdDate, content, cost, expiredDate, dongTag, guTag, detailAddress } = board; // 게시글 구조분해할당
 
-  const [comments, setComments] = useState([]); // 코멘츠 데이터 상태
-  const [applys, setApplys] = useState([]); // 신청 데이터 상태
-
-  // 데이터 조회
+  // 해당 게시글 조회
   useEffect(() => {
     window.scrollTo(0, 0); // 페이지 맨 위로
-    getBoardById().then(res => {
-      setBoard(res.board);
-      setComments(res.comments);
-      setApplys(res.applys);
-    });
-  }, [id, comments, applys]);
+    // setIsPending(true);
+    async () => {
+      try {
+        const { boards } = await axios.get(`/boards/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(boards);
+        dispatch(setBoard(boards));
+      } catch (err) {
+        alert("게시글을 불러오지 못했습니다.");
+      }
+      // setIsPending(false);
+    };
+  }, [boards, dispatch, id]);
 
   // 게시글 수정
-  const handleEdit = () => {};
-
-  // 게시글 삭제
-  const handleDelete = id => {};
-
-  // 수정할 인풋 이벤트
-  const handleChange = event => {
-    const { name, defaultValue } = event.target;
-    setBoard(previous => ({ ...previous, [name]: defaultValue }));
+  const handleEdit = (id, editText) => {
+    const editData = { id, content: editText };
+    axios
+      .patch(`/boards/${id}`, editData)
+      .then(res => {
+        dispatch(editBoard(res.data));
+      })
+      .catch(err => {
+        alert("게시글을 수정하지 못했습니다.");
+      });
   };
 
+  // 게시글 삭제
+  const handleDelete = id => {
+    axios
+      .delete(`/boards/${id}`)
+      .then(res => {
+        console.log(res.status);
+        dispatch(deleteBoard(res.data));
+        navigate("/boards");
+      })
+      .catch(err => {
+        alert("게시글을 삭제하지 못했습니다.");
+      });
+  };
+
+  // 수정할 인풋 이벤트
+  // const handleChange = event => {
+  //   const { name, defaultValue } = event.target;
+  //   setBoard(previous => ({ ...previous, [name]: defaultValue }));
+  // };
+
+  // 에디터 변경 함수
   const handleEditorChange = () => {
     const editorInstance = editorRef.current.getInstance();
     setBoard(previous => ({ ...previous, content: editorInstance.getMarkdown() }));
   };
 
+  // 이미지 업로드 비동기 요청 함수
   const uploadImages = async (blob, callback) => {
     const formData = new FormData();
     formData.append("file", blob);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/images`, formData);
+      const response = await axios.post(`/images`, formData);
       callback(response.data.image);
     } catch (error) {
       console.log(error);
@@ -250,7 +255,15 @@ function Detail() {
       icon: <FaWonSign />,
       children: <p>{cost}</p>,
       editChildren: (
-        <input id="cost" type="number" name="cost" defaultValue={cost} key={cost} onChange={handleChange} required />
+        <input
+          id="cost"
+          type="number"
+          name="cost"
+          defaultValue={cost}
+          key={cost}
+          onChange={e => setEditText(e.target.valueAsNumber)}
+          required
+        />
       ),
     },
     {
@@ -264,7 +277,8 @@ function Detail() {
           type="datetime-local"
           name="expiredDate"
           defaultValue={expiredDate}
-          onChange={handleChange}
+          key={expiredDate}
+          onChange={e => setEditText(e.target.value)}
           required
         />
       ),
@@ -275,7 +289,14 @@ function Detail() {
       icon: <FaMapPin />,
       children: <p>{detailAddress}</p>,
       editChildren: (
-        <input id="detail" type="text" name="detailAddress" defaultValue={detailAddress} onChange={handleChange} />
+        <input
+          id="detail"
+          type="text"
+          name="detailAddress"
+          defaultValue={detailAddress}
+          key={detailAddress}
+          onChange={e => setEditText(e.target.value)}
+        />
       ),
     },
   ];
@@ -315,7 +336,17 @@ function Detail() {
                 <div>{dongTag}</div>
               </div>
               <div className="utils">
-                <button type="button" onClick={() => setIsEdit(!isEdit)}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (id === openEditor) {
+                      handleEdit(id, editText);
+                      setOpenEditor("");
+                    } else {
+                      setOpenEditor(id);
+                    }
+                  }}
+                >
                   수정
                 </button>
                 <button type="button" onClick={() => handleDelete(id)}>
@@ -330,16 +361,14 @@ function Detail() {
                     {label.icon}
                     {label.title}
                   </label>
-                  {isEdit ? <p>{label.editChildren}</p> : <p>{label.children}</p>}
+                  {openEditor === id ? <p>{label.editChildren}</p> : <p>{label.children}</p>}
                 </BodyMain>
               );
             })}
           </ContentsSectionBody>
         </DetailContentsSection>
-        <DetailSubHeader count={applys.length} title="개의 신청" />
-        {applys && <ApplySection applysData={applys} boardData={board} />}
-        <DetailSubHeader count={comments.length} title="개의 댓글" />
-        {comments && <CommentSection commentsData={comments} boardData={board} />}
+        <ApplySection boardData={board} />
+        <CommentSection boardData={board} />
       </DetailWrapper>
     </DetailTemplate>
   );

@@ -6,7 +6,7 @@ const GlobalStyles = createGlobalStyle`
     --primary-color: #BD181F; // 메인컬러
     --bg-color: #FAE7E7; // 배경컬러
     --sub-color: #E4EA7C; // 서브컬러
-    --sub-btn-color : #FFD3D5 // 서브 버튼컬러
+    --sub-btn-color : #FFD3D5; // 서브 버튼컬러
     --cancle-btn-color: #7e7f80; // 취소 버튼 컬러
 
     

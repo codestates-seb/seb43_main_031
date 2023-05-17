@@ -177,7 +177,7 @@ export default function Register() {
 
     axios({
       method: "post",
-      url: `http://127.0.0.1:6001/members`,
+      url: `/members`,
       headers: {
         "Content-Type": "application/json",
       },

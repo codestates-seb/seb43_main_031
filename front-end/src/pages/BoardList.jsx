@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import { AiOutlineCheckCircle, AiFillCheckCircle } from "react-icons/ai";
 
@@ -151,57 +150,22 @@ export default function BoardList({ user }) {
   const [currentPage, setCurrentPage] = useState(1);
   const [sortType, setSortType] = useState("createdDate");
   const [boards, setBoards] = useState([]);
-  // const date = new Date("");
 
   useEffect(() => {
     getBoards({
-      page: currentPage,
+      currentPage,
       searchText,
-      gu: selectedGu,
-      dong: selectedDong,
-      sort: sortType,
+      selectedGu,
+      selectedDong,
+      sortType,
     }).then(response => {
-      setBoards(response.boards);
+      setBoards(response);
     });
   }, [currentPage, searchText, selectedGu, selectedDong, sortType]);
-
-  // useEffect(() => {
-  //   axios({
-  //     method: "post",
-  //     url: "http://localhost:8080/boards",
-  //     data: {
-  //       page: currentPage,
-  //       searchText,
-  //       gu: selectedGu,
-  //       dong: selectedDong,
-  //       sort: sortType,
-  //     },
-  //   })
-  //     .then(response => {
-  //       setBoards(response.boards);
-  //     })
-  //     .catch(error => {
-  //       alert(error);
-  //     });
-  // }, [currentPage, searchText, selectedGu, selectedDong, sortType]);
 
   useEffect(() => {
     setSelectedDong(dongList[selectedGu][0]);
   }, [selectedGu]);
-
-  // function sortByViews() {
-  //   const sortedBoards = [...boards].sort((a, b) => b.viewCount - a.viewCount);
-  //   setBoards(sortedBoards);
-  // }
-
-  // function sortByDate() {
-  //   const sortedBoards = [...boards].sort((a, b) => {
-  //     const dateA = new Date(a.createDate);
-  //     const dateB = new Date(b.createDate);
-  //     return dateB - dateA;
-  //   });
-  //   setBoards(sortedBoards);
-  // }
 
   const onChange = pageNumber => {
     setCurrentPage(pageNumber);
@@ -238,6 +202,9 @@ export default function BoardList({ user }) {
                   setSelectedGu(event.target.value);
                 }}
               >
+                <option value="" hidden>
+                  지역구
+                </option>
                 {guList.map(gu => (
                   <option key={gu}>{gu}</option>
                 ))}
@@ -245,10 +212,12 @@ export default function BoardList({ user }) {
               <select
                 className="location-search-dropdown"
                 onChange={event => {
-                  console.log(event.target.value);
                   setSelectedDong(event.target.value);
                 }}
               >
+                <option value="" hidden>
+                  지역동
+                </option>
                 {dongList[selectedGu].map(dong => {
                   return <option key={dong}>{dong}</option>;
                 })}
@@ -293,6 +262,7 @@ export default function BoardList({ user }) {
           </div>
           <div className="board-list-area">
             <div className="board-list">
+              {boards.length === 0 && <div style={{ textAlign: "center" }}>등록된 게시글이 없습니다.</div>}
               {boards.map(({ id, title, cost, createDate, completed }) => {
                 return (
                   <div className="board">

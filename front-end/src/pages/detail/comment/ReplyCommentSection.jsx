@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import axios from "axios";
 
 import styled from "styled-components";
 import uuid from "react-uuid";
 
 import UserBox from "../UserBox";
-import { addComment, editComment, deleteComment } from "../../../redux/features/commentSlice";
+import { addComment, editComment, deleteComment, setComment } from "../../../redux/features/commentSlice";
 
 // 대댓글 컨테이너
 const ReplyContainer = styled.div`
@@ -123,7 +124,7 @@ const EditForm = styled.div`
   }
 `;
 
-function ReplyCommentSection({ responseTo }) {
+function ReplyCommentSection({ parentCommentId, boardId }) {
   const [display, setDisplay] = useState(false); // 대댓글 폼 박스 활성화 상태
   const [local, setLocal] = useState([]); // 대댓글 배열 상태
   const [text, setText] = useState(""); // 대댓글 인풋 상태
@@ -137,46 +138,74 @@ function ReplyCommentSection({ responseTo }) {
   });
   const [openEditor, setOpenEditor] = useState(""); // 댓글 고유id값 담는 상태
 
-  const { id } = useParams();
+  // const { id } = useParams();
   const dispatch = useDispatch();
   const comments = useSelector(state => state.comment);
 
   const inputRef = useRef(null);
 
+  // 모든 대댓글 조회
   useEffect(() => {
-    localStorage.setItem("comments", JSON.stringify(comments));
-    setLocal(comments.filter(comment => comment.responseTo === responseTo));
-  }, [comments, responseTo]);
+    async () => {
+      try {
+        const { comments } = await axios(`${process.env.REACT_APP_API_URL}/comments/replys/${parentCommentId}}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        dispatch(setComment(comments.filter(comment => comment.commentId === parentCommentId)));
+      } catch (err) {
+        alert("해당 댓글의 답변을 불러오지 못했습니다.");
+      }
+    };
+  }, [dispatch, parentCommentId]);
 
   // 새로운 대댓글 작성
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
-    if (text === "") {
-      alert("대댓글을 작성해 주세요");
-    } else {
-      const newData = {
-        boardId: id, // params로 받은 id
-        memberId: user.memberId,
-        commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
-        content: text,
-        responseTo, // 대댓글 연결을 위한 상태 추가
-        createdDate: `${new Date()}`,
-        isEditing: false,
-      };
-      dispatch(addComment(newData));
-      setText("");
-    }
+    if (text === "") return alert("대댓글을 작성해 주세요");
+    const newComment = {
+      boardId, // params로 받은 id
+      memberId: user.memberId,
+      commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
+      content: text,
+      createdDate: `${new Date()}`,
+    };
+    await axios
+      .post(`{${process.env.REACT_APP_API_URL}/comments`, newComment)
+      .then(response => {
+        dispatch(addComment(response.data));
+        setText("");
+      })
+      .catch(err => {
+        alert("대댓글을 생성하지 못했습니다.");
+      });
   };
 
-  // 댓글 수정하기
+  // 대댓글 수정하기
   const handleEdit = (id, editText) => {
     const editData = { commentId: id, content: editText };
-    dispatch(editComment(editData));
+    axios
+      .patch(`${process.env.REACT_APP_API_URL}/comments/${id}`, editData)
+      .then(res => {
+        dispatch(editComment(res.data));
+      })
+      .catch(err => {
+        alert("대댓글 수정을 실패하였습니다.");
+      });
   };
 
-  // 댓글 삭제하기
+  // 대댓글 삭제하기
   const handleDelete = id => {
-    dispatch(deleteComment(id));
+    axios
+      .delete(`${process.env.REACT_APP_API_URL}/comments/${id}`)
+      .then(res => {
+        console.log(res.status);
+        dispatch(deleteComment(res.data));
+      })
+      .catch(err => {
+        alert("대댓글 삭제를 실패하였습니다.");
+      });
   };
 
   return (
@@ -193,12 +222,12 @@ function ReplyCommentSection({ responseTo }) {
       </button>
       {display && (
         <ReplyFormBox>
-          {local?.map(comment => (
+          {comments?.map(comment => (
             <ReplyItem key={comment.commnetId}>
               <UserBox infoData={comment} />
               <div className="reply-msg">{comment.content}</div>
               {/* 유저가 해당 댓글의 작성자일 경우만 */}
-              {user.memberId === comment.memberId && (
+              {user.memberId === comment.member.memberId && (
                 // 해당 댓글/대댓글 id가 빈문자가 아니면 수정버튼 클릭시 수정인풋창 보이게
                 <EditForm>
                   {openEditor === comment.commentId && (

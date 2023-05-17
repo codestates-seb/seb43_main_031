@@ -1,6 +1,9 @@
 import React from "react";
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, Link } from "react-router-dom";
 import redHoodImg from "../img/red-hood.png";
+import { setUser } from "../redux/features/userSlice";
 
 const HeaderWrapperStyle = styled.div`
   width: 100vw;
@@ -45,7 +48,11 @@ const HeaderMenuItemStyle = styled.div`
   }
 `;
 
-export default function Header({ user, setUser }) {
+export default function Header() {
+  const user = useSelector(state => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   return (
     <HeaderWrapperStyle>
       <HeaderStyle>
@@ -54,12 +61,12 @@ export default function Header({ user, setUser }) {
             src={redHoodImg}
             alt="logo"
             onClick={() => {
-              window.location.href = "/";
+              navigate("/");
             }}
           />
           <div
             onClick={() => {
-              window.location.href = "/";
+              navigate("/");
             }}
           >
             빨간망토
@@ -69,20 +76,20 @@ export default function Header({ user, setUser }) {
           {user ? (
             <>
               <HeaderMenuItemStyle>
-                <a href="/write">글 작성하기</a>
+                <Link to="/write">글 작성하기</Link>
               </HeaderMenuItemStyle>
               <HeaderMenuItemStyle>
-                <a href="/my-page">마이페이지</a>
+                <Link to="/my-page">마이페이지</Link>
               </HeaderMenuItemStyle>
               <HeaderMenuItemStyle
                 onClick={() => {
-                  setUser(null);
-                  window.location.href = "/login";
+                  dispatch(setUser(null));
+                  navigate("/login");
                 }}
                 onKeyDown={event => {
                   if (event.key === "Enter" || event.key === " ") {
-                    setUser(null);
-                    window.location.href = "/login";
+                    dispatch(setUser(null));
+                    navigate("/login");
                   }
                 }}
               >
@@ -92,14 +99,14 @@ export default function Header({ user, setUser }) {
           ) : (
             <>
               <HeaderMenuItemStyle>
-                <a href="/boards">게시판</a>
+                <Link to="/boards">게시판</Link>
               </HeaderMenuItemStyle>
               <HeaderMenuItemStyle>
-                <a href="/register">회원가입</a>
+                <Link to="/register">회원가입</Link>
               </HeaderMenuItemStyle>
               <HeaderMenuItemStyle
                 onClick={() => {
-                  window.location.href = "/login";
+                  navigate("/login");
                 }}
               >
                 로그인
