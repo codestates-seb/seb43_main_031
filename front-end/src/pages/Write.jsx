@@ -1,6 +1,5 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import styled from "styled-components";
 import { FaCommentDots, FaWonSign, FaMapPin } from "react-icons/fa";
 import { RxFileText } from "react-icons/rx";
@@ -10,6 +9,8 @@ import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import { guList, dongList } from "../data/SeoulDistricts";
+import { postBoard } from "../api/board";
+import { postImage } from "../api/image";
 
 const FormSection = styled.form`
   display: flex;
@@ -112,24 +113,19 @@ export default function Write() {
     setBoard(previous => ({ ...previous, content: editorInstance.getMarkdown() }));
   };
 
-  // POST 요청 부분
-  const handleSubmit = async event => {
+  const handleSubmit = event => {
     event.preventDefault();
     setDisabled(true);
-    // try-catch문이 지저분해 보여 잘 안 쓰려고 하는 경향이 있다. -> 그럼 어떻게??
-    try {
-      await axios.post("/boards", board, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      navigate("/boards");
-    } catch (error) {
-      console.log(error);
-      alert("게시글 등록에 실패했습니다.");
-    } finally {
-      setDisabled(false);
-    }
+    postBoard(board).then(response => {
+      if (response === "success") {
+        navigate("/boards");
+        setDisabled(false);
+      }
+      if (response === "fail") {
+        alert("게시글 등록에 실패했습니다.");
+        setDisabled(false);
+      }
+    });
   };
 
   const handleCancel = event => {
@@ -146,20 +142,13 @@ export default function Write() {
   }
 
   // 에디터 내 이미지 업로드 hooks 수정
-  const uploadImages = async (blob, callback) => {
+  const uploadImages = (blob, callback) => {
     const formData = new FormData();
     formData.append("file", blob);
     formData.append("Content-Type", "multipart/form-data");
-    try {
-      const response = await axios.post("/images", formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+    postImage(formData).then(response => {
       callback(response.data.image);
-    } catch (error) {
-      console.log(error);
-    }
+    });
   };
 
   const labels = [
