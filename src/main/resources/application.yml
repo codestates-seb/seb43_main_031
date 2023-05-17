@@ -12,6 +12,12 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  http:
+    encoding:
+      force-request-content-type: true
+  mvc:
+    media:
+      default-content-type: application/json
   sql:
     init:
       data-locations: classpath*:db/h2/data.sql
@@ -25,14 +31,15 @@ server:
   servlet:
     encoding:
       force-response: true
+      charset: UTF-8
 amazon:
   aws:
-    accesskey: AKIAZAIMFDB7OM3KT35A
+    accesskey: AKIAZAIMFDB7DGYXHOGG
     secretkey: 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
     s3:
       region: ap-northeast-2
       bucket: redhood
-mail:
+email:
   address:
     admin: admin@gmail.com
 

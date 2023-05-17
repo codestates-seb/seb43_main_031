@@ -1,10 +1,10 @@
 package com.redhood.server.member;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.redhood.server.audit.Timestamped;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import net.minidev.json.annotate.JsonIgnore;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import javax.persistence.*;
