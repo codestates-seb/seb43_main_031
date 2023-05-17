@@ -2,12 +2,13 @@ package com.redhood.server.reply.service;
 
 import com.redhood.server.exception.BusinessLogicException;
 import com.redhood.server.exception.ExceptionCode;
-import com.redhood.server.member.MemberRepository;
 import com.redhood.server.member.Member;
+import com.redhood.server.member.MemberRepository;
 import com.redhood.server.reply.entity.Apply;
 import com.redhood.server.reply.entity.Chat;
 import com.redhood.server.reply.repository.ApplyRepository;
 import com.redhood.server.reply.repository.ChatRepository;
+import com.redhood.server.security.UserDetailsImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +30,9 @@ public class ChatService {
         this.memberRepository = memberRepository;
     }
 
-    public Chat createChat(Chat chat){
-        System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"+chat.getApply().getApplyId());
+    public Chat createChat(Chat chat, UserDetailsImpl userDetails){
         chat.setApply(findVerifiedApply(chat.getApply().getApplyId()));
-        //멤버 조회(jwt적용 후 수정)
-        chat.setMember(findVerifiedMember(1));
-        ///
+        chat.setMember(findVerifiedMember(userDetails.getUserId()));
         return chatRepository.save(chat);
     }
     public List<Chat> findChats(long applyId){

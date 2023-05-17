@@ -1,5 +1,6 @@
 package com.redhood.server.board.dto;
 
+import com.redhood.server.member.MemberDto;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BoardResponseDto {
     private long boardId;
-    private long memberId;
     private String nickName;
     private String title;
     private String content;
@@ -22,6 +22,7 @@ public class BoardResponseDto {
     private String guTag;
     private String detailAddress;
     private boolean completed;
+    private MemberDto.Response member;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
@@ -33,4 +34,5 @@ public class BoardResponseDto {
     public long boardId;
     }
 }
+
 

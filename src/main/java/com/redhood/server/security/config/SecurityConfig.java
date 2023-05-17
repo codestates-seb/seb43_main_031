@@ -7,17 +7,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.oauth2.client.OAuth2LoginConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
-import org.springframework.security.crypto.password.PasswordEncoder;
-
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -26,10 +20,7 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.Collections;
-
-import static org.springframework.transaction.TransactionDefinition.withDefaults;
 
 
 @Configuration
@@ -77,14 +68,22 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.antMatchers(HttpMethod.GET, "/members/**").hasRole("USER")
 					.antMatchers(HttpMethod.PATCH, "/members/**").hasRole("USER")
 					.antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
-
-					.antMatchers(HttpMethod.GET, "/board/**").hasRole("USER")
-					.antMatchers(HttpMethod.PATCH, "/board/**").hasRole("USER")
-					.antMatchers(HttpMethod.DELETE, "/board/**").hasRole("USER")
-
-					.antMatchers(HttpMethod.GET, "/reply/**").hasRole("USER")
-					.antMatchers(HttpMethod.PATCH, "/reply/**").hasRole("USER")
-					.antMatchers(HttpMethod.DELETE, "/reply/**").hasRole("USER")
+					.antMatchers(HttpMethod.POST, "/boards/**").hasRole("USER")
+					.antMatchers(HttpMethod.GET, "/boards/**").hasRole("USER")
+					.antMatchers(HttpMethod.PATCH, "/boards/**").hasRole("USER")
+					.antMatchers(HttpMethod.DELETE, "/boards/**").hasRole("USER")
+					.antMatchers(HttpMethod.POST, "/comments/**").hasRole("USER")
+					.antMatchers(HttpMethod.GET, "/comments/**").hasRole("USER")
+					.antMatchers(HttpMethod.PATCH, "/comments/**").hasRole("USER")
+					.antMatchers(HttpMethod.DELETE, "/comments/**").hasRole("USER")
+					.antMatchers(HttpMethod.POST, "/applys/**").hasRole("USER")
+					.antMatchers(HttpMethod.GET, "/applys/**").hasRole("USER")
+					.antMatchers(HttpMethod.PATCH, "/applys/**").hasRole("USER")
+					.antMatchers(HttpMethod.DELETE, "/applys/**").hasRole("USER")
+					.antMatchers(HttpMethod.POST, "/chats/**").hasRole("USER")
+					.antMatchers(HttpMethod.GET, "/chats/**").hasRole("USER")
+					.antMatchers(HttpMethod.PATCH, "/chats/**").hasRole("USER")
+					.antMatchers(HttpMethod.DELETE, "/chats/**").hasRole("USER")
 
 					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 

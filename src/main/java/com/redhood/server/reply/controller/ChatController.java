@@ -1,15 +1,15 @@
 package com.redhood.server.reply.controller;
 
-import com.redhood.server.reply.dto.ApplyDto;
 import com.redhood.server.reply.dto.ChatDto;
-import com.redhood.server.reply.entity.Apply;
 import com.redhood.server.reply.entity.Chat;
 import com.redhood.server.reply.mapper.ChatMapper;
 import com.redhood.server.reply.service.ChatService;
 import com.redhood.server.response.MultiResponseDto;
 import com.redhood.server.response.SingleResponseDto;
+import com.redhood.server.security.UserDetailsImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -28,9 +28,10 @@ public class ChatController {
         this.chatService = chatService;
     }
     @PostMapping
-    public ResponseEntity postChat(@Valid @RequestBody ChatDto.Post requestBody) {
+    public ResponseEntity postChat(@Valid @RequestBody ChatDto.Post requestBody,
+                                   @AuthenticationPrincipal UserDetailsImpl userDetails) {
         Chat chat = mapper.chatDtoPostToChat(requestBody);
-        Chat saveChat = chatService.createChat(chat);
+        Chat saveChat = chatService.createChat(chat,userDetails);
 
         return new ResponseEntity<>(
                 new SingleResponseDto<>(mapper.chatToChatDtoResponse(saveChat)), HttpStatus.OK);

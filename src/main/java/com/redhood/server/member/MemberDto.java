@@ -82,11 +82,6 @@ public class MemberDto {
 		private Long memberId;
 		private String email;
 		private String nickName;
-		//private String password;
-		private List<String> roles;
-		private Member.MemberStatus memberStatus;
-		private LocalDateTime createdDate;
-		private LocalDateTime updateDate;
 
 	}
 }

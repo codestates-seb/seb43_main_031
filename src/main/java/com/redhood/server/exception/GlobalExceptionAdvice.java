@@ -3,6 +3,7 @@ package com.redhood.server.exception;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.redhood.server.response.ErrorResponse;
+import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -43,6 +44,12 @@ public class GlobalExceptionAdvice {
     public ResponseEntity handleSdkClientException(SdkClientException e) {
         final ErrorResponse.ExceptionStatus response =
                 ErrorResponse.exceptionStatus(HttpStatus.INTERNAL_SERVER_ERROR,e.getMessage());
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+    @ExceptionHandler
+    public ResponseEntity handleFileSizeLimitExceededException(FileSizeLimitExceededException e) {
+        final ErrorResponse.ExceptionStatus response =
+                ErrorResponse.exceptionStatus(HttpStatus.BAD_REQUEST,e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

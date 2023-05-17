@@ -4,32 +4,48 @@ import com.redhood.server.board.entity.Board;
 import com.redhood.server.board.repository.BoardRepository;
 import com.redhood.server.exception.BusinessLogicException;
 import com.redhood.server.exception.ExceptionCode;
+import com.redhood.server.member.Member;
+import com.redhood.server.member.MemberRepository;
+import com.redhood.server.member.MemberService;
+import com.redhood.server.security.UserDetailsImpl;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.data.domain.Page;
+
+
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+
+
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class BoardService {
     private final BoardRepository boardRepository;
+    private final MemberRepository memberRepository;
+    private final MemberService memberService;
 
-    public BoardService(BoardRepository boardRepository) {
+    public BoardService(BoardRepository boardRepository, MemberRepository memberRepository, MemberService memberService) {
         this.boardRepository = boardRepository;
+        this.memberRepository = memberRepository;
+        this.memberService = memberService;
     }
 
-    public Board createBoard(Board board) {
+    public Board createBoard(Board board, UserDetailsImpl user) {
         verifyExistsTitle(board.getTitle());
+        Optional<Member> findUserName = memberRepository.findByEmail(user.getUsername());
+        board.setMember(findUserName.get());
 
         return boardRepository.save(board);
     }
 
-    public Board updateBoard(Board board) {
+    public Board updateBoard(UserDetailsImpl userDetails, Board board) {
         Board findBoard = findVerifiedBoard(board.getBoardId());
+
+        memberService.verifyLogInMemberMatchesMember(userDetails.getUserId(),findBoard.getMember().getMemberId());
 
         Optional.ofNullable(board.getTitle())
                 .ifPresent(title -> findBoard.setTitle(title));
@@ -94,14 +110,16 @@ public class BoardService {
 
 
 
-    public void deleteBoard(long boardId) {
+    public void deleteBoard(UserDetailsImpl userDetails, long boardId) {
         Board findBoard = findVerifiedBoard(boardId);
+
+        memberService.verifyLogInMemberMatchesMember(userDetails.getUserId(), findBoard.getMember().getMemberId());
 
         boardRepository.delete(findBoard);
 
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public void deleteExpiredBoards() {
         LocalDateTime currentDateTime = LocalDateTime.now();
         List<Board> expiredBoards = boardRepository.findByExpiredDateTimeBefore(currentDateTime);

@@ -1,6 +1,7 @@
 package com.redhood.server.board.entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.redhood.server.member.Member;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,8 +21,9 @@ public class Board {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long boardId;
 
-    @Column
-    private long memberId;
+    @ManyToOne
+    @JoinColumn(name = "MEMBER_ID")
+    private Member member;
 
     @Column
     private String nickName;
@@ -46,7 +48,6 @@ public class Board {
 
     @Column(nullable = false)
     private String dongTag;
-
 
     @Column(nullable = false)
     private String guTag;

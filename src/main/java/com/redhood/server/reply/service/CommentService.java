@@ -4,10 +4,11 @@ import com.redhood.server.board.entity.Board;
 import com.redhood.server.board.repository.BoardRepository;
 import com.redhood.server.exception.BusinessLogicException;
 import com.redhood.server.exception.ExceptionCode;
-import com.redhood.server.member.MemberRepository;
 import com.redhood.server.member.Member;
+import com.redhood.server.member.MemberRepository;
 import com.redhood.server.reply.entity.Comment;
 import com.redhood.server.reply.repository.CommentRepository;
+import com.redhood.server.security.UserDetailsImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,27 +29,24 @@ public class CommentService {
         this.memberRepository = memberRepository;
     }
 
-    public Comment createComment(Comment comment) {
+    public Comment createComment(Comment comment, UserDetailsImpl userDetails) {
         Comment savecomment = new Comment();
         if (comment.getBoard() != null) {
             comment.setBoard(findVerifiedBoard(comment.getBoard().getBoardId()));
-            //멤버 조회(jwt적용 후 수정)
-            comment.setMember(findVerifiedMember(1));
-            ///
+            comment.setMember(findVerifiedMember(userDetails.getUserId()));
             savecomment = commentRepository.save(comment);
         } else if (comment.getComment() != null){
             comment.setComment(findVerifiedComment(comment.getComment().getCommentId()));
-            //멤버 조회(jwt적용 후 수정)
-            comment.setMember(findVerifiedMember(1));
-            ///
+            comment.setMember(findVerifiedMember(userDetails.getUserId()));
             savecomment = commentRepository.save(comment);
         }
         return savecomment;
     }
-    public Comment updateComment(Comment comment) {
+    public Comment updateComment(Comment comment,UserDetailsImpl userDetails) {
         Comment findComment = findVerifiedComment(comment.getCommentId());
-        /// findComment 와 요청자가 같은지 검증 필요(jwt적용 후 추가)
-        Optional.ofNullable(comment.getContent()).ifPresent(content -> findComment.setContent(content));
+        if(findComment.getMember().getMemberId() == userDetails.getUserId()){
+            Optional.ofNullable(comment.getContent()).ifPresent(content -> findComment.setContent(content));
+        } else { new BusinessLogicException(ExceptionCode.AUTHOR_NOT_MATCH); }
         return commentRepository.save(findComment);
     }
     public List<Comment> findComments(long boardId){
@@ -62,9 +60,11 @@ public class CommentService {
     public Comment findComment(long commentId){
         return findVerifiedComment(commentId);
     }
-    public void deleteComment(long commentId) {
+    public void deleteComment(long commentId,UserDetailsImpl userDetails) {
         Comment findComment = findVerifiedComment(commentId);
-        commentRepository.delete(findComment);
+        if(findComment.getMember().getMemberId() == userDetails.getUserId()){
+            commentRepository.delete(findComment);
+        } else { new BusinessLogicException(ExceptionCode.AUTHOR_NOT_MATCH); }
     }
     @Transactional(readOnly = true)
     public Comment findVerifiedComment(long commentId) {

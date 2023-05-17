@@ -6,9 +6,9 @@ import com.redhood.server.exception.BusinessLogicException;
 import com.redhood.server.exception.ExceptionCode;
 import com.redhood.server.member.Member;
 import com.redhood.server.member.MemberRepository;
-
 import com.redhood.server.reply.entity.Apply;
 import com.redhood.server.reply.repository.ApplyRepository;
+import com.redhood.server.security.UserDetailsImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,11 +30,9 @@ public class ApplyService {
         this.memberRepository = memberRepository;
     }
 
-    public Apply createApply(Apply apply){
+    public Apply createApply(Apply apply, UserDetailsImpl userDetails){
         apply.setBoard(findVerifiedBoard(apply.getBoard().getBoardId()));
-        //멤버 조회(jwt적용 후 수정)
-        apply.setMember(findVerifiedMember(1));
-        ///
+        apply.setMember(findVerifiedMember(userDetails.getUserId()));
         return applyRepository.save(apply);
     }
     public List<Apply> findApplys(long boardId){
@@ -43,15 +41,36 @@ public class ApplyService {
     }
     public Apply findApply(long applyId){ return findVerifiedApply(applyId); }
 
-    public Apply updateApply(Apply apply) {
+    public Apply updateApply(Apply apply,UserDetailsImpl userDetails) {
         Apply findApply = findVerifiedApply(apply.getApplyId());
-        /// findComment 와 요청자가 같은지 검증 필요(jwt적용 후 추가)
-        Optional.ofNullable(apply.getContent()).ifPresent(content -> findApply.setContent(content));
+        if(findApply.getMember().getMemberId() == userDetails.getUserId()){
+            Optional.ofNullable(apply.getContent()).ifPresent(content -> findApply.setContent(content));
+        } else { new BusinessLogicException(ExceptionCode.AUTHOR_NOT_MATCH); }
         return applyRepository.save(findApply);
     }
-    public void deleteApply(long applyId) {
+    public Apply acceptApply(long applyId,UserDetailsImpl userDetails) {
         Apply findApply = findVerifiedApply(applyId);
-        applyRepository.delete(findApply);
+        if(findApply.getBoard().getMember().getMemberId() == userDetails.getUserId()){
+            if(findApply.getApplyStatus() == Apply.ApplyStatus.APPLY_REQUEST){
+                findApply.setApplyStatus(Apply.ApplyStatus.APLLY_ACCEPT);
+            } else { new BusinessLogicException(ExceptionCode.ALREADY_ACCEPT); }
+        } else { new BusinessLogicException(ExceptionCode.AUTHOR_NOT_MATCH); }
+        return applyRepository.save(findApply);
+    }
+    public Apply refuseApply(long applyId,UserDetailsImpl userDetails) {
+        Apply findApply = findVerifiedApply(applyId);
+        if(findApply.getBoard().getMember().getMemberId() == userDetails.getUserId()){
+            if(findApply.getApplyStatus() == Apply.ApplyStatus.APLLY_ACCEPT){
+                findApply.setApplyStatus(Apply.ApplyStatus.APPLY_REQUEST);
+            } else { new BusinessLogicException(ExceptionCode.ALREADY_REQUEST); }
+        } else { new BusinessLogicException(ExceptionCode.AUTHOR_NOT_MATCH); }
+        return applyRepository.save(findApply);
+    }
+    public void deleteApply(long applyId,UserDetailsImpl userDetails) {
+        Apply findApply = findVerifiedApply(applyId);
+        if(findApply.getMember().getMemberId() == userDetails.getUserId()){
+            applyRepository.delete(findApply);
+        } else { new BusinessLogicException(ExceptionCode.AUTHOR_NOT_MATCH); }
     }
     @Transactional(readOnly = true)
     public Apply findVerifiedApply(long applyId) {
