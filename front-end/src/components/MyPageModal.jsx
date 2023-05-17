@@ -125,7 +125,7 @@ export default function Modal({ member, onCancel, onSubmit, onChange, onPassword
     },
     {
       id: "password",
-      title: "비밀번호",
+      title: "비밀번호 변경",
       children: (
         <input
           type="password"
@@ -133,7 +133,7 @@ export default function Modal({ member, onCancel, onSubmit, onChange, onPassword
           name="password"
           value={member.password}
           onChange={onChange}
-          placeholder="비밀번호를 입력하세요."
+          placeholder="변경할 비밀번호를 입력해 주세요."
           pattern="^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9])(?=\S+$).{8,16}$"
           title="영문,숫자,특문을 조합해서 8자 이상 입력해주세요"
           required
@@ -142,13 +142,13 @@ export default function Modal({ member, onCancel, onSubmit, onChange, onPassword
     },
     {
       id: "passwordCheck",
-      title: "비밀번호 확인",
+      title: "비밀번호 변경 확인",
       children: (
         <input
           type="password"
           id="passwordCheck"
           onChange={onPasswordCheck}
-          placeholder="비밀번호를 다시 한 번 입력해주세요."
+          placeholder="변경할 비밀번호를 다시 한번 입력해 주세요."
           required
         />
       ),

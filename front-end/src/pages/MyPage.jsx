@@ -100,6 +100,7 @@ export default function MyPage() {
 
   const onCancel = () => {
     // 이미지 서버로 보낸 이미지가 있다면, 해당 이미지를 삭제하는 로직이 추가되어야 할 듯.
+    setMember(currentUser);
     setModal(false);
   };
 
@@ -121,18 +122,17 @@ export default function MyPage() {
     });
   };
 
-  const onImageDelete = async () => {
+  const onImageDelete = () => {
     if (!member.images) {
       alert("삭제할 이미지가 없습니다.");
       return;
     }
-    try {
-      const response = await deleteImage(member.images);
-      if (response === "success") {
-        setMember(previous => ({ ...previous, images: "" }));
-        alert("이미지가 삭제되었습니다.");
-      }
-    } catch (error) {
+    const response = deleteImage(member.images);
+    if (response === "success") {
+      setMember(previous => ({ ...previous, images: "" }));
+      alert("이미지가 삭제되었습니다.");
+    }
+    if (response === "fail") {
       alert("이미지 삭제에 실패했습니다.");
     }
   };
@@ -164,7 +164,7 @@ export default function MyPage() {
     });
   };
 
-  const handleClick = async () => {
+  const handleClick = () => {
     deleteMember(memberId).then(response => {
       if (response === "success") {
         // 로그아웃 처리?
@@ -180,7 +180,7 @@ export default function MyPage() {
   return (
     <EntireContainer>
       <ProfileSection>
-        {images ? <img src={blankProfileImage} alt="blanked user profile" /> : <img src={images} alt="user profile" />}
+        {images ? <img src={images} alt="user profile" /> : <img src={blankProfileImage} alt="blanked user profile" />}
         <ProfileInformation>
           <span className="nickName">{nickName}</span>
           <span>{email}</span>
