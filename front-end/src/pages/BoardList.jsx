@@ -202,6 +202,9 @@ export default function BoardList({ user }) {
                   setSelectedGu(event.target.value);
                 }}
               >
+                <option value="" hidden>
+                  지역구
+                </option>
                 {guList.map(gu => (
                   <option key={gu}>{gu}</option>
                 ))}
@@ -212,6 +215,9 @@ export default function BoardList({ user }) {
                   setSelectedDong(event.target.value);
                 }}
               >
+                <option value="" hidden>
+                  지역동
+                </option>
                 {dongList[selectedGu].map(dong => {
                   return <option key={dong}>{dong}</option>;
                 })}
