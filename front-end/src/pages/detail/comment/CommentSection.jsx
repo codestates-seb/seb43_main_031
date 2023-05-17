@@ -164,11 +164,15 @@ function CommentSection({ boardData }) {
     e.preventDefault();
     if (text === "") return alert("댓글을 작성해 주세요");
     const newComment = {
-      boardId: id, // params로 받은 id
-      memberId: user.memberId,
       commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
+      board: {
+        boardId: id, // params로 받은 id
+      },
+      member: {
+        memberId: user.memberId,
+      },
+      comment: null,
       content: text,
-      responseTo: "root", // 대댓글 연결을 위한 상태 추가
       createdDate: `${new Date()}`,
     };
     await axios

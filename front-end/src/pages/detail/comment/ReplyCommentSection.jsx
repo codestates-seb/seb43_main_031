@@ -111,7 +111,6 @@ const EditForm = styled.div`
       justify-content: center;
       & > button {
         margin: 0.3rem;
-        color: var(--sub-btn-color);
         font-size: 0.8rem;
         background-color: transparent; // 투명하게
         border: none;
@@ -126,7 +125,6 @@ const EditForm = styled.div`
 
 function ReplyCommentSection({ parentCommentId, boardId }) {
   const [display, setDisplay] = useState(false); // 대댓글 폼 박스 활성화 상태
-  const [local, setLocal] = useState([]); // 대댓글 배열 상태
   const [text, setText] = useState(""); // 대댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
   const [user, setUser] = useState({
@@ -138,7 +136,6 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
   });
   const [openEditor, setOpenEditor] = useState(""); // 댓글 고유id값 담는 상태
 
-  // const { id } = useParams();
   const dispatch = useDispatch();
   const comments = useSelector(state => state.comment);
 
@@ -148,12 +145,12 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
   useEffect(() => {
     async () => {
       try {
-        const { comments } = await axios(`${process.env.REACT_APP_API_URL}/comments/replys/${parentCommentId}}`, {
+        const { comments } = await axios(`/comments/replys/${parentCommentId}}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        dispatch(setComment(comments.filter(comment => comment.commentId === parentCommentId)));
+        dispatch(setComment(comments.filter(comment => comment.comment.commentId === parentCommentId)));
       } catch (err) {
         alert("해당 댓글의 답변을 불러오지 못했습니다.");
       }
@@ -165,14 +162,19 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
     e.preventDefault();
     if (text === "") return alert("대댓글을 작성해 주세요");
     const newComment = {
-      boardId, // params로 받은 id
-      memberId: user.memberId,
       commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
+      board: null,
+      member: {
+        memberId: user.memberId,
+      },
+      comment: {
+        commentId: parentCommentId,
+      },
       content: text,
       createdDate: `${new Date()}`,
     };
     await axios
-      .post(`{${process.env.REACT_APP_API_URL}/comments`, newComment)
+      .post(`/comments`, newComment)
       .then(response => {
         dispatch(addComment(response.data));
         setText("");
@@ -186,7 +188,7 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
   const handleEdit = (id, editText) => {
     const editData = { commentId: id, content: editText };
     axios
-      .patch(`${process.env.REACT_APP_API_URL}/comments/${id}`, editData)
+      .patch(`/comments/${id}`, editData)
       .then(res => {
         dispatch(editComment(res.data));
       })
@@ -198,7 +200,7 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
   // 대댓글 삭제하기
   const handleDelete = id => {
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/comments/${id}`)
+      .delete(`/comments/${id}`)
       .then(res => {
         console.log(res.status);
         dispatch(deleteComment(res.data));
@@ -218,7 +220,7 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
         }}
       >
         {display && "숨기기"}
-        {!display && (local.length === 0 ? "대댓글 달기" : `${local.length} 개의 대댓글 보기`)}
+        {!display && (comments.length === 0 ? "대댓글 달기" : `${comments.length} 개의 대댓글 보기`)}
       </button>
       {display && (
         <ReplyFormBox>
