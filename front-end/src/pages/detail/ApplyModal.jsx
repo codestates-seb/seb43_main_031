@@ -67,7 +67,7 @@ function ApplyModal({ setModalOpen }) {
   };
   return (
     <ModalBackdrop onClick={() => setModalOpen(false)}>
-      <ModalView>
+      <ModalView onClick={event => event.stopPropagation()}>
         <div className="title">신청 채택</div>
         <div className="desc">해당 신청을 채택 하시겠습니까?</div>
         <div className="utils">
