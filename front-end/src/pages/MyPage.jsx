@@ -122,12 +122,12 @@ export default function MyPage() {
     });
   };
 
-  const onImageDelete = () => {
+  const onImageDelete = async () => {
     if (!member.images) {
       alert("삭제할 이미지가 없습니다.");
       return;
     }
-    const response = deleteImage(member.images);
+    const response = await deleteImage(member.images);
     if (response === "success") {
       setMember(previous => ({ ...previous, images: "" }));
       alert("이미지가 삭제되었습니다.");
