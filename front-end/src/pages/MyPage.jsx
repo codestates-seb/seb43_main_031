@@ -1,13 +1,14 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 
-import { useSelector, useDispatch } from "react-redux";
-import { setUser } from "../redux/features/userSlice";
 import blankProfileImage from "../img/blank-profile.png";
+import { setUser } from "../redux/features/userSlice";
 import MyPageModal from "../components/MyPageModal";
 import MyPageTab from "../components/MyPageTab";
+import { postImage, deleteImage } from "../api/image";
+import { patchMember, deleteMember } from "../api/member";
 
 const EntireContainer = styled.div`
   width: 100vw;
@@ -88,81 +89,51 @@ const ButtonContainer = styled.div`
 
 export default function MyPage() {
   const navigate = useNavigate();
-  // 아마 const memberId = user.memberId 이런 식으로 로그인 시 저장해 둔 유저정보 받아올 듯
-  const memberId = 1;
+  const dispatch = useDispatch();
+
+  const currentUser = useSelector(state => state.user);
+  const { memberId, email, nickName, phone, images } = currentUser;
 
   const [modal, setModal] = useState(false);
   const [passwordCheck, setPasswordCheck] = useState("");
-  // const [profile, setProfile] = useState({});
-  const currentUser = useSelector(state => state.user);
-  const dispatch = useDispatch();
-  // get 요청 부분
-  // useEffect(() => {
-  //   const fetchMember = async () => {
-  //     const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`);
-  //     setProfile(response.data);
-  //   };
-  //   fetchMember();
-  // }, []);
-  const profile = {
-    memberId: 1,
-    email: "test@gmail.com",
-    nickName: "nickname",
-    phone: "010-1234-5678",
-    images: "https://cdn.pixabay.com/photo/2016/03/04/22/54/animal-1236875_1280.jpg",
-    memberStatus: "ACTIVE",
-    createdDate: "2023-05-12T14:28:14.621685",
-    updateDate: "2023-05-12T14:29:16.909628",
-  };
-
-  const { email, nickName, phone, images } = currentUser;
-
   const [member, setMember] = useState(currentUser);
-  console.log(member);
 
-  const onCancle = () => {
-    setModal(false);
-    setMember(member => ({
-      ...member,
-      password: "",
-    }));
+  const onCancel = () => {
     // 이미지 서버로 보낸 이미지가 있다면, 해당 이미지를 삭제하는 로직이 추가되어야 할 듯.
+    setModal(false);
   };
 
-  // 이미지 post, delete 요청 부분
-  const deleteImage = async url => {
-    try {
-      await axios.delete(`${process.env.REACT_APP_BASE_URL}/images`, { data: { image: url } });
-      return "success";
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const onImageUpload = async event => {
+  const onImageUpload = event => {
     const formData = new FormData();
     formData.append("file", event.target.files[0]);
-    if (member.images !== "" && member.images !== null) {
+    formData.append("Content-Type", "multipart/form-data");
+    if (member.images) {
       deleteImage(member.images);
     }
-    try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/images`, formData);
-      setMember(previous => ({ ...previous, images: response.data.image }));
-      alert("이미지가 등록되었습니다.");
-    } catch {
-      alert("이미지 등록에 실패했습니다.");
-    }
+    postImage(formData).then(response => {
+      if (response !== "fail") {
+        setMember(previous => ({ ...previous, images: response.data.image }));
+        alert("이미지가 등록되었습니다.");
+      }
+      if (response === "fail") {
+        alert("이미지 등록에 실패했습니다.");
+      }
+    });
   };
 
-  const onImageDelete = () => {
-    if (member.images === "" || member.images === null) {
+  const onImageDelete = async () => {
+    if (!member.images) {
       alert("삭제할 이미지가 없습니다.");
       return;
     }
-    const result = deleteImage(member.images);
-    if (result === "success") {
-      setMember(previous => ({ ...previous, images: "" }));
-      alert("이미지가 삭제되었습니다.");
+    try {
+      const response = await deleteImage(member.images);
+      if (response === "success") {
+        setMember(previous => ({ ...previous, images: "" }));
+        alert("이미지가 삭제되었습니다.");
+      }
+    } catch (error) {
+      alert("이미지 삭제에 실패했습니다.");
     }
   };
 
@@ -176,50 +147,40 @@ export default function MyPage() {
     setPasswordCheck(passwordCheckValue);
   };
 
-  // patch 요청 부분
-  const onSubmit = async event => {
+  const onSubmit = event => {
     event.preventDefault();
     if (passwordCheck !== member.password) {
       alert("비밀번호가 일치하지 않습니다.");
       return;
     }
-    try {
-      const response = await axios.patch(`/members/${memberId}`, member);
-      alert("회원 정보가 수정되었습니다.");
-      // 새로고침 없이 화면의 정보를 갱신하는 방법?
-      // 1. patch 요청 시 받은 응답 데이터를 활용
-      // const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`);
-      // alert("회원 정보가 수정되었습니다.");
-      // setModal(false);
-      // const { nickName, phone, images } = response.data;
-      // setProfile({ nickName, phone, images });
-      // 2. get 요청을 담은 useEffect의 의존성 배열을 이용 -> 어떤 상태를 사용?
-      // 3. 요청시 별개로 상태값(profile)도 업데이트(요청 실패시 예외 처리 잘 해줘야 할 듯)
-      dispatch(setUser(response.data));
-    } catch {
-      alert("회원 정보 수정에 실패했습니다.");
-    }
+    patchMember(memberId, member).then(response => {
+      if (response !== "fail") {
+        dispatch(setUser(response.data));
+        alert("회원 정보가 수정되었습니다.");
+      }
+      if (response === "fail") {
+        alert("회원 정보 수정에 실패했습니다.");
+      }
+    });
   };
 
-  // delete 요청 부분
   const handleClick = async () => {
-    try {
-      await axios.delete(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`);
-      // 로그아웃 처리?
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-    }
+    deleteMember(memberId).then(response => {
+      if (response === "success") {
+        // 로그아웃 처리?
+        alert("회원 탈퇴 과정이 완료되었습니다.");
+        navigate("/");
+      }
+      if (response === "fail") {
+        alert("회원 탈퇴에 실패했습니다. 자세한 내용은 사이트 관리자에게 문의해 주시길 바랍니다.");
+      }
+    });
   };
 
   return (
     <EntireContainer>
       <ProfileSection>
-        {images === "" || images === null ? (
-          <img src={blankProfileImage} alt="blanked user profile" />
-        ) : (
-          <img src={images} alt="user profile" />
-        )}
+        {images ? <img src={blankProfileImage} alt="blanked user profile" /> : <img src={images} alt="user profile" />}
         <ProfileInformation>
           <span className="nickName">{nickName}</span>
           <span>{email}</span>
@@ -228,7 +189,7 @@ export default function MyPage() {
             {modal && (
               <MyPageModal
                 member={member}
-                onCancle={onCancle}
+                onCancel={onCancel}
                 onSubmit={onSubmit}
                 onChange={onChange}
                 onPasswordCheck={onPasswordCheck}

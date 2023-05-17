@@ -89,7 +89,7 @@ const ImagebuttonContainer = styled.div`
   }
 `;
 
-export default function Modal({ member, onCancle, onSubmit, onChange, onPasswordCheck, onImageUpload, onImageDelete }) {
+export default function Modal({ member, onCancel, onSubmit, onChange, onPasswordCheck, onImageUpload, onImageDelete }) {
   const labels = [
     {
       id: "nickName",
@@ -159,7 +159,7 @@ export default function Modal({ member, onCancle, onSubmit, onChange, onPassword
     <ModalBackground>
       <ModalContainer>
         <CancleButton>
-          <button type="button" onClick={onCancle}>
+          <button type="button" onClick={onCancel}>
             X
           </button>
         </CancleButton>
