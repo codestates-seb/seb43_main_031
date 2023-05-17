@@ -150,7 +150,7 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
       try {
         const { comments } = await axios(`${process.env.REACT_APP_API_URL}/comments/replys/${parentCommentId}}`, {
           headers: {
-            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
           },
         });
         dispatch(setComment(comments.filter(comment => comment.commentId === parentCommentId)));

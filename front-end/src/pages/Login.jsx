@@ -1,8 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 
 import styled from "styled-components";
+import { setUser } from "../redux/features/userSlice";
 
 import login from "../api/login";
 
@@ -92,37 +94,28 @@ const RegisterStyle = styled.div`
   }
 `;
 
-export default function Login({ setUser }) {
-  const BASE_URL = `http://127.0.0.1:6001`;
+export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
-  const onClickLoginButton = () => {
-    axios({
-      method: "post",
-      url: `/members/login`,
-      data: {
+  const onClickLoginButton = async () => {
+    try {
+      const response = await axios.post(`/members/login`, {
         email,
         password,
-      },
-    })
-      .then(response => {
-        setUser(response.data);
-        navigate("/boards");
-      })
-      .catch(error => {
-        if (
-          error.response &&
-          error.response.data &&
-          error.response.data.error &&
-          error.response.data.error.message === "인증에 실패했습니다."
-        ) {
-          alert("이메일 또는 비밀번호가 틀렸습니다.");
-        } else {
-          alert(error);
-        }
       });
+      const token = response.headers.get("Authorization");
+      if (token) {
+        localStorage.setItem("token", token);
+      }
+      console.log(response.data);
+      dispatch(setUser(response.data));
+      navigate("/");
+    } catch (err) {
+      alert("err");
+    }
   };
 
   const handleKakaoLogin = () => {

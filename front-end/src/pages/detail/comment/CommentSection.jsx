@@ -124,9 +124,6 @@ const EditForm = styled.div`
 // 댓글 컴포넌트
 // 댓글과 대댓글 연결을 위한 상태(responseTo)를 추가하여 "root" 는 댓글, "responseTo"는 대댓글로 인식하게 했다.
 function CommentSection({ boardData }) {
-  // 왜 초기값인 boardInComments가 local상태로 안들어 가질까?
-  // boardInComments는 있을수도 있고 없을수도 있는걸 유념해야한다.
-  // const boardInComments = commentData?.filter(comment => comment.boardId === boardData.id) || []; // 해당 게시판에 속한 코멘츠들만 불러오기(초기값)
   const { id, memberId } = boardData;
 
   const inputRef = useRef(null);
@@ -150,9 +147,9 @@ function CommentSection({ boardData }) {
     window.scrollTo(0, 0);
     async () => {
       try {
-        const { comments } = await axios(`${process.env.REACT_APP_API_URL}/comments/comments/${id}}`, {
+        const { comments } = await axios(`/comments/comments/${id}}`, {
           headers: {
-            Authorization: localStorage.getItem("token"),
+            "Content-Type": "application/json",
           },
         });
         dispatch(setComment(comments.filter(comment => comment.board.boardId === id))); // 코멘트(댓글)만 필터링해서 코멘츠 데이터 업데이트
@@ -175,7 +172,7 @@ function CommentSection({ boardData }) {
       createdDate: `${new Date()}`,
     };
     await axios
-      .post(`{${process.env.REACT_APP_API_URL}/comments`, newComment)
+      .post(`/comments`, newComment)
       .then(response => {
         dispatch(addComment(response.data));
         setText("");
@@ -189,7 +186,7 @@ function CommentSection({ boardData }) {
   const handleEdit = (id, editText) => {
     const editData = { commentId: id, content: editText };
     axios
-      .patch(`${process.env.REACT_APP_API_URL}/comments/${id}`, editData)
+      .patch(`/comments/${id}`, editData)
       .then(res => {
         dispatch(editComment(res.data));
       })
@@ -201,7 +198,7 @@ function CommentSection({ boardData }) {
   // 댓글 삭제하기
   const handleDelete = id => {
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/comments/${id}`)
+      .delete(`/comments/${id}`)
       .then(res => {
         console.log(res.status);
         dispatch(deleteComment(res.data));

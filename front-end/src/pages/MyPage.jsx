@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import styled from "styled-components";
 
+import { useSelector, useDispatch } from "react-redux";
+import { setUser } from "../redux/features/userSlice";
 import blankProfileImage from "../img/blank-profile.png";
 import MyPageModal from "../components/MyPageModal";
 import MyPageTab from "../components/MyPageTab";
@@ -92,7 +94,8 @@ export default function MyPage() {
   const [modal, setModal] = useState(false);
   const [passwordCheck, setPasswordCheck] = useState("");
   // const [profile, setProfile] = useState({});
-
+  const currentUser = useSelector(state => state.user);
+  const dispatch = useDispatch();
   // get 요청 부분
   // useEffect(() => {
   //   const fetchMember = async () => {
@@ -112,14 +115,10 @@ export default function MyPage() {
     updateDate: "2023-05-12T14:29:16.909628",
   };
 
-  const { email, nickName, phone, images } = profile;
+  const { email, nickName, phone, images } = currentUser;
 
-  const [member, setMember] = useState({
-    nickName,
-    password: "",
-    phone,
-    images,
-  });
+  const [member, setMember] = useState(currentUser);
+  console.log(member);
 
   const onCancle = () => {
     setModal(false);
@@ -184,9 +183,8 @@ export default function MyPage() {
       return;
     }
     try {
-      await axios.patch(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`, member);
+      const response = await axios.patch(`/members/${memberId}`, member);
       alert("회원 정보가 수정되었습니다.");
-      window.location.reload();
       // 새로고침 없이 화면의 정보를 갱신하는 방법?
       // 1. patch 요청 시 받은 응답 데이터를 활용
       // const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/members/${memberId}`);
@@ -195,6 +193,7 @@ export default function MyPage() {
       // const { nickName, phone, images } = response.data;
       // setProfile({ nickName, phone, images });
       // 2. get 요청을 담은 useEffect의 의존성 배열을 이용 -> 어떤 상태를 사용?
+      dispatch(setUser(response.data));
     } catch {
       alert("회원 정보 수정에 실패했습니다.");
     }
