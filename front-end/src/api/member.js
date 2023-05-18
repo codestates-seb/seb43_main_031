@@ -1,8 +1,8 @@
-import axios from "./core/instance";
+import { authAxios } from "./core/instance";
 
 export const patchMember = async (memberId, member) => {
   try {
-    const response = await axios.patch(`/members/${memberId}`, member);
+    const response = await authAxios.patch(`/members/${memberId}`, member);
     return response;
   } catch (error) {
     console.log(error);
@@ -12,7 +12,7 @@ export const patchMember = async (memberId, member) => {
 
 export const deleteMember = async memberId => {
   try {
-    await axios.delete(`/members/${memberId}`);
+    await authAxios.delete(`/members/${memberId}`);
     return "success";
   } catch (error) {
     console.log(error);
