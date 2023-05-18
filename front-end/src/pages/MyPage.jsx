@@ -91,6 +91,7 @@ export default function MyPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // const currentUser = useSelector(state => state.user.userInfo);
   const currentUser = useSelector(state => state.user);
   const { memberId, email, nickName, phone, images } = currentUser;
 
@@ -157,6 +158,7 @@ export default function MyPage() {
       if (response !== "fail") {
         dispatch(setUser(response.data));
         alert("회원 정보가 수정되었습니다.");
+        setModal(false);
       }
       if (response === "fail") {
         alert("회원 정보 수정에 실패했습니다.");
