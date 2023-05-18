@@ -48,10 +48,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				.ignoring().
 				antMatchers("/h2/**");
 	}
-
-
-
-
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
@@ -69,29 +65,26 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.antMatchers(HttpMethod.GET, "/members/**").hasRole("USER")
 					.antMatchers(HttpMethod.PATCH, "/members/**").hasRole("USER")
 					.antMatchers(HttpMethod.DELETE, "/members/**").hasRole("USER")
+
 					.antMatchers(HttpMethod.POST, "/boards/**").hasRole("USER")
-					.antMatchers(HttpMethod.GET, "/boards/**").hasRole("USER")
 					.antMatchers(HttpMethod.PATCH, "/boards/**").hasRole("USER")
 					.antMatchers(HttpMethod.DELETE, "/boards/**").hasRole("USER")
+
 					.antMatchers(HttpMethod.POST, "/comments/**").hasRole("USER")
-					.antMatchers(HttpMethod.GET, "/comments/**").hasRole("USER")
 					.antMatchers(HttpMethod.PATCH, "/comments/**").hasRole("USER")
 					.antMatchers(HttpMethod.DELETE, "/comments/**").hasRole("USER")
+
 					.antMatchers(HttpMethod.POST, "/applys/**").hasRole("USER")
-					.antMatchers(HttpMethod.GET, "/applys/**").hasRole("USER")
 					.antMatchers(HttpMethod.PATCH, "/applys/**").hasRole("USER")
 					.antMatchers(HttpMethod.DELETE, "/applys/**").hasRole("USER")
+
 					.antMatchers(HttpMethod.POST, "/chats/**").hasRole("USER")
 					.antMatchers(HttpMethod.GET, "/chats/**").hasRole("USER")
 					.antMatchers(HttpMethod.PATCH, "/chats/**").hasRole("USER")
 					.antMatchers(HttpMethod.DELETE, "/chats/**").hasRole("USER")
 
-
-						.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-//						.antMatchers("/members/**").permitAll()
-//						.antMatchers("/board/**").permitAll()
-//						.antMatchers("/reply/**").permitAll()
-						.anyRequest().permitAll()  // 그외 나머지 요청은 누구나 접근 가능
+					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+					.anyRequest().permitAll()  // 그외 나머지 요청은 누구나 접근 가능
 					)
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
 						UsernamePasswordAuthenticationFilter.class);
