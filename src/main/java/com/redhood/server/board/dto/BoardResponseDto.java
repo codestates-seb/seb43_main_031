@@ -1,5 +1,7 @@
 package com.redhood.server.board.dto;
 
+import com.redhood.server.board.entity.Board;
+import com.redhood.server.member.Member;
 import com.redhood.server.member.MemberDto;
 import lombok.*;
 
@@ -31,8 +33,11 @@ public class BoardResponseDto {
     @Getter
     @Setter
     public static class ReplyResponse{
-    public long boardId;
-    }
+    private long boardId;
+
+    private MemberDto.ReplyResponse member;
+        }
 }
+
 
 
