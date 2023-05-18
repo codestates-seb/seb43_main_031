@@ -1,42 +1,39 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// 로컬스토리지에서 초기상태 가져와 사용, 없으면 빈배열
-// const initialState = localStorage.getItem("comments") ? [...JSON.parse(localStorage.getItem("comments"))] : [];
-
-// const initialState = [
-//   // 댓글만 있는경우
-//   {
-//     commentId: 1,
-//     content: "강아지 종이 뭐에요?",
-//     createdDate: "2023-05-12T15:18:38.88841",
-//     updateDate: "2023-05-12T15:18:46.366386",
-//     member: {
-//       memberId: 1,
-//     },
-//     board: {
-//       boardId: 1,
-//     },
-//     comment: null,
-//   },
-//   // 대댓글있는경우
-//   {
-//     commentId: 2,
-//     content: "고양이 종류가 뭐에요요",
-//     createdDate: "2023-05-12T15:21:56.416221",
-//     updateDate: "2023-05-12T15:21:56.416221",
-//     member: {
-//       memberId: 1,
-//     },
-//     board: null,
-//     comment: {
-//       commentId: 1,
-//     },
-//   },
-// ];
+const initialState = [
+  // 댓글만 있는경우
+  {
+    commentId: 1,
+    content: "강아지 종이 뭐에요?",
+    createdDate: "2023-05-12T15:18:38.88841",
+    updateDate: "2023-05-12T15:18:46.366386",
+    member: {
+      memberId: 1,
+    },
+    board: {
+      boardId: 1,
+    },
+    comment: null,
+  },
+  // 대댓글있는경우
+  {
+    commentId: 2,
+    content: "고양이 종류가 뭐에요요",
+    createdDate: "2023-05-12T15:21:56.416221",
+    updateDate: "2023-05-12T15:21:56.416221",
+    member: {
+      memberId: 1,
+    },
+    board: null,
+    comment: {
+      commentId: 1,
+    },
+  },
+];
 
 export const commentSlice = createSlice({
   name: "comment",
-  initialState: [],
+  initialState,
   reducers: {
     addComment(state, action) {
       return [...state, { ...action.payload }];
