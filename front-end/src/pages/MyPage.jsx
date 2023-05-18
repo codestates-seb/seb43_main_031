@@ -17,6 +17,11 @@ const EntireContainer = styled.div`
   color: var(--font-color-bold);
 `;
 
+const WarningWords = styled.p`
+  display: flex;
+  justify-content: center;
+`;
+
 const ProfileSection = styled.div`
   display: flex;
   justify-content: center;
@@ -178,6 +183,14 @@ export default function MyPage() {
       }
     });
   };
+
+  if (!currentUser) {
+    return (
+      <EntireContainer>
+        <WarningWords>로그인이 필요한 페이지입니다.</WarningWords>
+      </EntireContainer>
+    );
+  }
 
   return (
     <EntireContainer>

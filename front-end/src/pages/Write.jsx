@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { FaCommentDots, FaWonSign, FaMapPin } from "react-icons/fa";
 import { RxFileText } from "react-icons/rx";
@@ -11,6 +12,18 @@ import "@toast-ui/editor/dist/toastui-editor.css";
 import { guList, dongList } from "../data/SeoulDistricts";
 import { postBoard } from "../api/board";
 import { postImage } from "../api/image";
+
+const EntireContainer = styled.div`
+  width: 100vw;
+  min-height: calc(100vh - 50px);
+  padding: 5rem 0;
+  color: var(--font-color-bold);
+`;
+
+const WarningWords = styled.p`
+  display: flex;
+  justify-content: center;
+`;
 
 const FormSection = styled.form`
   display: flex;
@@ -90,6 +103,8 @@ const ButtonContainer = styled.div`
 export default function Write() {
   const navigate = useNavigate();
   const editorRef = useRef();
+  // const currentUser = useSelector(state => state.user.userInfo);
+  const currentUser = useSelector(state => state.user);
 
   const [board, setBoard] = useState({
     title: "",
@@ -221,6 +236,14 @@ export default function Write() {
       ),
     },
   ];
+
+  if (!currentUser) {
+    return (
+      <EntireContainer>
+        <WarningWords>로그인이 필요한 페이지입니다.</WarningWords>
+      </EntireContainer>
+    );
+  }
 
   return (
     <FormSection onSubmit={handleSubmit}>
