@@ -84,4 +84,5 @@ public class MemberDto {
 		private String nickName;
 
 	}
+
 }

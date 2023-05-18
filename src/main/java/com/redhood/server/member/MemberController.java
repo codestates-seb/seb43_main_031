@@ -28,12 +28,6 @@ public class MemberController {
 	private final JwtTokenProvider jwtTokenProvider;
 	private final MemberMapper mapper;
 
-	@GetMapping("/hello-oauth2")
-	public String home(){
-		return "hello-oauth2";
-	}
-
-
 	@PostMapping
 	public ResponseEntity signUp(@Valid @RequestBody MemberDto.Post postDto){
 		Member member = mapper.memberPostToMember(postDto);
