@@ -51,7 +51,6 @@ public class BoardMapper {
     public BoardResponseDto boardToBoardResponseDto(Board board) {
         BoardResponseDto boardResponseDto = new BoardResponseDto();
                 boardResponseDto.setBoardId(board.getBoardId());
-                boardResponseDto.setNickName(board.getNickName());
                 boardResponseDto.setTitle(board.getTitle());
                 boardResponseDto.setContent(board.getContent());
                 boardResponseDto.setCost(board.getCost());
@@ -67,23 +66,7 @@ public class BoardMapper {
                 return boardResponseDto;
     }
 
-    /*public BoardResponseDto mapToBoardResponseDto(Board board) {
-        return new BoardResponseDto(board.getBoardId(),
-                board.getNickName(),
-                board.getTitle(),
-                board.getContent(),
-                board.getCost(),
-                board.getViewCount(),
-                board.getExpiredDateTime(),
-                board.getDongTag(),
-                board.getGuTag(),
-                board.getDetailAddress(),
-                board.isCompleted(),
-                board.getCreatedDate(),
-                board.getUpdatedDate()
 
-        );
-    }*/
 
 
 
@@ -92,11 +75,6 @@ public class BoardMapper {
 
         return map;
     }
-       /* List<BoardResponseDto> dtoList = boardPage.stream()
-                .map(this::mapToBoardResponseDto)
-                .collect(Collectors.toList());
 
-        return new PageImpl<>(dtoList, boardPage.getPageable(),boardPage.getTotalElements());
-    }*/
 }
 

@@ -12,7 +12,6 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BoardResponseDto {
     private long boardId;
-    private String nickName;
     private String title;
     private String content;
     private long cost;
