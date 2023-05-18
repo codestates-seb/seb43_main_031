@@ -49,6 +49,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				antMatchers("/h2/**");
 	}
 
+
+
+
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
 		http
@@ -83,7 +86,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 					.antMatchers(HttpMethod.PATCH, "/chats/**").hasRole("USER")
 					.antMatchers(HttpMethod.DELETE, "/chats/**").hasRole("USER")
 
-					.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
 						.antMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 //						.antMatchers("/members/**").permitAll()
@@ -98,8 +100,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.setAllowedOriginPatterns(Collections.singletonList(""));
-		configuration.addAllowedMethod("");
+		configuration.setAllowedOriginPatterns(Collections.singletonList("*"));
+		configuration.setAllowedOrigins(Collections.singletonList("http://localhost:3000"));
+		configuration.addAllowedMethod("*");
 		configuration.addAllowedHeader("*");
 		configuration.addAllowedHeader("content-type");
 		configuration.addExposedHeader("Authorization");
@@ -109,8 +112,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		return source;
 	}
-
-
-
 
 }
