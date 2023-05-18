@@ -1,8 +1,8 @@
-// import libraries
-import { useState } from "react";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 
 // import pages
+import { useSelector } from "react-redux";
 import Landing from "./pages/Landing";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
@@ -19,44 +19,24 @@ import GlobalStyles from "./styles/GlobalStyles";
 
 // App
 function App() {
-  const [user, setUser] = useState(null);
-
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <Landing>Landing Page...</Landing>,
-    },
-    {
-      path: "/login",
-      element: <Login setUser={setUser} />,
-    },
-    {
-      path: "/register",
-      element: <Register>Register Page</Register>,
-    },
-    {
-      path: "/my-page",
-      element: <MyPage>My Page</MyPage>,
-    },
-    {
-      path: "/boards",
-      element: <BoardList user={user} />,
-    },
-    {
-      path: "/boards/:id",
-      element: <Detail />,
-    },
-    {
-      path: "/write",
-      element: <Write>Write Page</Write>,
-    },
-  ]);
+  const currentUser = useSelector(state => state.user);
 
   return (
     <div className="App" style={{ backgroundColor: "var(--bg-color)" }}>
       <GlobalStyles />
-      <Header user={user} setUser={setUser} />
-      <RouterProvider router={router} />
+      <Router>
+        <Header />
+        <Routes>
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/my-page" element={<MyPage />} />
+          <Route path="/boards" element={<BoardList />} />
+          <Route path="/boards/:id" element={<Detail />} />
+          <Route path="/write" element={<Write />} />
+          <Route path="/*" element={<Navigate to="/" />} />
+        </Routes>
+      </Router>
     </div>
   );
 }

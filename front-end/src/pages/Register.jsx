@@ -177,7 +177,7 @@ export default function Register() {
 
     axios({
       method: "post",
-      url: `http://127.0.0.1:6001/members`,
+      url: `${process.env.REACT_APP_BASE_URL}/members`,
       headers: {
         "Content-Type": "application/json",
       },
@@ -193,7 +193,7 @@ export default function Register() {
         navigate("/login");
       })
       .catch(function (error) {
-        // console.log(error);
+        console.log(error);
         alert(error);
       });
   };

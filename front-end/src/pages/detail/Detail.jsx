@@ -9,7 +9,6 @@ import { RxFileText } from "react-icons/rx";
 import { FiClock } from "react-icons/fi";
 
 // 라이브러리
-
 import styled from "styled-components";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import { Editor, Viewer } from "@toast-ui/react-editor";
@@ -153,7 +152,7 @@ function Detail() {
 
   const dispatch = useDispatch();
   const boards = useSelector(state => state.board);
-  const board = boards.find(board => board.id === +id);
+  const board = boards.find(board => board.id === +id) || [];
   // console.log(board);
   const { title, memberId, createdDate, content, cost, expiredDate, dongTag, guTag, detailAddress } = board; // 게시글 구조분해할당
 
@@ -163,11 +162,15 @@ function Detail() {
     // setIsPending(true);
     async () => {
       try {
-        const { boards } = await axios(`${process.env.REACT_APP_API_URL}/boards/${id}`);
+        const { boards } = await axios.get(`/boards/${id}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        console.log(boards);
         dispatch(setBoard(boards));
       } catch (err) {
-        dispatch(setBoard(boards)); // 통신후 교체 예정
-        // alert("게시글을 불러오지 못했습니다.");
+        alert("게시글을 불러오지 못했습니다.");
       }
       // setIsPending(false);
     };
@@ -177,7 +180,7 @@ function Detail() {
   const handleEdit = (id, editText) => {
     const editData = { id, content: editText };
     axios
-      .patch(`${process.env.REACT_APP_API_URL}/boards/${id}`, editData)
+      .patch(`/boards/${id}`, editData)
       .then(res => {
         dispatch(editBoard(res.data));
       })
@@ -189,7 +192,7 @@ function Detail() {
   // 게시글 삭제
   const handleDelete = id => {
     axios
-      .delete(`${process.env.REACT_APP_API_URL}/boards/${id}`)
+      .delete(`/boards/${id}`)
       .then(res => {
         console.log(res.status);
         dispatch(deleteBoard(res.data));
@@ -217,7 +220,7 @@ function Detail() {
     const formData = new FormData();
     formData.append("file", blob);
     try {
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/images`, formData);
+      const response = await axios.post(`/images`, formData);
       callback(response.data.image);
     } catch (error) {
       console.log(error);
