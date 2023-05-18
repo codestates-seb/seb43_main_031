@@ -102,7 +102,7 @@ export default function Login() {
 
   const onClickLoginButton = async () => {
     try {
-      const response = await axios.post(`/members/login`, {
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/members/login`, {
         email,
         password,
       });

@@ -146,11 +146,12 @@ function Detail() {
   const editorRef = useRef();
   const [isLogin, setIslogin] = useState(true);
   const [isPending, setIsPending] = useState(false);
-  const [isEdit, setIsEdit] = useState(false); // 게시글 수정창 상태
   const [editText, setEditText] = useState(""); // 수정할 인풋값 상태
   const [openEditor, setOpenEditor] = useState(""); // 게시글 고유id값 담는 상태
 
+  const currentUser = useSelector(state => state.user);
   const dispatch = useDispatch();
+
   const boards = useSelector(state => state.board);
   const board = boards.find(board => board.id === +id) || [];
   // console.log(board);
@@ -160,47 +161,40 @@ function Detail() {
   useEffect(() => {
     window.scrollTo(0, 0); // 페이지 맨 위로
     // setIsPending(true);
-    async () => {
+    (async () => {
       try {
-        const { boards } = await axios.get(`/boards/${id}`, {
+        const { boards } = await axios.get(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        console.log(boards);
         dispatch(setBoard(boards));
       } catch (err) {
         alert("게시글을 불러오지 못했습니다.");
       }
       // setIsPending(false);
-    };
-  }, [boards, dispatch, id]);
+    })();
+  }, [dispatch, id]);
 
   // 게시글 수정
-  const handleEdit = (id, editText) => {
-    const editData = { id, content: editText };
-    axios
-      .patch(`/boards/${id}`, editData)
-      .then(res => {
-        dispatch(editBoard(res.data));
-      })
-      .catch(err => {
-        alert("게시글을 수정하지 못했습니다.");
-      });
+  const handleEdit = async (id, editText) => {
+    try {
+      const editData = { id, content: editText };
+      const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, editData);
+      dispatch(editBoard(response.data));
+    } catch (err) {
+      alert("게시글을 수정하지 못했습니다.");
+    }
   };
 
   // 게시글 삭제
-  const handleDelete = id => {
-    axios
-      .delete(`/boards/${id}`)
-      .then(res => {
-        console.log(res.status);
-        dispatch(deleteBoard(res.data));
-        navigate("/boards");
-      })
-      .catch(err => {
-        alert("게시글을 삭제하지 못했습니다.");
-      });
+  const handleDelete = async id => {
+    try {
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/boards/${id}`);
+      dispatch(deleteBoard(response.data));
+    } catch (err) {
+      alert("게시글을 삭제하지 못했습니다.");
+    }
   };
 
   // 수정할 인풋 이벤트
@@ -220,7 +214,7 @@ function Detail() {
     const formData = new FormData();
     formData.append("file", blob);
     try {
-      const response = await axios.post(`/images`, formData);
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/images`, formData);
       callback(response.data.image);
     } catch (error) {
       console.log(error);
@@ -337,6 +331,7 @@ function Detail() {
               </div>
               <div className="utils">
                 <button
+                  disabled={currentUser.memberId !== board.memberId}
                   type="button"
                   onClick={() => {
                     if (id === openEditor) {
@@ -349,7 +344,11 @@ function Detail() {
                 >
                   수정
                 </button>
-                <button type="button" onClick={() => handleDelete(id)}>
+                <button
+                  disabled={currentUser.memberId !== board.memberId}
+                  type="button"
+                  onClick={() => handleDelete(id)}
+                >
                   삭제
                 </button>
               </div>
@@ -375,35 +374,6 @@ function Detail() {
 }
 
 export default Detail;
-
-// <section className="main-msg">
-//   <div className="main-title">
-//     <CgFileDocument />
-//     <p>상세내용</p>
-//   </div>
-//   <Viewer initialValue={content} />
-// </section>
-// <section className="main-cost">
-//   <div className="main-title">
-//     <BiWon />
-//     <p>수고비</p>
-//   </div>
-//   <p>{cost}</p>
-// </section>
-// <section className="main-expire">
-//   <div className="main-title">
-//     <AiFillClockCircle />
-//     <p>만료일자</p>
-//   </div>
-//   <p>{expiredDate}</p>
-// </section>
-// <section className="main-location">
-//   <div className="main-title">
-//     <BiMap />
-//     <p>상세주소</p>
-//   </div>
-//   <p>{detailAddress}</p>
-// </section>
 
 // 해당 게시글 수정
 // const updateBoard = (boardId, body) => {
