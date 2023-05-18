@@ -25,9 +25,11 @@ public class MemberService {
 	private final PasswordEncoder passwordEncoder;
 	private final CustomAuthorityUtils customAuthorityUtils;
 
-
 	public Member signUp(Member member) {
-		//verifyExistsEmail(member.getEmail());
+		Optional<Member> findMember = memberRepository.findByEmail(member.getEmail());
+		if(findMember.isPresent()){
+			throw new BusinessLogicException(ExceptionCode.MEMBER_EXISTS);
+		}
 		String encryptedPassword  = passwordEncoder.encode(member.getPassword());
 		member.setPassword(encryptedPassword);
 		member.setCreatedDate(LocalDateTime.now());
