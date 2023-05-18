@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { AiOutlineCheckCircle, AiFillCheckCircle } from "react-icons/ai";
-
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 
 import getBoards from "../api/getBoards";
 import { guList, dongList } from "../data/SeoulDistricts";
-import Paging from "../components/Paging";
+
+import WelcomeMessage from "../features/boards/WelcomeMessage";
+import BoardListArea from "../features/boards/BoardListArea";
+import PaginationArea from "../features/boards/PaginationArea";
+import SearchToolArea from "../features/boards/SearchToolArea";
+import SearchBar from "../features/boards/SearchBar";
+import WriteButtonArea from "../features/boards/WriteButtonArea";
 
 // main레이아웃으로 뺄 예정
 const Main = styled.div`
@@ -143,12 +147,15 @@ const BoardListWrapperStyle = styled.div`
 `;
 export default function BoardList({ user }) {
   const navigate = useNavigate();
+  const currentUser = useSelector(state => state.user);
+
   const [searchText, setSearchText] = useState("");
   const [searchInputText, setSearchInputText] = useState("");
-  const [selectedGu, setSelectedGu] = useState(guList[0]);
-  const [selectedDong, setSelectedDong] = useState(dongList[selectedGu][0]);
+  const [selectedGu, setSelectedGu] = useState("지역구");
+  const [selectedDong, setSelectedDong] = useState("지역동");
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortType, setSortType] = useState("createdDate");
+  const [sortTypeCreateDate, setSortTypeCreateDate] = useState("");
+  const [sortTypeViewCount, setSortTypeViewCount] = useState("");
   const [boards, setBoards] = useState([]);
 
   useEffect(() => {
@@ -157,135 +164,72 @@ export default function BoardList({ user }) {
       searchText,
       selectedGu,
       selectedDong,
-      sortType,
+      sortTypeCreateDate,
+      sortTypeViewCount,
     }).then(response => {
-      setBoards(response);
+      setBoards(response.content);
     });
-  }, [currentPage, searchText, selectedGu, selectedDong, sortType]);
+  }, [currentPage, searchText, sortTypeCreateDate, sortTypeViewCount, selectedGu, selectedDong]);
 
   useEffect(() => {
+    if (selectedGu === "지역구") return;
     setSelectedDong(dongList[selectedGu][0]);
   }, [selectedGu]);
 
-  const onChange = pageNumber => {
+  const onChangePage = pageNumber => {
     setCurrentPage(pageNumber);
+  };
+
+  const onSearchTextChange = event => {
+    setSearchInputText(event.target.value);
+  };
+
+  const onSearchButtonClick = () => {
+    setSearchText(searchInputText);
+  };
+
+  const onSelectedGu = event => {
+    setSelectedGu(event.target.value);
+  };
+
+  const onSelectedDong = event => {
+    setSelectedDong(event.target.value);
+  };
+
+  const onClickSortCreateDate = () => {
+    setSortTypeCreateDate("createDate");
+  };
+
+  const onClickSortViewCount = () => {
+    setSortTypeViewCount("viewCount");
+  };
+
+  const onClickWriteBoard = () => {
+    if (!currentUser) {
+      alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
+      navigate("/login");
+      return;
+    }
+    navigate("/write");
   };
 
   return (
     <Main>
       <BoardContainerStyle>
         <BoardListWrapperStyle>
-          <div className="welcome-message">도와주세요 여러분</div>
-          <div className="search-bar">
-            <input
-              className="input-text"
-              placeholder="여기에 검색어를 입력해주세요."
-              value={searchInputText}
-              onChange={event => {
-                setSearchInputText(event.target.value);
-              }}
-            />
-            <div
-              className="search-icon"
-              onClick={() => {
-                setSearchText(searchInputText);
-              }}
-            >
-              🔍
-            </div>
-          </div>
-          <div className="sarch-tool-area">
-            <div className="locacation-search-dropdowns-area">
-              <select
-                className="location-search-dropdown"
-                onChange={event => {
-                  setSelectedGu(event.target.value);
-                }}
-              >
-                <option value="" hidden>
-                  지역구
-                </option>
-                {guList.map(gu => (
-                  <option key={gu}>{gu}</option>
-                ))}
-              </select>
-              <select
-                className="location-search-dropdown"
-                onChange={event => {
-                  setSelectedDong(event.target.value);
-                }}
-              >
-                <option value="" hidden>
-                  지역동
-                </option>
-                {dongList[selectedGu].map(dong => {
-                  return <option key={dong}>{dong}</option>;
-                })}
-              </select>
-            </div>
-            <div className="sort-buttons-area">
-              <button
-                type="button"
-                className="sort-button"
-                onClick={() => {
-                  setSortType("views");
-                }}
-              >
-                조회순
-              </button>
-              <button
-                type="button"
-                className="sort-button"
-                onClick={() => {
-                  setSortType("createdDate");
-                }}
-              >
-                최신순
-              </button>
-            </div>
-          </div>
-          <div className="write-button-area">
-            <button
-              type="button"
-              className="write-button"
-              onClick={() => {
-                if (!user) {
-                  alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
-                  navigate("/login");
-                  return;
-                }
-                navigate("/write");
-              }}
-            >
-              글 작성하기
-            </button>
-          </div>
-          <div className="board-list-area">
-            <div className="board-list">
-              {boards.length === 0 && <div style={{ textAlign: "center" }}>등록된 게시글이 없습니다.</div>}
-              {boards.map(({ id, title, cost, createDate, completed }) => {
-                return (
-                  <div className="board">
-                    <div className="board-info" onClick={() => navigate(`/boards/${id}`)}>
-                      <div className="board-title">{title}</div>
-                      <div className="board-meta">
-                        <div>{cost}</div>
-                        <div>{createDate}</div>
-                      </div>
-                    </div>
-                    <div className="completed-checkbox">
-                      {completed ? <AiFillCheckCircle /> : <AiOutlineCheckCircle />}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-          <div className="pagination-area">
-            <div className="pagination">
-              <Paging page={currentPage} setPage={setCurrentPage} onChange={onChange} />
-            </div>
-          </div>
+          <WelcomeMessage />
+          <SearchBar onChange={onSearchTextChange} onClick={onSearchButtonClick} searchInputText={searchInputText} />
+          <SearchToolArea
+            onSelectedGu={onSelectedGu}
+            onSelectedDong={onSelectedDong}
+            selectedGu={selectedGu}
+            selectedDong={selectedDong}
+            onClickSortCreateDate={onClickSortCreateDate}
+            onClickSortViewCount={onClickSortViewCount}
+          />
+          <WriteButtonArea onClickWriteBoard={onClickWriteBoard} />
+          <BoardListArea boards={boards} />
+          <PaginationArea onChangePage={onChangePage} />
         </BoardListWrapperStyle>
       </BoardContainerStyle>
     </Main>

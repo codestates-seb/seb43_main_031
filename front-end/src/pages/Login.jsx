@@ -102,19 +102,24 @@ export default function Login() {
 
   const onClickLoginButton = async () => {
     try {
-      const response = await axios.post(`/members/login`, {
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/members/login`, {
         email,
         password,
       });
       const token = response.headers.get("Authorization");
       if (token) {
-        localStorage.setItem("token", token);
+        await localStorage.setItem("token", token);
       }
       console.log(response.data);
       dispatch(setUser(response.data));
       navigate("/");
     } catch (err) {
-      alert("err");
+      const status = err?.response?.status;
+      if (status === 403) {
+        alert("이메일 또는 비밀번호가 일치하지 않습니다.");
+      } else if (status === 500) {
+        alert("서버에 문제가 있습니다. 잠시 후 다시 시도해주세요.");
+      }
     }
   };
 
