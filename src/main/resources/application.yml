@@ -15,7 +15,7 @@ spring:
 amazon:
   aws:
     accesskey: AKIAZAIMFDB7DGYXHOGG
-    secretkey: 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
+    secretkey: kxVuoK5EbUus0BGBKKYGxYODQiFRmu6H20exyWAs
     s3:
       region: ap-northeast-2
       bucket: redhood
