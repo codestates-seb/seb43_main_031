@@ -193,7 +193,7 @@ export default function Register() {
         navigate("/login");
       })
       .catch(function (error) {
-        // console.log(error);
+        console.log(error);
         alert(error);
       });
   };

@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
 import { AiOutlineCheckCircle, AiFillCheckCircle } from "react-icons/ai";
 
@@ -203,6 +202,9 @@ export default function BoardList({ user }) {
                   setSelectedGu(event.target.value);
                 }}
               >
+                <option value="" hidden>
+                  지역구
+                </option>
                 {guList.map(gu => (
                   <option key={gu}>{gu}</option>
                 ))}
@@ -210,10 +212,12 @@ export default function BoardList({ user }) {
               <select
                 className="location-search-dropdown"
                 onChange={event => {
-                  // console.log(event.target.value);ㅋㅂ
                   setSelectedDong(event.target.value);
                 }}
               >
+                <option value="" hidden>
+                  지역동
+                </option>
                 {dongList[selectedGu].map(dong => {
                   return <option key={dong}>{dong}</option>;
                 })}
@@ -258,6 +262,7 @@ export default function BoardList({ user }) {
           </div>
           <div className="board-list-area">
             <div className="board-list">
+              {boards.length === 0 && <div style={{ textAlign: "center" }}>등록된 게시글이 없습니다.</div>}
               {boards.map(({ id, title, cost, createDate, completed }) => {
                 return (
                   <div className="board">
