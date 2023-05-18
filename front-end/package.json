@@ -6,7 +6,6 @@
     "@reduxjs/toolkit": "^1.9.5",
     "@toast-ui/react-editor": "^3.2.3",
     "axios": "^1.4.0",
-    "http-proxy-middleware": "^2.0.6",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-icons": "^4.8.0",

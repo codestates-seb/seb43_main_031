@@ -5,7 +5,7 @@ import axios from "axios";
 
 // 인증이 필요없는 경우
 export const instance = axios.create({
-  // baseURL: `${process.env.REACT_APP_BASE_URL}`,
+  baseURL: `${process.env.REACT_APP_BASE_URL}`,
   headers: { "Content-Type": "application/json" },
 });
 
@@ -13,7 +13,7 @@ export default instance;
 
 // form-data의 경우
 export const fileAxios = axios.create({
-  // baseURL: `${process.env.REACT_APP_BASE_URL}`,
+  baseURL: `${process.env.REACT_APP_BASE_URL}`,
   headers: {
     "Content-Type": "multipart/form-data",
   },
@@ -22,7 +22,7 @@ export const fileAxios = axios.create({
 // 인증이 필요한 경우
 const token = "토큰 값";
 export const authAxios = axios.create({
-  // baseURL: `${process.env.REACT_APP_BASE_URL}`,
+  baseURL: `${process.env.REACT_APP_BASE_URL}`,
   headers: {
     Authorization: `Bearer ${token}`,
   },
