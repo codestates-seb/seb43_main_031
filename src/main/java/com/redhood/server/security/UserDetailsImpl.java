@@ -5,23 +5,15 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
 public class UserDetailsImpl implements UserDetails {
 	private final Member member;
-
-	// UserDetails 인터페이스의 메서드 구현
-//	public static OAuth2User build(Member member) {
-//		return  new UserDetailsImpl(member);
-//	}
 
 	/* 유저의 권한 목록 */
 	@Override
@@ -87,14 +79,4 @@ public class UserDetailsImpl implements UserDetails {
 		return true;
 	}
 
-//	@Override
-//	public String getNickname() {
-//		return member.getNickName();
-//	}
-//	@Override
-//	public Map<String, Object> getAttributes() {
-//		Map<String, Object> attributes = new HashMap<>();
-//		// 필요한 경우 OAuth 제공자로부터 받아온 추가 정보를 attributes 맵에 추가해주세요.
-//		return attributes;
-//	}
 }

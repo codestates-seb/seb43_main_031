@@ -19,7 +19,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-
 import java.util.Collections;
 
 
@@ -29,7 +28,6 @@ import java.util.Collections;
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	private final JwtTokenProvider jwtTokenProvider;
-	//private UserOAuth2Service userOAuth2Service;
 
 	// 암호화에 필요한 passwordEncoder 를 Bean으로 등록
 	@Bean
@@ -93,14 +91,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //						.antMatchers("/reply/**").permitAll()
 						.anyRequest().permitAll()  // 그외 나머지 요청은 누구나 접근 가능
 					)
-
-				// JwtAuthenticationFilter를 UsernamePasswordAuthenticationFilter 전에 넣는다
 				.addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider),
 						UsernamePasswordAuthenticationFilter.class);
-//				.oauth2Login()
-//				.userInfoEndpoint()
-//				.userService(userOAuth2Service);
-
 	}
 	//cors 허용 적용
 	@Bean
