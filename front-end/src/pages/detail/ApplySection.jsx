@@ -5,7 +5,7 @@ import axios from "axios";
 
 import styled from "styled-components";
 
-import { addApply, deleteApply, setApply } from "../../redux/features/applySlice";
+import { addApply, deleteApply, filterApplyByBoardId, setApply } from "../../redux/features/applySlice";
 
 import UserBox from "./UserBox";
 import DetailSubHeader from "./SubHeader";
@@ -28,6 +28,7 @@ const StyledListBlock = styled.div`
   margin-bottom: 1rem;
   border-radius: 0.4rem;
   box-shadow: 0 0.1rem 0.7rem 0.1rem rgba(0, 0, 0, 0.1);
+  background-color: ${props => props.bg};
 `;
 
 // 신청 아이템
@@ -86,6 +87,7 @@ const ApplyBtn = styled.button`
 function ApplySection({ boardData }) {
   const { id, memberId } = boardData;
 
+  const [selectedApply, setSelectedApply] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [user, setUser] = useState({
     memberId: 1,
@@ -95,84 +97,80 @@ function ApplySection({ boardData }) {
     image: "",
   });
 
+  const currentUser = useSelector(state => state.user);
   const dispatch = useDispatch();
   const applys = useSelector(state => state.apply);
 
   // 렌더링 시 모든 신청글 조회
   useEffect(() => {
     window.scrollTo(0, 0);
-    async () => {
+    (async () => {
       try {
-        const { applys } = await axios(`/applys/boardId/${id}}`, {
+        const { applys } = await axios(`${process.env.REACT_APP_BASE_URL}/applys/boardId/${id}}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        dispatch(setApply(applys.filter(apply => apply.board.boardId === id)));
+        dispatch(filterApplyByBoardId({ applys, id }));
       } catch (err) {
-        alert("질문을 불러오지 못했습니다.");
+        alert("신청을 불러오지 못했습니다.");
       }
-    };
+    })();
   }, [dispatch, id]);
 
   // 신청 생성하기
   const handleSubmit = async e => {
-    e.preventDefault();
-    const newApply = {
-      boardId: id,
-      applyId: uuid(),
-      applyStatus: false,
-      createdDate: `${new Date()}`,
-    };
-    await axios
-      .post(`/applys`, newApply)
-      .then(response => {
-        dispatch(addApply(response.data));
-      })
-      .catch(err => {
-        alert("신청을 성공적으로 보내지 못했습니다.");
-      });
+    try {
+      e.preventDefault();
+      const newApply = {
+        boardId: id,
+        applyId: uuid(),
+        applyStatus: false,
+        createdDate: `${new Date()}`,
+      };
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/applys`, newApply);
+      dispatch(addApply(response.data));
+    } catch (err) {
+      alert("신청을 성공적으로 보내지 못했습니다.");
+    }
   };
 
   // 신청 삭제하기
-  const handleDelete = id => {
-    axios
-      .delete(`/apply/${id}`)
-      .then(res => {
-        console.log(res.status);
-        dispatch(deleteApply(res.data));
-      })
-      .catch(err => {
-        alert("신청 삭제를 실패하였습니다.");
-      });
-  };
-
-  const showModal = () => {
-    setModalOpen(true);
+  const handleDelete = async id => {
+    try {
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/apply/${id}`);
+      dispatch(deleteApply(response.data));
+    } catch (err) {
+      alert("신청 삭제를 실패하였습니다.");
+    }
   };
 
   return (
     <StyledContainer>
       <DetailSubHeader count={applys.length} title="개의 신청" />
       {applys.map(apply => {
+        const handleShowModal = () => {
+          setModalOpen(true);
+          setSelectedApply(apply); // 선택된 apply 데이터를 저장합니다.
+        };
         return (
-          <StyledListBlock key={apply.applyId}>
+          <StyledListBlock key={apply.applyId} bg={apply.applyStatus === "APLLY_ACCEPT" && "var(--sub-color)"}>
             <StyledItemContents>
               <UserBox infoData={apply} />
               <UtilBox>
-                {user.memberId === apply.board.memberId ? (
-                  <button className="acceptedBtn" type="button" onClick={showModal}>
-                    채택하기
-                  </button>
-                ) : null}
-                {modalOpen && <ApplyModal setModalOpen={setModalOpen} />}
-                {user.memberId === apply.board.memberId ? (
-                  <div className="fixAndDelete">
-                    <button type="button" onClick={() => handleDelete(apply.applyId)}>
-                      삭제
+                {user.memberId === apply.board.member.memberId && apply.applyStatus === "APPLY_REQUEST" ? (
+                  <>
+                    <button className="acceptedBtn" type="button" onClick={handleShowModal}>
+                      채택하기
                     </button>
-                  </div>
+                    <div className="fixAndDelete">
+                      <button type="button" onClick={() => handleDelete(apply.applyId)}>
+                        삭제
+                      </button>
+                    </div>
+                  </>
                 ) : null}
+                {modalOpen && <ApplyModal setModalOpen={setModalOpen} applyData={selectedApply} />}
               </UtilBox>
             </StyledItemContents>
           </StyledListBlock>
