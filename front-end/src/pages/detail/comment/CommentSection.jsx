@@ -4,8 +4,6 @@ import uuid from "react-uuid";
 import axios from "axios";
 
 import styled from "styled-components";
-// import { Viewer } from "@toast-ui/react-editor";
-
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
 import { addComment, editComment, deleteComment, setComment } from "../../../redux/features/commentSlice";
@@ -13,6 +11,7 @@ import { addComment, editComment, deleteComment, setComment } from "../../../red
 import ReplyCommentSection from "./ReplyCommentSection";
 import UserBox from "../UserBox";
 import DetailSubHeader from "../SubHeader";
+// import useRequest from "../../../shared/useRequest";
 
 // 전체 컨테이너
 const StyledContainer = styled.div`
@@ -131,85 +130,79 @@ function CommentSection({ boardData }) {
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
   const [openEditor, setOpenEditor] = useState(""); // 댓글 고유id값 담는 상태
 
-  const [user, setUser] = useState({
-    memberId: 1,
-    email: "test@gmail.com",
-    nickName: "nickname",
-    phone: "010-1234-5678",
-    image: "",
-  });
-
   const dispatch = useDispatch();
   const comments = useSelector(state => state.comment);
+  const currentUser = useSelector(state => state.user);
 
+  // const { data, isLoading, isError, error } = useRequest(
+  //   `/comments/comments/${id}`,
+  //   comments => {
+  //     dispatch(setComment(comments.filter(comment => comment.board.boardId === id)));
+  //   },
+  //   "질문을 불러오지 못했습니다.",
+  //   [dispatch, id]
+  // );
   // 댓글 조회
   useEffect(() => {
     window.scrollTo(0, 0);
-    async () => {
+    (async () => {
       try {
-        const { comments } = await axios(`/comments/comments/${id}}`, {
+        const { comments } = await axios(`${process.env.REACT_APP_BASE_URL}/comments/comments/${id}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
         dispatch(setComment(comments.filter(comment => comment.board.boardId === id))); // 코멘트(댓글)만 필터링해서 코멘츠 데이터 업데이트
       } catch (err) {
-        alert("질문을 불러오지 못했습니다.");
+        alert("댓글을 불러오지 못했습니다.");
       }
-    };
+    })();
   }, [dispatch, id]);
 
   // 댓글 생성하기
   const handleSubmit = async e => {
-    e.preventDefault();
     if (text === "") return alert("댓글을 작성해 주세요");
-    const newComment = {
-      commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
-      board: {
-        boardId: id, // params로 받은 id
-      },
-      member: {
-        memberId: user.memberId,
-      },
-      comment: null,
-      content: text,
-      createdDate: `${new Date()}`,
-    };
-    await axios
-      .post(`/comments`, newComment)
-      .then(response => {
-        dispatch(addComment(response.data));
-        setText("");
-      })
-      .catch(err => {
-        alert("댓글을 생성하지 못했습니다.");
-      });
+    try {
+      e.preventDefault();
+      const newComment = {
+        commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
+        board: {
+          boardId: id, // params로 받은 id
+        },
+        member: {
+          memberId: currentUser.memberId,
+        },
+        comment: null,
+        content: text,
+        createdDate: `${new Date()}`,
+      };
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, newComment);
+      dispatch(addComment(response.data));
+    } catch (err) {
+      alert("댓글을 생성하지 못했습니다.");
+    }
   };
 
   // 댓글 수정하기
-  const handleEdit = (id, editText) => {
-    const editData = { commentId: id, content: editText };
-    axios
-      .patch(`/comments/${id}`, editData)
-      .then(res => {
-        dispatch(editComment(res.data));
-      })
-      .catch(err => {
-        alert("댓글 수정을 실패하였습니다.");
-      });
+  const handleEdit = async (id, editText) => {
+    try {
+      const editData = { commentId: id, content: editText };
+      const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/comments/${id}`, editData);
+      dispatch(editComment(response.data));
+    } catch (err) {
+      alert("댓글 수정을 실패하였습니다.");
+    }
   };
 
   // 댓글 삭제하기
-  const handleDelete = id => {
-    axios
-      .delete(`/comments/${id}`)
-      .then(res => {
-        console.log(res.status);
-        dispatch(deleteComment(res.data));
-      })
-      .catch(err => {
-        alert("댓글 삭제를 실패하였습니다.");
-      });
+  const handleDelete = async id => {
+    try {
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/comments/${id}`);
+      console.log(response.status);
+      dispatch(deleteComment(response.data));
+    } catch (err) {
+      alert("댓글 삭제를 실패하였습니다.");
+    }
   };
 
   return (
@@ -234,9 +227,9 @@ function CommentSection({ boardData }) {
               <UserBox infoData={comment} />
               <div className="msg">{comment.content}</div>
               {/* 유저가 해당 댓글의 작성자일 경우만 */}
-              {user.memberId === comment.member.memberId && (
-                // 해당 댓글/대댓글 id가 빈문자가 아니면 수정버튼 클릭시 수정인풋창 보이게
+              {currentUser.memberId === comment.member.memberId && (
                 <EditForm>
+                  {/* 해당 댓글/대댓글 id가 빈문자가 아니면 수정버튼 클릭시 수정인풋창 보이게 */}
                   {openEditor === comment.commentId && (
                     <input
                       ref={inputRef}

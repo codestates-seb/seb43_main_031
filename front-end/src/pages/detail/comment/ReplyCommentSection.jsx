@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
+import uuid from "react-uuid";
 
 import styled from "styled-components";
-import uuid from "react-uuid";
 
 import UserBox from "../UserBox";
 import { addComment, editComment, deleteComment, setComment } from "../../../redux/features/commentSlice";
@@ -123,7 +123,7 @@ const EditForm = styled.div`
   }
 `;
 
-function ReplyCommentSection({ parentCommentId, boardId }) {
+function ReplyCommentSection({ parentCommentId }) {
   const [display, setDisplay] = useState(false); // 대댓글 폼 박스 활성화 상태
   const [text, setText] = useState(""); // 대댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
@@ -145,7 +145,7 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
   useEffect(() => {
     async () => {
       try {
-        const { comments } = await axios(`/comments/replys/${parentCommentId}}`, {
+        const { comments } = await axios(`${process.env.REACT_APP_BASE_URL}/comments/replys/${parentCommentId}}`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -174,7 +174,7 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
       createdDate: `${new Date()}`,
     };
     await axios
-      .post(`/comments`, newComment)
+      .post(`${process.env.REACT_APP_BASE_URL}/comments`, newComment)
       .then(response => {
         dispatch(addComment(response.data));
         setText("");
@@ -188,7 +188,7 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
   const handleEdit = (id, editText) => {
     const editData = { commentId: id, content: editText };
     axios
-      .patch(`/comments/${id}`, editData)
+      .patch(`${process.env.REACT_APP_BASE_URL}/comments/${id}`, editData)
       .then(res => {
         dispatch(editComment(res.data));
       })
@@ -200,7 +200,7 @@ function ReplyCommentSection({ parentCommentId, boardId }) {
   // 대댓글 삭제하기
   const handleDelete = id => {
     axios
-      .delete(`/comments/${id}`)
+      .delete(`${process.env.REACT_APP_BASE_URL}/comments/${id}`)
       .then(res => {
         console.log(res.status);
         dispatch(deleteComment(res.data));
