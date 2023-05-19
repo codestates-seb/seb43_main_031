@@ -173,7 +173,6 @@ export default function Register() {
       alert("회원가입에 실패하였습니다. 다시 입력해주세요.");
       return;
     }
-    alert("회원가입이 완료되었습니다.");
 
     axios({
       method: "post",
@@ -190,9 +189,16 @@ export default function Register() {
     })
       .then(function (response) {
         console.log(response);
+        alert("회원가입이 완료되었습니다.");
         navigate("/login");
       })
       .catch(function (error) {
+        const errorCode = error?.response?.status;
+        if (errorCode === 409) {
+          alert("이미 가입된 이메일입니다.");
+        } else if (errorCode === 500) {
+          alert("서버에 오류가 발생하였습니다.");
+        }
         console.log(error);
         alert(error);
       });

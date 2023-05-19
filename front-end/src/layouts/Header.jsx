@@ -76,7 +76,7 @@ export default function Header() {
           {user ? (
             <>
               <HeaderMenuItemStyle>
-                <Link to="/write">글 작성하기</Link>
+                <Link to="/boards">게시판</Link>
               </HeaderMenuItemStyle>
               <HeaderMenuItemStyle>
                 <Link to="/my-page">마이페이지</Link>
