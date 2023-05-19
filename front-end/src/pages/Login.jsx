@@ -4,7 +4,7 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 
 import styled from "styled-components";
-import { setUser } from "../redux/features/userSlice";
+import { setToken, setUserInfo } from "../redux/features/userSlice";
 
 import login from "../api/login";
 
@@ -106,12 +106,11 @@ export default function Login() {
         email,
         password,
       });
-      const token = response.headers.get("Authorization");
-      if (token) {
-        localStorage.setItem("token", token);
-      }
-      console.log(response.data);
-      dispatch(setUser(response.data));
+      const token = response.headers.authorization;
+      const userInfo = response.data;
+
+      dispatch(setToken(token));
+      dispatch(setUserInfo(userInfo));
       navigate("/");
     } catch (err) {
       alert("err");
