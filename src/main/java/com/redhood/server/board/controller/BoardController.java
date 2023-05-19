@@ -8,10 +8,7 @@ import com.redhood.server.board.mapper.BoardMapper;
 import com.redhood.server.board.service.BoardService;
 
 import com.redhood.server.security.UserDetailsImpl;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.*;
 import org.springframework.data.querydsl.QPageRequest;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -24,6 +21,7 @@ import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Positive;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -88,14 +86,31 @@ public class BoardController {
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         }
         Page<Board> boardPage;
-        if(guTag != null && dongTag != null) {
+        if ((title != null || content != null) && (guTag != null || dongTag != null)) {
+            boardPage = boardService.searchBoards(title, content, pageable);
+            if(boardPage.isEmpty()) {
+            boardPage = boardService.filterBoardsByGuTagAndDongTag(boardPage, guTag, dongTag, pageable);
+
+        } else if (title != null || content != null) {
+                boardPage = boardService.searchBoards(title, content, pageable);
+            }
+        } else if (guTag != null || dongTag != null) {
+            boardPage = boardService.getBoardsByGuTagAndDongTag(guTag, dongTag, pageable);
+        } else {
+            boardService.deleteExpiredBoards();
+            boardPage = boardService.getBoards(pageable);
+        }
+        /*Page<Board> filteredBoards = boardService.filterBoardsByGuTagAndDongTag(boardPage, guTag, dongTag, pageable);
+            boardPage = filteredBoards;*/
+        /*Page<Board> boardPage;
+        if(guTag != null || dongTag != null) {
             boardPage = boardService.getBoardsByGuTagAndDongTag(guTag, dongTag, pageable);
         } else if(title != null || content != null) {
             boardPage = boardService.searchBoards(title, content, pageable);
         } else {
             boardService.deleteExpiredBoards();
             boardPage = boardService.getBoards(pageable);
-        }
+        }*/
         Page<BoardResponseDto> boardResponseDtoPage = mapper.boardPageToBoardResponseDtoPage(boardPage);
         return new ResponseEntity<>(boardResponseDtoPage, HttpStatus.OK);
     }

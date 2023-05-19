@@ -12,6 +12,7 @@ import org.junit.platform.commons.util.StringUtils;
 import org.springframework.data.domain.Page;
 
 
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -138,6 +140,18 @@ public class BoardService {
         }
         return Page.empty();
 
+    }
+    public Page<Board> filterBoardsByGuTagAndDongTag(Page<Board> boardPage, String guTagKeyword, String dongTagKeyword, Pageable pageable) {
+        if (StringUtils.isBlank(guTagKeyword) && StringUtils.isBlank(dongTagKeyword)) {
+            return boardPage;
+        } else if (StringUtils.isNotBlank(guTagKeyword) && StringUtils.isNotBlank(dongTagKeyword)) {
+            return boardRepository.findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(guTagKeyword, dongTagKeyword, pageable);
+        } else if (StringUtils.isNotBlank(guTagKeyword)) {
+            return boardRepository.findByGuTagContainingIgnoreCase(guTagKeyword, pageable);
+        } else if (StringUtils.isNotBlank(dongTagKeyword)) {
+            return boardRepository.findByDongTagContainingIgnoreCase(dongTagKeyword, pageable);
+        }
+        return Page.empty();
     }
 
 
