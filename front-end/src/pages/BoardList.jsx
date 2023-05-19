@@ -184,7 +184,6 @@ export default function BoardList({ user }) {
   };
 
   const onSearchButtonClick = () => {
-    console.log("hi");
     setSearchText(searchInputText);
   };
 
@@ -198,7 +197,7 @@ export default function BoardList({ user }) {
 
   const onClickSortCreateDate = () => {
     setSortTypeViewCount("");
-    setSortTypeCreateDate("&sortDirection=DESC");
+    setSortTypeCreateDate("&sortDirection=createDate");
   };
 
   const onClickSortViewCount = () => {
