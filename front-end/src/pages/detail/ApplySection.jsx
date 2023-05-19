@@ -5,7 +5,7 @@ import axios from "axios";
 
 import styled from "styled-components";
 
-import { addApply, deleteApply, filterApplyByBoardId, setApply } from "../../redux/features/applySlice";
+import { addApply, deleteApply, setApply } from "../../redux/features/applySlice";
 
 import UserBox from "./UserBox";
 import DetailSubHeader from "./SubHeader";
@@ -84,51 +84,48 @@ const ApplyBtn = styled.button`
 `;
 
 // 신청 컴포넌트
-function ApplySection({ boardData }) {
-  const { id, memberId } = boardData;
-
+function ApplySection({ boardId }) {
   const [selectedApply, setSelectedApply] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [user, setUser] = useState({
-    memberId: 1,
-    email: "test@gmail.com",
-    nickName: "nickname",
-    phone: "010-1234-5678",
-    image: "",
-  });
 
-  const currentUser = useSelector(state => state.user);
-  const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.user.userInfo);
+  const token = useSelector(state => state.user.token);
   const applys = useSelector(state => state.apply);
+  const dispatch = useDispatch();
 
   // 렌더링 시 모든 신청글 조회
   useEffect(() => {
     window.scrollTo(0, 0);
     (async () => {
       try {
-        const { applys } = await axios(`${process.env.REACT_APP_BASE_URL}/applys/boardId/${id}}`, {
+        const response = await axios(`${process.env.REACT_APP_BASE_URL}/applys/boardId/${boardId}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        dispatch(filterApplyByBoardId({ applys, id }));
+        // console.log(response.data.data);
+        dispatch(setApply(response.data.data));
       } catch (err) {
         alert("신청을 불러오지 못했습니다.");
       }
     })();
-  }, [dispatch, id]);
+  }, [dispatch, boardId]);
 
   // 신청 생성하기
   const handleSubmit = async e => {
     try {
       e.preventDefault();
       const newApply = {
-        boardId: id,
+        boardId,
         applyId: uuid(),
         applyStatus: false,
         createdDate: `${new Date()}`,
       };
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/applys`, newApply);
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/applys`, newApply, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
       dispatch(addApply(response.data));
     } catch (err) {
       alert("신청을 성공적으로 보내지 못했습니다.");
@@ -158,7 +155,7 @@ function ApplySection({ boardData }) {
             <StyledItemContents>
               <UserBox infoData={apply} />
               <UtilBox>
-                {user.memberId === apply.board.member.memberId && apply.applyStatus === "APPLY_REQUEST" ? (
+                {currentUser.memberId === apply.board.member.memberId && apply.applyStatus === "APPLY_REQUEST" ? (
                   <>
                     <button className="acceptedBtn" type="button" onClick={handleShowModal}>
                       채택하기
