@@ -4,7 +4,7 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "styled-components";
 
 import blankProfileImage from "../img/blank-profile.png";
-import { setUser } from "../redux/features/userSlice";
+import { clearToken, setUserInfo } from "../redux/features/userSlice";
 import formatPhoneNumber from "../utils/formatPhoneNumber";
 import MyPageModal from "../components/MyPageModal";
 import MyPageTab from "../components/MyPageTab";
@@ -163,8 +163,7 @@ export default function MyPage() {
     }
     patchMember(memberId, member).then(response => {
       if (response !== "fail") {
-        // 수정 필요
-        dispatch(setUser(response.data));
+        dispatch(setUserInfo(response.data));
         alert("회원 정보가 수정되었습니다.");
         setModal(false);
       }
@@ -177,7 +176,7 @@ export default function MyPage() {
   const handleClick = () => {
     deleteMember(memberId).then(response => {
       if (response === "success") {
-        // 로그아웃 처리?
+        dispatch(clearToken(null));
         alert("회원 탈퇴 과정이 완료되었습니다.");
         navigate("/");
       }

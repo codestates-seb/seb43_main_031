@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, Link } from "react-router-dom";
 import redHoodImg from "../img/red-hood.png";
-import { setUser } from "../redux/features/userSlice";
+import { setUserInfo } from "../redux/features/userSlice";
 
 const HeaderWrapperStyle = styled.div`
   width: 100vw;
@@ -83,12 +83,12 @@ export default function Header() {
               </HeaderMenuItemStyle>
               <HeaderMenuItemStyle
                 onClick={() => {
-                  dispatch(setUser(null));
+                  dispatch(setUserInfo(null));
                   navigate("/login");
                 }}
                 onKeyDown={event => {
                   if (event.key === "Enter" || event.key === " ") {
-                    dispatch(setUser(null));
+                    dispatch(setUserInfo(null));
                     navigate("/login");
                   }
                 }}
