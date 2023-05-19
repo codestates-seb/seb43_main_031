@@ -163,6 +163,7 @@ export default function MyPage() {
     }
     patchMember(memberId, member).then(response => {
       if (response !== "fail") {
+        // 수정 필요
         dispatch(setUser(response.data));
         alert("회원 정보가 수정되었습니다.");
         setModal(false);
