@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
 import { AiOutlineCheckCircle, AiFillCheckCircle } from "react-icons/ai";
 
@@ -8,6 +9,8 @@ import styled from "styled-components";
 import getBoards from "../api/getBoards";
 import { guList, dongList } from "../data/SeoulDistricts";
 import Paging from "../components/Paging";
+import { setBoard } from "../redux/features/boardSlice";
+import { setPage } from "../redux/features/pageSlice";
 
 // main레이아웃으로 뺄 예정
 const Main = styled.div`
@@ -141,7 +144,7 @@ const BoardListWrapperStyle = styled.div`
     color: #bd181f;
   }
 `;
-export default function BoardList({ user }) {
+export default function BoardList() {
   const navigate = useNavigate();
   const [searchText, setSearchText] = useState("");
   const [searchInputText, setSearchInputText] = useState("");
@@ -149,7 +152,11 @@ export default function BoardList({ user }) {
   const [selectedDong, setSelectedDong] = useState(dongList[selectedGu][0]);
   const [currentPage, setCurrentPage] = useState(1);
   const [sortType, setSortType] = useState("createdDate");
-  const [boards, setBoards] = useState([]);
+
+  const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.user.userInfo);
+  const boards = useSelector(state => state.board || []);
+  // console.log(boards);
 
   useEffect(() => {
     getBoards({
@@ -159,7 +166,9 @@ export default function BoardList({ user }) {
       selectedDong,
       sortType,
     }).then(response => {
-      setBoards(response);
+      // console.log(response.content);
+      dispatch(setPage(response.totalPages));
+      dispatch(setBoard(response.content));
     });
   }, [currentPage, searchText, selectedGu, selectedDong, sortType]);
 
@@ -249,7 +258,7 @@ export default function BoardList({ user }) {
               type="button"
               className="write-button"
               onClick={() => {
-                if (!user) {
+                if (!currentUser) {
                   alert("로그인이 필요한 서비스입니다. 로그인 페이지로 이동합니다.");
                   navigate("/login");
                   return;
@@ -263,10 +272,10 @@ export default function BoardList({ user }) {
           <div className="board-list-area">
             <div className="board-list">
               {boards.length === 0 && <div style={{ textAlign: "center" }}>등록된 게시글이 없습니다.</div>}
-              {boards.map(({ id, title, cost, createDate, completed }) => {
+              {boards.map(({ boardId, title, cost, createDate, completed }) => {
                 return (
                   <div className="board">
-                    <div className="board-info" onClick={() => navigate(`/boards/${id}`)}>
+                    <div className="board-info" onClick={() => navigate(`/boards/${boardId}`)}>
                       <div className="board-title">{title}</div>
                       <div className="board-meta">
                         <div>{cost}</div>
