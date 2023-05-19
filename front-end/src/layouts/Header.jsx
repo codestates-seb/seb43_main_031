@@ -49,7 +49,7 @@ const HeaderMenuItemStyle = styled.div`
 `;
 
 export default function Header() {
-  const user = useSelector(state => state.user);
+  const user = useSelector(state => state.user.userInfo);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 

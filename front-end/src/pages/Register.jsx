@@ -188,7 +188,6 @@ export default function Register() {
       },
     })
       .then(function (response) {
-        console.log(response);
         alert("회원가입이 완료되었습니다.");
         navigate("/login");
       })
@@ -199,8 +198,6 @@ export default function Register() {
         } else if (errorCode === 500) {
           alert("서버에 오류가 발생하였습니다.");
         }
-        console.log(error);
-        alert(error);
       });
   };
 
