@@ -1,6 +1,3 @@
-// 프록시 설정이 되어있을 땐 baseURL을 주석처리 해야 합니다.
-// 실제 배포시 사용될 것 같습니다.
-
 import axios from "axios";
 
 // 인증이 필요없는 경우
@@ -20,10 +17,11 @@ export const fileAxios = axios.create({
 });
 
 // 인증이 필요한 경우
-const token = "토큰 값";
+// 토큰 => 전역으로 저장된 값을 받아오는 방법으로 수정할 예정
+const token = localStorage.getItem("token");
 export const authAxios = axios.create({
   baseURL: `${process.env.REACT_APP_BASE_URL}`,
   headers: {
-    Authorization: `Bearer ${token}`,
+    Authorization: `${token}`,
   },
 });

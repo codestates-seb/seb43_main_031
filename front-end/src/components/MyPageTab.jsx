@@ -48,8 +48,8 @@ const TabContent = styled.div`
 export default function Tab() {
   const [activeTab, setActiveTab] = useState(0);
   const tabs = [
-    { id: 0, name: "의뢰한 심부름", content: <div>첫번째 탭내용</div> },
-    { id: 1, name: "수행한 심부름", content: <div>두번째 탭내용</div> },
+    { id: 0, name: "의뢰한 심부름", content: <div>(1) 준비 중입니다.</div> },
+    { id: 1, name: "수행한 심부름", content: <div>(2) 준비 중입니다.</div> },
   ];
 
   return (

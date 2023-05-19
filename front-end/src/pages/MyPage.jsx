@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 import blankProfileImage from "../img/blank-profile.png";
 import { setUser } from "../redux/features/userSlice";
+import formatPhoneNumber from "../utils/formatPhoneNumber";
 import MyPageModal from "../components/MyPageModal";
 import MyPageTab from "../components/MyPageTab";
 import { postImage, deleteImage } from "../api/image";
@@ -15,6 +16,11 @@ const EntireContainer = styled.div`
   min-height: calc(100vh - 50px);
   padding: 5rem 0;
   color: var(--font-color-bold);
+`;
+
+const WarningWords = styled.p`
+  display: flex;
+  justify-content: center;
 `;
 
 const ProfileSection = styled.div`
@@ -91,8 +97,10 @@ export default function MyPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
+  // const currentUser = useSelector(state => state.user.userInfo);
   const currentUser = useSelector(state => state.user);
   const { memberId, email, nickName, phone, images } = currentUser;
+  const phoneWithHyphen = formatPhoneNumber(phone);
 
   const [modal, setModal] = useState(false);
   const [passwordCheck, setPasswordCheck] = useState("");
@@ -155,8 +163,10 @@ export default function MyPage() {
     }
     patchMember(memberId, member).then(response => {
       if (response !== "fail") {
+        // 수정 필요
         dispatch(setUser(response.data));
         alert("회원 정보가 수정되었습니다.");
+        setModal(false);
       }
       if (response === "fail") {
         alert("회원 정보 수정에 실패했습니다.");
@@ -177,6 +187,14 @@ export default function MyPage() {
     });
   };
 
+  if (!currentUser) {
+    return (
+      <EntireContainer>
+        <WarningWords>로그인이 필요한 페이지입니다.</WarningWords>
+      </EntireContainer>
+    );
+  }
+
   return (
     <EntireContainer>
       <ProfileSection>
@@ -184,7 +202,7 @@ export default function MyPage() {
         <ProfileInformation>
           <span className="nickName">{nickName}</span>
           <span>{email}</span>
-          <span>{phone}</span>
+          <span>{phoneWithHyphen}</span>
           <ButtonContainer>
             {modal && (
               <MyPageModal
