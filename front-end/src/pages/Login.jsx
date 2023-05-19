@@ -6,8 +6,6 @@ import axios from "axios";
 import styled from "styled-components";
 import { setUser } from "../redux/features/userSlice";
 
-import login from "../api/login";
-
 import kakaoLogin from "../img/kakao_login.png";
 
 const LoginWrapperStyle = styled.div`
