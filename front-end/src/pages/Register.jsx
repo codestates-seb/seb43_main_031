@@ -199,6 +199,8 @@ export default function Register() {
         } else if (errorCode === 500) {
           alert("서버에 오류가 발생하였습니다.");
         }
+        console.log(error);
+        alert(error);
       });
   };
 

@@ -6,5 +6,16 @@ export const postImage = async formData => {
     return response;
   } catch (error) {
     console.log(error);
+    return "fail";
+  }
+};
+
+export const deleteImage = async url => {
+  try {
+    await fileAxios.delete("/images", { data: { image: url } });
+    return "success";
+  } catch (error) {
+    console.log(error);
+    return "fail";
   }
 };
