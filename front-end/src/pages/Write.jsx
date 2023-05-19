@@ -258,6 +258,7 @@ export default function Write() {
   );
 }
 
+// 공통 컴포넌트 따로 빼서 리팩토링할 예정
 function SelectGuDong({ onGuChange, onDongChange }) {
   const [selectedGu, setSelectedGu] = useState("");
   const [selectedDong, setSelectedDong] = useState("");

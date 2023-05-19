@@ -5,6 +5,7 @@ import styled from "styled-components";
 
 import blankProfileImage from "../img/blank-profile.png";
 import { setUser } from "../redux/features/userSlice";
+import formatPhoneNumber from "../utils/formatPhoneNumber";
 import MyPageModal from "../components/MyPageModal";
 import MyPageTab from "../components/MyPageTab";
 import { postImage, deleteImage } from "../api/image";
@@ -99,6 +100,7 @@ export default function MyPage() {
   // const currentUser = useSelector(state => state.user.userInfo);
   const currentUser = useSelector(state => state.user);
   const { memberId, email, nickName, phone, images } = currentUser;
+  const phoneWithHyphen = formatPhoneNumber(phone);
 
   const [modal, setModal] = useState(false);
   const [passwordCheck, setPasswordCheck] = useState("");
@@ -199,7 +201,7 @@ export default function MyPage() {
         <ProfileInformation>
           <span className="nickName">{nickName}</span>
           <span>{email}</span>
-          <span>{phone}</span>
+          <span>{phoneWithHyphen}</span>
           <ButtonContainer>
             {modal && (
               <MyPageModal

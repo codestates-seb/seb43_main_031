@@ -1,6 +1,6 @@
 import { postImage } from "../api/image";
 
-// 에디터 내 이미지 업로드 hooks 수정 함수
+// 에디터 내 이미지 업로드 로직 수정 hooks
 export default function uploadImages(blob, callback) {
   const formData = new FormData();
   formData.append("file", blob);
