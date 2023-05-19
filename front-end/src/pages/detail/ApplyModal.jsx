@@ -1,6 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+
 import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { setApply } from "../../redux/features/applySlice";
 
 // 모달 밖 배경
 const ModalBackdrop = styled.div`
@@ -60,18 +64,38 @@ const Button = styled.button`
   }
 `;
 
-function ApplyModal({ setModalOpen }) {
+function ApplyModal({ setModalOpen, applyData }) {
   const navigate = useNavigate();
-  const handleMoveChat = () => {
-    navigate("/");
+  const dispatch = useDispatch();
+  const initialApplys = useSelector(state => state.apply);
+
+  // 기존 저장된 신청글과 모달 클릭시 전달된 특정 신청글과 id 값 비교하여 맞는 신청글찾기
+  const selectedApply = initialApplys.find(item => item.applyId === applyData.applyId);
+
+  // 채택 승인 이벤트(채택상태수정)
+  const handleMoveChat = async id => {
+    if (selectedApply) {
+      try {
+        const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/applys/accept/${id}`);
+        dispatch(setApply(response.data));
+        navigate("/chat");
+      } catch (err) {
+        alert("채택이 정상적으로 되지 못했습니다.");
+      }
+    }
   };
   return (
     <ModalBackdrop onClick={() => setModalOpen(false)}>
-      <ModalView>
+      <ModalView onClick={event => event.stopPropagation()}>
         <div className="title">신청 채택</div>
         <div className="desc">해당 신청을 채택 하시겠습니까?</div>
         <div className="utils">
-          <Button type="button" bg="var(--primary-color)" color="#fff" onClick={handleMoveChat}>
+          <Button
+            type="button"
+            bg="var(--primary-color)"
+            color="#fff"
+            onClick={() => handleMoveChat(selectedApply.applyId)}
+          >
             확인
           </Button>
           <Button type="button" bg="var(--cancle-btn-color)" color="#111" onClick={() => setModalOpen(false)}>

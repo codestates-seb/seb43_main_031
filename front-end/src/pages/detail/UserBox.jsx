@@ -18,6 +18,15 @@ const UserInfoWrapper = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
+
+    & > img {
+      display: block;
+      width: 100%;
+      height: auto;
+      overflow: hidden;
+      object-fit: cover;
+    }
   }
   .info {
     .author {
@@ -36,7 +45,8 @@ function UserBox({ infoData }) {
   return (
     <UserInfoWrapper>
       <div className="avatar">
-        <FaUserAlt size="70%" />
+        {/* <FaUserAlt size="70%" /> */}
+        <img src={infoData.image} alt="avatarImage" />
       </div>
       <div className="info">
         <div className="author">{infoData.member.memberId}</div>

@@ -1,10 +1,22 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
+
+import { AiOutlineCheckCircle, AiFillCheckCircle } from "react-icons/ai";
+
+
+
+
 import styled from "styled-components";
 
 import getBoards from "../api/getBoards";
 import { guList, dongList } from "../data/SeoulDistricts";
+
+import Paging from "../components/Paging";
+import { setBoard } from "../redux/features/boardSlice";
+import { setPage } from "../redux/features/pageSlice";
+
 
 import WelcomeMessage from "../features/boards/WelcomeMessage";
 import BoardListArea from "../features/boards/BoardListArea";
@@ -12,6 +24,7 @@ import PaginationArea from "../features/boards/PaginationArea";
 import SearchToolArea from "../features/boards/SearchToolArea";
 import SearchBar from "../features/boards/SearchBar";
 import WriteButtonArea from "../features/boards/WriteButtonArea";
+
 
 // main레이아웃으로 뺄 예정
 const Main = styled.div`
@@ -145,7 +158,7 @@ const BoardListWrapperStyle = styled.div`
     color: #bd181f;
   }
 `;
-export default function BoardList({ user }) {
+export default function BoardList() {
   const navigate = useNavigate();
   const currentUser = useSelector(state => state.user);
 
@@ -154,9 +167,17 @@ export default function BoardList({ user }) {
   const [selectedGu, setSelectedGu] = useState("지역구");
   const [selectedDong, setSelectedDong] = useState("지역동");
   const [currentPage, setCurrentPage] = useState(1);
+
+
+
+  const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.user.userInfo);
+  const boards = useSelector(state => state.board || []);
+  // console.log(boards);
   const [sortTypeViewCount, setSortTypeViewCount] = useState("");
   const [sortTypeCreateDate, setSortTypeCreateDate] = useState("");
   const [boards, setBoards] = useState([]);
+
   useEffect(() => {
     getBoards({
       currentPage,
@@ -167,6 +188,7 @@ export default function BoardList({ user }) {
       sortTypeViewCount,
     }).then(response => {
       setBoards(response.content);
+
     });
   }, [currentPage, searchText, sortTypeCreateDate, sortTypeViewCount, selectedGu, selectedDong]);
 
