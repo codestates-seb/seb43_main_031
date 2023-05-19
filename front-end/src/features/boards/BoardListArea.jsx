@@ -2,7 +2,7 @@ import React from "react";
 import { AiOutlineCheckCircle, AiFillCheckCircle } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
 
-function BoardListArea({ boards }) {
+function BoardListArea({ boards = [] }) {
   const navigate = useNavigate();
   const date = new Date();
 

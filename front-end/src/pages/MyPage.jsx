@@ -97,8 +97,7 @@ export default function MyPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  // const currentUser = useSelector(state => state.user.userInfo);
-  const currentUser = useSelector(state => state.user);
+  const currentUser = useSelector(state => state.user.userInfo);
   const { memberId, email, nickName, phone, images } = currentUser;
   const phoneWithHyphen = formatPhoneNumber(phone);
 

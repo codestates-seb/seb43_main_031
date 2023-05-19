@@ -153,9 +153,9 @@ function Detail() {
   const currentUser = useSelector(state => state.user.userInfo);
 
   const boards = useSelector(state => state.board);
-  const board = boards.find(item => item.boardId === id);
+  const board = boards.find(item => item.boardId === Number(id));
   // console.log(boards);
-  // console.log(board);
+  console.log(board);
 
   useEffect(() => {
     // setIsPending(true)
@@ -166,8 +166,18 @@ function Detail() {
             "Content-Type": "application/json",
           },
         });
-        dispatch(setBoard(response.data));
-        console.log(response.data);
+        const freshBoard = response.data;
+
+        const newBoards = boards.map(oldBoard => {
+          if (oldBoard.boardId === id) {
+            return freshBoard;
+          }
+
+          return oldBoard;
+        });
+
+        // setBoard로 갱신해줘야하는 데이터는 배열이여야함.
+        dispatch(setBoard(newBoards));
       } catch (err) {
         alert("게시글을 불러오지 못했습니다.");
       }
@@ -175,6 +185,8 @@ function Detail() {
     };
     fetchBoard();
   }, []);
+
+  if (!board?.boardId) return null;
 
   // 게시글 수정
   const handleEdit = async (id, editText) => {
@@ -318,7 +330,7 @@ function Detail() {
             </div>
             <div className="sub-header">
               <div className="author-util">
-                <span style={{ fontWeight: "700" }}>{board.member.memberId}</span>
+                {/* <span style={{ fontWeight: "700" }}>{board.member.memberId}</span> */}
                 <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(board.createdDate))}</span>
               </div>
               <div className="interest">
@@ -335,7 +347,7 @@ function Detail() {
               </div>
               <div className="utils">
                 <button
-                  disabled={currentUser.memberId !== board.member.memberId}
+                  // disabled={currentUser.memberId !== board.member.memberId}
                   type="button"
                   onClick={() => {
                     if (id === openEditor) {
@@ -349,7 +361,7 @@ function Detail() {
                   수정
                 </button>
                 <button
-                  disabled={currentUser.memberId !== board.member.memberId}
+                  // disabled={currentUser.memberId !== board.member.memberId}
                   type="button"
                   onClick={() => handleDelete(id)}
                 >
