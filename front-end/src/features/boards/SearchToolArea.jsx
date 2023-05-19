@@ -6,8 +6,8 @@ function SearchToolArea({
   onSelectedDong,
   selectedGu,
   selectedDong,
-  onClickSortCreateDate,
   onClickSortViewCount,
+  onClickSortCreateDate,
 }) {
   return (
     <div className="sarch-tool-area">
@@ -17,7 +17,9 @@ function SearchToolArea({
             지역구
           </option>
           {guList.map(gu => (
-            <option key={gu}>{gu}</option>
+            <option value={gu} key={gu}>
+              {gu}
+            </option>
           ))}
         </select>
         <select className="location-search-dropdown" onChange={onSelectedDong} name="dong" value={selectedDong}>
@@ -26,15 +28,19 @@ function SearchToolArea({
           </option>
           {selectedGu !== "지역구" &&
             dongList[selectedGu].map(dong => {
-              return <option key={dong}>{dong}</option>;
+              return (
+                <option value={dong} key={dong}>
+                  {dong}
+                </option>
+              );
             })}
         </select>
       </div>
       <div className="sort-buttons-area">
-        <button type="button" className="sort-button" onClick={onClickSortViewCount}>
+        <button type="button" className="sort-button" onClick={() => onClickSortViewCount()}>
           조회순
         </button>
-        <button type="button" className="sort-button" onClick={onClickSortCreateDate}>
+        <button type="button" className="sort-button" onClick={() => onClickSortCreateDate()}>
           최신순
         </button>
       </div>

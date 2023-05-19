@@ -152,8 +152,8 @@ export default function Login() {
               id="password"
               placeholder="비밀번호를 입력하세요."
               value={password}
-              onChange={e => {
-                setPassword(e.target.value);
+              onChange={event => {
+                setPassword(event.target.value);
               }}
             />
           </label>

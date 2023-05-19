@@ -1,6 +1,6 @@
 import React from "react";
 
-function SearchBar({ searchInputText, onChange, onClick }) {
+function SearchBar({ searchInputText, onChange, onSearchButtonClick }) {
   return (
     <div className="search-bar">
       <input
@@ -9,7 +9,7 @@ function SearchBar({ searchInputText, onChange, onClick }) {
         value={searchInputText}
         onChange={onChange}
       />
-      <div className="search-icon" onClick={onClick}>
+      <div className="search-icon" onClick={onSearchButtonClick}>
         🔍
       </div>
     </div>

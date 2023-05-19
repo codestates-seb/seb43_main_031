@@ -154,10 +154,9 @@ export default function BoardList({ user }) {
   const [selectedGu, setSelectedGu] = useState("지역구");
   const [selectedDong, setSelectedDong] = useState("지역동");
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortTypeCreateDate, setSortTypeCreateDate] = useState("");
   const [sortTypeViewCount, setSortTypeViewCount] = useState("");
+  const [sortTypeCreateDate, setSortTypeCreateDate] = useState("");
   const [boards, setBoards] = useState([]);
-
   useEffect(() => {
     getBoards({
       currentPage,
@@ -185,6 +184,7 @@ export default function BoardList({ user }) {
   };
 
   const onSearchButtonClick = () => {
+    console.log("hi");
     setSearchText(searchInputText);
   };
 
@@ -197,11 +197,13 @@ export default function BoardList({ user }) {
   };
 
   const onClickSortCreateDate = () => {
-    setSortTypeCreateDate("createDate");
+    setSortTypeViewCount("");
+    setSortTypeCreateDate("&sortDirection=DESC");
   };
 
   const onClickSortViewCount = () => {
-    setSortTypeViewCount("viewCount");
+    setSortTypeCreateDate("");
+    setSortTypeViewCount("&sortProperty=viewCount");
   };
 
   const onClickWriteBoard = () => {
@@ -218,7 +220,11 @@ export default function BoardList({ user }) {
       <BoardContainerStyle>
         <BoardListWrapperStyle>
           <WelcomeMessage />
-          <SearchBar onChange={onSearchTextChange} onClick={onSearchButtonClick} searchInputText={searchInputText} />
+          <SearchBar
+            onChange={onSearchTextChange}
+            onSearchButtonClick={onSearchButtonClick}
+            searchInputText={searchInputText}
+          />
           <SearchToolArea
             onSelectedGu={onSelectedGu}
             onSelectedDong={onSelectedDong}
