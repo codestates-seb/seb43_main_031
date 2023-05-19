@@ -10,14 +10,15 @@ const FooterStyle = styled.footer`
   color: white;
   padding: 10px;
   position: relative;
-  height: 120px;
+  height: 150px;
 `;
 
 const ContentWrapper = styled.div`
   display: flex;
   flex-direction: column;
+  justify-content: center;
   align-items: center;
-  gap: 5px;
+  gap: 8px;
 `;
 
 const CopyrightText = styled.p`
@@ -35,7 +36,7 @@ export default function Footer() {
   return (
     <FooterStyle>
       <ContentWrapper>
-        <CopyrightText>ⓒ Copyright ⓒ 2023 빨간망토</CopyrightText>
+        <CopyrightText>ⓒ Copyright 2023 빨간망토</CopyrightText>
         <ContributorText>Front: 강수암 오다경 최예슬</ContributorText>
         <ContributorText>Back: 남지훈 백철현 전지영</ContributorText>
       </ContentWrapper>
