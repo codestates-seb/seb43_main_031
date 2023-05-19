@@ -14,6 +14,7 @@ import PaginationArea from "../features/boards/PaginationArea";
 import SearchToolArea from "../features/boards/SearchToolArea";
 import SearchBar from "../features/boards/SearchBar";
 import WriteButtonArea from "../features/boards/WriteButtonArea";
+import { setBoard } from "../redux/features/boardSlice";
 
 // main레이아웃으로 뺄 예정
 const Main = styled.div`
@@ -155,13 +156,14 @@ export default function BoardList() {
   const [selectedGu, setSelectedGu] = useState("지역구");
   const [selectedDong, setSelectedDong] = useState("지역동");
   const [currentPage, setCurrentPage] = useState(1);
+  const [sortTypeViewCount, setSortTypeViewCount] = useState("");
+  const [sortTypeCreateDate, setSortTypeCreateDate] = useState("");
 
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
-  const [sortTypeViewCount, setSortTypeViewCount] = useState("");
-  const [sortTypeCreateDate, setSortTypeCreateDate] = useState("");
-  const [boards, setBoards] = useState([]);
-
+  const boards = useSelector(state => state.board);
+  console.log(boards);
+  // 전체 데이터 가져옴 -> 단건조회를 하면 -> 전체 중에 일부만 교체
   useEffect(() => {
     getBoards({
       currentPage,
@@ -171,7 +173,7 @@ export default function BoardList() {
       sortTypeCreateDate,
       sortTypeViewCount,
     }).then(response => {
-      setBoards(response.content);
+      dispatch(setBoard(response.content));
     });
   }, [currentPage, searchText, sortTypeCreateDate, sortTypeViewCount, selectedGu, selectedDong]);
 
