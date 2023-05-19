@@ -7,10 +7,10 @@ const FooterStyle = styled.footer`
   display: flex;
   justify-content: space-around;
   background-color: #120003;
-  color: white;
+  color: #fff;
   padding: 10px;
   position: relative;
-  height: 150px;
+  height: 160px;
 `;
 
 const ContentWrapper = styled.div`
@@ -19,6 +19,10 @@ const ContentWrapper = styled.div`
   justify-content: center;
   align-items: center;
   gap: 8px;
+  a {
+    margin-top: 1rem;
+    color: var(--sub-color);
+  }
 `;
 
 const CopyrightText = styled.p`
@@ -39,6 +43,9 @@ export default function Footer() {
         <CopyrightText>ⓒ Copyright 2023 빨간망토</CopyrightText>
         <ContributorText>Front: 강수암 오다경 최예슬</ContributorText>
         <ContributorText>Back: 남지훈 백철현 전지영</ContributorText>
+        <a href="https://github.com/codestates-seb/seb43_main_031" target="_blank" rel="noreferrer">
+          github repository 바로가기
+        </a>
       </ContentWrapper>
     </FooterStyle>
   );
