@@ -144,43 +144,47 @@ function Detail() {
   const navigate = useNavigate();
 
   const editorRef = useRef();
-  const [isLogin, setIslogin] = useState(true);
   const [isPending, setIsPending] = useState(false);
   const [editText, setEditText] = useState(""); // 수정할 인풋값 상태
   const [openEditor, setOpenEditor] = useState(""); // 게시글 고유id값 담는 상태
 
-  const currentUser = useSelector(state => state.user);
+  const token = useSelector(state => state.user.token);
   const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.user.userInfo);
 
   const boards = useSelector(state => state.board);
-  const board = boards.find(board => board.id === +id) || [];
+  const board = boards.find(item => item.boardId === id);
+  // console.log(boards);
   // console.log(board);
-  const { title, memberId, createdDate, content, cost, expiredDate, dongTag, guTag, detailAddress } = board; // 게시글 구조분해할당
 
-  // 해당 게시글 조회
   useEffect(() => {
-    window.scrollTo(0, 0); // 페이지 맨 위로
-    // setIsPending(true);
-    (async () => {
+    // setIsPending(true)
+    const fetchBoard = async () => {
       try {
-        const { boards } = await axios.get(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        dispatch(setBoard(boards));
+        dispatch(setBoard(response.data));
+        console.log(response.data);
       } catch (err) {
         alert("게시글을 불러오지 못했습니다.");
       }
       // setIsPending(false);
-    })();
-  }, [dispatch, id]);
+    };
+    fetchBoard();
+  }, []);
 
   // 게시글 수정
   const handleEdit = async (id, editText) => {
     try {
       const editData = { id, content: editText };
-      const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, editData);
+      const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, editData, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
       dispatch(editBoard(response.data));
     } catch (err) {
       alert("게시글을 수정하지 못했습니다.");
@@ -190,7 +194,11 @@ function Detail() {
   // 게시글 삭제
   const handleDelete = async id => {
     try {
-      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/boards/${id}`);
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
       dispatch(deleteBoard(response.data));
     } catch (err) {
       alert("게시글을 삭제하지 못했습니다.");
@@ -226,10 +234,10 @@ function Detail() {
       id: "editor",
       title: "상세내용",
       icon: <RxFileText />,
-      children: <Viewer initialValue={content} />,
+      children: <Viewer initialValue={board.content} />,
       editChildren: (
         <Editor
-          initialValue={content}
+          initialValue={board.content}
           previewStyle="vertical"
           height="350px"
           initialEditType="wysiwyg"
@@ -247,14 +255,14 @@ function Detail() {
       id: "cost",
       title: "수고비(원)",
       icon: <FaWonSign />,
-      children: <p>{cost}</p>,
+      children: <p>{board.cost}</p>,
       editChildren: (
         <input
           id="cost"
           type="number"
           name="cost"
-          defaultValue={cost}
-          key={cost}
+          defaultValue={board.cost}
+          key={board.cost}
           onChange={e => setEditText(e.target.valueAsNumber)}
           required
         />
@@ -264,14 +272,14 @@ function Detail() {
       id: "expiredDate",
       title: "만료일",
       icon: <FiClock />,
-      children: <p>{expiredDate}</p>,
+      children: <p>{board.expiredDate}</p>,
       editChildren: (
         <input
           id="expiredDate"
           type="datetime-local"
           name="expiredDate"
-          defaultValue={expiredDate}
-          key={expiredDate}
+          defaultValue={board.expiredDate}
+          key={board.expiredDate}
           onChange={e => setEditText(e.target.value)}
           required
         />
@@ -281,14 +289,14 @@ function Detail() {
       id: "detail",
       title: "상세주소",
       icon: <FaMapPin />,
-      children: <p>{detailAddress}</p>,
+      children: <p>{board.detailAddress}</p>,
       editChildren: (
         <input
           id="detail"
           type="text"
           name="detailAddress"
-          defaultValue={detailAddress}
-          key={detailAddress}
+          defaultValue={board.detailAddress}
+          key={board.detailAddress}
           onChange={e => setEditText(e.target.value)}
         />
       ),
@@ -297,41 +305,37 @@ function Detail() {
 
   // 얼리리턴(예외처리)
   if (isPending) return <div>로딩중입니다.</div>;
-  if (!isLogin) return null;
-
   return (
     <DetailTemplate>
       <DetailWrapper>
         <DetailContentsSection>
-          {board && (
-            <ContentsSectionHeader>
-              <div className="header-title">
-                <div>
-                  <img src={RedShoesImg} alt="title-logo" style={{ width: "40px", height: "40px" }} />
-                </div>
-                <h2>{title}</h2>
+          <ContentsSectionHeader>
+            <div className="header-title">
+              <div>
+                <img src={RedShoesImg} alt="title-logo" style={{ width: "40px", height: "40px" }} />
               </div>
-              <div className="sub-header">
-                <div className="author-util">
-                  <span style={{ fontWeight: "700" }}>{memberId}</span>
-                  <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(createdDate))}</span>
-                </div>
-                <div className="interest">
-                  <AiFillHeart style={{ width: "20px", height: "20px", color: "var(--primary-color)" }} />
-                  <div>0</div>
-                </div>
+              <h2>{board.title}</h2>
+            </div>
+            <div className="sub-header">
+              <div className="author-util">
+                <span style={{ fontWeight: "700" }}>{board.member.memberId}</span>
+                <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(board.createdDate))}</span>
               </div>
-            </ContentsSectionHeader>
-          )}
+              <div className="interest">
+                <AiFillHeart style={{ width: "20px", height: "20px", color: "var(--primary-color)" }} />
+                <div>0</div>
+              </div>
+            </div>
+          </ContentsSectionHeader>
           <ContentsSectionBody>
             <BodyUtils>
               <div className="tags">
-                <div>{guTag}</div>
-                <div>{dongTag}</div>
+                <div>{board.guTag}</div>
+                <div>{board.dongTag}</div>
               </div>
               <div className="utils">
                 <button
-                  disabled={currentUser.memberId !== board.memberId}
+                  disabled={currentUser.memberId !== board.member.memberId}
                   type="button"
                   onClick={() => {
                     if (id === openEditor) {
@@ -345,7 +349,7 @@ function Detail() {
                   수정
                 </button>
                 <button
-                  disabled={currentUser.memberId !== board.memberId}
+                  disabled={currentUser.memberId !== board.member.memberId}
                   type="button"
                   onClick={() => handleDelete(id)}
                 >
@@ -366,14 +370,17 @@ function Detail() {
             })}
           </ContentsSectionBody>
         </DetailContentsSection>
-        <ApplySection boardData={board} />
-        <CommentSection boardData={board} />
+        <ApplySection boardId={id} />
+        <CommentSection boardId={id} />
       </DetailWrapper>
     </DetailTemplate>
   );
 }
 
 export default Detail;
+
+// const { boardId, title, memberId, createdDate, content, cost, expiredDate, dongTag, guTag, detailAddress } =
+//   board || null; // 게시글 구조분해할당
 
 // 해당 게시글 수정
 // const updateBoard = (boardId, body) => {
