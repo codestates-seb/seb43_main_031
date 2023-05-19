@@ -10,8 +10,8 @@ import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import { guList, dongList } from "../data/SeoulDistricts";
+import uploadImages from "../utils/upLoadImages";
 import { postBoard } from "../api/board";
-import { postImage } from "../api/image";
 
 const EntireContainer = styled.div`
   width: 100vw;
@@ -155,16 +155,6 @@ export default function Write() {
   function onDongChange(value) {
     setBoard(previous => ({ ...previous, dongTag: value }));
   }
-
-  // 에디터 내 이미지 업로드 hooks 수정
-  const uploadImages = (blob, callback) => {
-    const formData = new FormData();
-    formData.append("file", blob);
-    formData.append("Content-Type", "multipart/form-data");
-    postImage(formData).then(response => {
-      callback(response.data.image);
-    });
-  };
 
   const labels = [
     {
