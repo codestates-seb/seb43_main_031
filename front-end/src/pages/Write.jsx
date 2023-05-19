@@ -83,7 +83,7 @@ const ButtonContainer = styled.div`
 export default function Write() {
   const navigate = useNavigate();
   const editorRef = useRef();
-  // const currentUser = useSelector(state => state.user.userInfo);
+
   const currentUser = useSelector(state => state.user);
 
   const [board, setBoard] = useState({
