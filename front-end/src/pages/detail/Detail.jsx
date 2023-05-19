@@ -144,63 +144,65 @@ function Detail() {
   const navigate = useNavigate();
 
   const editorRef = useRef();
-  const [isLogin, setIslogin] = useState(true);
   const [isPending, setIsPending] = useState(false);
-  const [isEdit, setIsEdit] = useState(false); // 게시글 수정창 상태
   const [editText, setEditText] = useState(""); // 수정할 인풋값 상태
   const [openEditor, setOpenEditor] = useState(""); // 게시글 고유id값 담는 상태
 
+  const token = useSelector(state => state.user.token);
   const dispatch = useDispatch();
-  const boards = useSelector(state => state.board);
-  const board = boards.find(board => board.id === +id) || [];
-  // console.log(board);
-  const { title, memberId, createdDate, content, cost, expiredDate, dongTag, guTag, detailAddress } = board; // 게시글 구조분해할당
+  const currentUser = useSelector(state => state.user.userInfo);
 
-  // 해당 게시글 조회
+  const boards = useSelector(state => state.board);
+  const board = boards.find(item => item.boardId === id);
+  // console.log(boards);
+  // console.log(board);
+
   useEffect(() => {
-    window.scrollTo(0, 0); // 페이지 맨 위로
-    // setIsPending(true);
-    async () => {
+    // setIsPending(true)
+    const fetchBoard = async () => {
       try {
-        const { boards } = await axios.get(`/boards/${id}`, {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        console.log(boards);
-        dispatch(setBoard(boards));
+        dispatch(setBoard(response.data));
+        console.log(response.data);
       } catch (err) {
         alert("게시글을 불러오지 못했습니다.");
       }
       // setIsPending(false);
     };
-  }, [boards, dispatch, id]);
+    fetchBoard();
+  }, []);
 
   // 게시글 수정
-  const handleEdit = (id, editText) => {
-    const editData = { id, content: editText };
-    axios
-      .patch(`/boards/${id}`, editData)
-      .then(res => {
-        dispatch(editBoard(res.data));
-      })
-      .catch(err => {
-        alert("게시글을 수정하지 못했습니다.");
+  const handleEdit = async (id, editText) => {
+    try {
+      const editData = { id, content: editText };
+      const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, editData, {
+        headers: {
+          Authorization: `${token}`,
+        },
       });
+      dispatch(editBoard(response.data));
+    } catch (err) {
+      alert("게시글을 수정하지 못했습니다.");
+    }
   };
 
   // 게시글 삭제
-  const handleDelete = id => {
-    axios
-      .delete(`/boards/${id}`)
-      .then(res => {
-        console.log(res.status);
-        dispatch(deleteBoard(res.data));
-        navigate("/boards");
-      })
-      .catch(err => {
-        alert("게시글을 삭제하지 못했습니다.");
+  const handleDelete = async id => {
+    try {
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
       });
+      dispatch(deleteBoard(response.data));
+    } catch (err) {
+      alert("게시글을 삭제하지 못했습니다.");
+    }
   };
 
   // 수정할 인풋 이벤트
@@ -220,7 +222,7 @@ function Detail() {
     const formData = new FormData();
     formData.append("file", blob);
     try {
-      const response = await axios.post(`/images`, formData);
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/images`, formData);
       callback(response.data.image);
     } catch (error) {
       console.log(error);
@@ -232,10 +234,10 @@ function Detail() {
       id: "editor",
       title: "상세내용",
       icon: <RxFileText />,
-      children: <Viewer initialValue={content} />,
+      children: <Viewer initialValue={board.content} />,
       editChildren: (
         <Editor
-          initialValue={content}
+          initialValue={board.content}
           previewStyle="vertical"
           height="350px"
           initialEditType="wysiwyg"
@@ -253,14 +255,14 @@ function Detail() {
       id: "cost",
       title: "수고비(원)",
       icon: <FaWonSign />,
-      children: <p>{cost}</p>,
+      children: <p>{board.cost}</p>,
       editChildren: (
         <input
           id="cost"
           type="number"
           name="cost"
-          defaultValue={cost}
-          key={cost}
+          defaultValue={board.cost}
+          key={board.cost}
           onChange={e => setEditText(e.target.valueAsNumber)}
           required
         />
@@ -270,14 +272,14 @@ function Detail() {
       id: "expiredDate",
       title: "만료일",
       icon: <FiClock />,
-      children: <p>{expiredDate}</p>,
+      children: <p>{board.expiredDate}</p>,
       editChildren: (
         <input
           id="expiredDate"
           type="datetime-local"
           name="expiredDate"
-          defaultValue={expiredDate}
-          key={expiredDate}
+          defaultValue={board.expiredDate}
+          key={board.expiredDate}
           onChange={e => setEditText(e.target.value)}
           required
         />
@@ -287,14 +289,14 @@ function Detail() {
       id: "detail",
       title: "상세주소",
       icon: <FaMapPin />,
-      children: <p>{detailAddress}</p>,
+      children: <p>{board.detailAddress}</p>,
       editChildren: (
         <input
           id="detail"
           type="text"
           name="detailAddress"
-          defaultValue={detailAddress}
-          key={detailAddress}
+          defaultValue={board.detailAddress}
+          key={board.detailAddress}
           onChange={e => setEditText(e.target.value)}
         />
       ),
@@ -303,40 +305,37 @@ function Detail() {
 
   // 얼리리턴(예외처리)
   if (isPending) return <div>로딩중입니다.</div>;
-  if (!isLogin) return null;
-
   return (
     <DetailTemplate>
       <DetailWrapper>
         <DetailContentsSection>
-          {board && (
-            <ContentsSectionHeader>
-              <div className="header-title">
-                <div>
-                  <img src={RedShoesImg} alt="title-logo" style={{ width: "40px", height: "40px" }} />
-                </div>
-                <h2>{title}</h2>
+          <ContentsSectionHeader>
+            <div className="header-title">
+              <div>
+                <img src={RedShoesImg} alt="title-logo" style={{ width: "40px", height: "40px" }} />
               </div>
-              <div className="sub-header">
-                <div className="author-util">
-                  <span style={{ fontWeight: "700" }}>{memberId}</span>
-                  <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(createdDate))}</span>
-                </div>
-                <div className="interest">
-                  <AiFillHeart style={{ width: "20px", height: "20px", color: "var(--primary-color)" }} />
-                  <div>0</div>
-                </div>
+              <h2>{board.title}</h2>
+            </div>
+            <div className="sub-header">
+              <div className="author-util">
+                <span style={{ fontWeight: "700" }}>{board.member.memberId}</span>
+                <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(board.createdDate))}</span>
               </div>
-            </ContentsSectionHeader>
-          )}
+              <div className="interest">
+                <AiFillHeart style={{ width: "20px", height: "20px", color: "var(--primary-color)" }} />
+                <div>0</div>
+              </div>
+            </div>
+          </ContentsSectionHeader>
           <ContentsSectionBody>
             <BodyUtils>
               <div className="tags">
-                <div>{guTag}</div>
-                <div>{dongTag}</div>
+                <div>{board.guTag}</div>
+                <div>{board.dongTag}</div>
               </div>
               <div className="utils">
                 <button
+                  disabled={currentUser.memberId !== board.member.memberId}
                   type="button"
                   onClick={() => {
                     if (id === openEditor) {
@@ -349,7 +348,11 @@ function Detail() {
                 >
                   수정
                 </button>
-                <button type="button" onClick={() => handleDelete(id)}>
+                <button
+                  disabled={currentUser.memberId !== board.member.memberId}
+                  type="button"
+                  onClick={() => handleDelete(id)}
+                >
                   삭제
                 </button>
               </div>
@@ -367,8 +370,8 @@ function Detail() {
             })}
           </ContentsSectionBody>
         </DetailContentsSection>
-        <ApplySection boardData={board} />
-        <CommentSection boardData={board} />
+        <ApplySection boardId={id} />
+        <CommentSection boardId={id} />
       </DetailWrapper>
     </DetailTemplate>
   );
@@ -376,34 +379,8 @@ function Detail() {
 
 export default Detail;
 
-// <section className="main-msg">
-//   <div className="main-title">
-//     <CgFileDocument />
-//     <p>상세내용</p>
-//   </div>
-//   <Viewer initialValue={content} />
-// </section>
-// <section className="main-cost">
-//   <div className="main-title">
-//     <BiWon />
-//     <p>수고비</p>
-//   </div>
-//   <p>{cost}</p>
-// </section>
-// <section className="main-expire">
-//   <div className="main-title">
-//     <AiFillClockCircle />
-//     <p>만료일자</p>
-//   </div>
-//   <p>{expiredDate}</p>
-// </section>
-// <section className="main-location">
-//   <div className="main-title">
-//     <BiMap />
-//     <p>상세주소</p>
-//   </div>
-//   <p>{detailAddress}</p>
-// </section>
+// const { boardId, title, memberId, createdDate, content, cost, expiredDate, dongTag, guTag, detailAddress } =
+//   board || null; // 게시글 구조분해할당
 
 // 해당 게시글 수정
 // const updateBoard = (boardId, body) => {

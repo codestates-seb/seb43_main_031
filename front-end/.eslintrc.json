@@ -66,6 +66,7 @@
     "react/destructuring-assignment": "off", // 구조분해 할당을 일관되게 사용하는 규칙 해제
     "import/prefer-default-export": "off", // 단일 내보내기 기본 규칙 해제
     "no-return-assign": "off", // 화살표 함수 안 리턴문 필수 작성 규칙 해제
-    "no-param-reassign": "off" // 함수 매개변수에 속성 필수 할당 규칙 해제
+    "no-param-reassign": "off", // 함수 매개변수에 속성 필수 할당 규칙 해제
+    "react-hooks/exhaustive-deps": "off" // useEffect훅 의존성배열에 누락된 종속성이 있을때 경고 띄우는 규칙 해제
   }
 }

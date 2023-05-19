@@ -1,8 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// 로컬스토리지에서 초기상태 가져와 사용, 없으면 빈배열
-// const initialState = localStorage.getItem("comments") ? [...JSON.parse(localStorage.getItem("comments"))] : [];
-
 // const initialState = [
 //   // 댓글만 있는경우
 //   {

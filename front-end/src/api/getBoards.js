@@ -91,7 +91,7 @@ export default async function getBoards({
   const queryGu = `&guTag=${selectedGu}`;
   const queryDong = `&dongTag=${selectedDong}`;
   const querySerachText = `&title=${searchText}&content=${searchText}`;
-  const url = `${process.env.REACT_APP_BASE_URL}/boards?${queryGu}${queryDong}${querySerachText}${sortTypeViewCount}${sortTypeCreateDate}`;
+  const url = `${process.env.REACT_APP_BASE_URL}/boards?${queryGu}${queryDong}${querySerachText}${sortTypeViewCount}${sortTypeCreateDate}&sortDirection=DESC`;
   try {
     const response = await axios.get(url);
     return response.data;
