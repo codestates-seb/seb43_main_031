@@ -1,5 +1,6 @@
 import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import styled from "styled-components";
 import { FaCommentDots, FaWonSign, FaMapPin } from "react-icons/fa";
 import { RxFileText } from "react-icons/rx";
@@ -9,8 +10,20 @@ import { Editor } from "@toast-ui/react-editor";
 import "@toast-ui/editor/dist/toastui-editor.css";
 
 import { guList, dongList } from "../data/SeoulDistricts";
+import uploadImages from "../utils/upLoadImages";
 import { postBoard } from "../api/board";
-import { postImage } from "../api/image";
+
+const EntireContainer = styled.div`
+  width: 100vw;
+  min-height: calc(100vh - 50px);
+  padding: 5rem 0;
+  color: var(--font-color-bold);
+`;
+
+const WarningWords = styled.p`
+  display: flex;
+  justify-content: center;
+`;
 
 const FormSection = styled.form`
   display: flex;
@@ -90,6 +103,8 @@ const ButtonContainer = styled.div`
 export default function Write() {
   const navigate = useNavigate();
   const editorRef = useRef();
+  // const currentUser = useSelector(state => state.user.userInfo);
+  const currentUser = useSelector(state => state.user);
 
   const [board, setBoard] = useState({
     title: "",
@@ -140,16 +155,6 @@ export default function Write() {
   function onDongChange(value) {
     setBoard(previous => ({ ...previous, dongTag: value }));
   }
-
-  // 에디터 내 이미지 업로드 hooks 수정
-  const uploadImages = (blob, callback) => {
-    const formData = new FormData();
-    formData.append("file", blob);
-    formData.append("Content-Type", "multipart/form-data");
-    postImage(formData).then(response => {
-      callback(response.data.image);
-    });
-  };
 
   const labels = [
     {
@@ -222,6 +227,14 @@ export default function Write() {
     },
   ];
 
+  if (!currentUser) {
+    return (
+      <EntireContainer>
+        <WarningWords>로그인이 필요한 페이지입니다.</WarningWords>
+      </EntireContainer>
+    );
+  }
+
   return (
     <FormSection onSubmit={handleSubmit}>
       {labels.map(label => (
@@ -245,6 +258,7 @@ export default function Write() {
   );
 }
 
+// 공통 컴포넌트 따로 빼서 리팩토링할 예정
 function SelectGuDong({ onGuChange, onDongChange }) {
   const [selectedGu, setSelectedGu] = useState("");
   const [selectedDong, setSelectedDong] = useState("");

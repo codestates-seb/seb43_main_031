@@ -80,8 +80,18 @@ const mockData = {
   ],
 };
 
-export default async function getBoards({ page, searchText, gu, dong, sort }) {
-  const url = `${API_BASE_URL}/boards?page=${page}&size=5&search-text=${searchText}&gu=${gu}&dong=${dong}&sort=${sort}`;
+export default async function getBoards({
+  currentPage = "",
+  searchText = "",
+  selectedGu = "",
+  selectedDong = "",
+  sortTypeCreateDate,
+  sortTypeViewCount,
+}) {
+  const queryGu = `&guTag=${selectedGu}`;
+  const queryDong = `&dongTag=${selectedDong}`;
+  const querySerachText = `&title=${searchText}&content=${searchText}`;
+  const url = `${process.env.REACT_APP_BASE_URL}/boards?${queryGu}${queryDong}${querySerachText}${sortTypeViewCount}${sortTypeCreateDate}&sortDirection=DESC`;
   try {
     const response = await axios.get(url);
     return response.data;

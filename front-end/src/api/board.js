@@ -1,8 +1,8 @@
-import axios from "./core/instance";
+import { authAxios } from "./core/instance";
 
 export const postBoard = async board => {
   try {
-    await axios.post("/boards", board);
+    await authAxios.post("/boards", board);
     return "success";
   } catch (error) {
     console.log(error);

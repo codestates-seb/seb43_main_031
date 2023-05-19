@@ -6,8 +6,6 @@ import axios from "axios";
 import styled from "styled-components";
 import { setToken, setUserInfo } from "../redux/features/userSlice";
 
-import login from "../api/login";
-
 import kakaoLogin from "../img/kakao_login.png";
 
 const LoginWrapperStyle = styled.div`
@@ -106,6 +104,7 @@ export default function Login() {
         email,
         password,
       });
+
       const token = response.headers.authorization;
       const userInfo = response.data;
 
@@ -113,7 +112,12 @@ export default function Login() {
       dispatch(setUserInfo(userInfo));
       navigate("/");
     } catch (err) {
-      alert("err");
+      const status = err?.response?.status;
+      if (status === 403) {
+        alert("이메일 또는 비밀번호가 일치하지 않습니다.");
+      } else if (status === 500) {
+        alert("서버에 문제가 있습니다. 잠시 후 다시 시도해주세요.");
+      }
     }
   };
 
@@ -146,8 +150,8 @@ export default function Login() {
               id="password"
               placeholder="비밀번호를 입력하세요."
               value={password}
-              onChange={e => {
-                setPassword(e.target.value);
+              onChange={event => {
+                setPassword(event.target.value);
               }}
             />
           </label>
