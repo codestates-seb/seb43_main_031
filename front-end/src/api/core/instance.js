@@ -17,11 +17,18 @@ export const fileAxios = axios.create({
 });
 
 // 인증이 필요한 경우
-// 토큰 => 전역으로 저장된 값을 받아오는 방법으로 수정할 예정
-const token = localStorage.getItem("token");
 export const authAxios = axios.create({
   baseURL: `${process.env.REACT_APP_BASE_URL}`,
-  headers: {
-    Authorization: `${token}`,
-  },
 });
+
+// 요청 전 헤더에 토큰을 추가하는 인터셉터 추가
+authAxios.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem("token");
+    config.headers.Authorization = token;
+    return config;
+  },
+  error => {
+    return Promise.reject(error);
+  }
+);
