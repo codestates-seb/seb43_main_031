@@ -156,8 +156,7 @@ export default function BoardList() {
   const [selectedGu, setSelectedGu] = useState("지역구");
   const [selectedDong, setSelectedDong] = useState("지역동");
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortTypeViewCount, setSortTypeViewCount] = useState("");
-  const [sortTypeCreateDate, setSortTypeCreateDate] = useState("");
+  const [sortType, setSortType] = useState("viewCount"); // ["viewCount", "createDate"]
 
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
@@ -170,12 +169,11 @@ export default function BoardList() {
       searchText,
       selectedGu,
       selectedDong,
-      sortTypeCreateDate,
-      sortTypeViewCount,
+      sortType,
     }).then(response => {
       dispatch(setBoard(response.content));
     });
-  }, [currentPage, searchText, sortTypeCreateDate, sortTypeViewCount, selectedGu, selectedDong]);
+  }, [currentPage, searchText, sortType, selectedGu, selectedDong]);
 
   useEffect(() => {
     if (selectedGu === "지역구") return;
@@ -203,13 +201,11 @@ export default function BoardList() {
   };
 
   const onClickSortCreateDate = () => {
-    setSortTypeViewCount("");
-    setSortTypeCreateDate("&sortDirection=createDate");
+    setSortType("createDate");
   };
 
   const onClickSortViewCount = () => {
-    setSortTypeCreateDate("");
-    setSortTypeViewCount("&sortProperty=viewCount");
+    setSortType("viewCount");
   };
 
   const onClickWriteBoard = () => {
