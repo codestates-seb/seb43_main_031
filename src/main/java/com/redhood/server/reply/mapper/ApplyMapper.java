@@ -15,7 +15,6 @@ public interface ApplyMapper {
         Apply apply = new Apply();
         Board board = new Board();
         board.setBoardId(requestBody.getBoardId());
-        apply.setContent(requestBody.getContent());
         apply.setBoard(board);
         return apply;
     }
