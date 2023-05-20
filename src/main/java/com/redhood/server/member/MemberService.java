@@ -52,11 +52,17 @@ public class MemberService {
 	                           UserDetailsImpl user){
 		Member findMember = verifyLogInMemberMatchesMember(user.getUserId(), memberId);
 
+		Optional.ofNullable(member.getPassword())
+			.ifPresent(password ->{
+				//	findMember.setPassword(password);
+				//findMember.encodePassword(passwordEncoder);
+				findMember.setPassword(passwordEncoder.encode(password));
+		});
+
 		//현재 로그인한 사용자와 수정할려는 사용자가 같은지 확인
 		Optional.ofNullable(member.getNickName())
 				.ifPresent(name -> findMember.setNickName(name));
-		Optional.ofNullable(member.getPassword())
-				.ifPresent(password -> findMember.setPassword(password));
+
 		Optional.ofNullable(member.getPhone())
 				.ifPresent(phone -> findMember.setPhone(phone));
 		Optional.ofNullable(member.getImages())
