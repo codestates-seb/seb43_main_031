@@ -41,14 +41,14 @@ const PagingWrapperStyle = styled.div`
     color: #f45050;
   }
 `;
-function Paging({ page, onChange }) {
+function Paging({ page, onChange, totalItemsCount, itemsCountPerPage }) {
   return (
     <PagingWrapperStyle>
       <Pagination
         innerClass="pagination"
         activePage={page}
-        itemsCountPerPage={10}
-        totalItemsCount={500}
+        itemsCountPerPage={itemsCountPerPage}
+        totalItemsCount={totalItemsCount}
         pageRangeDisplayed={5}
         prevPageText="<"
         nextPageText=">"

@@ -157,6 +157,8 @@ export default function BoardList() {
   const [selectedDong, setSelectedDong] = useState("지역동");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortType, setSortType] = useState("viewCount"); // ["viewCount", "createDate"]
+  const [totalItemsCount, setTotalItemsCount] = useState(0);
+  const [itemsCountPerPage, setItemsCountPerPage] = useState(10);
 
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
@@ -171,6 +173,10 @@ export default function BoardList() {
       selectedDong,
       sortType,
     }).then(response => {
+      // 필요한것 : 전체 총 아이템 수, 페이지당 아이템 수
+      console.log(response.totalElements);
+      setTotalItemsCount(response.totalElements);
+      setItemsCountPerPage(response.size);
       dispatch(setBoard(response.content));
     });
   }, [currentPage, searchText, sortType, selectedGu, selectedDong]);
@@ -237,7 +243,12 @@ export default function BoardList() {
           />
           <WriteButtonArea onClickWriteBoard={onClickWriteBoard} />
           <BoardListArea boards={boards} />
-          <Paging page={currentPage} onChange={onChangePage} />
+          <Paging
+            page={currentPage}
+            onChange={onChangePage}
+            totalItemsCount={totalItemsCount}
+            itemsCountPerPage={itemsCountPerPage}
+          />
         </BoardListWrapperStyle>
       </BoardContainerStyle>
     </Main>
