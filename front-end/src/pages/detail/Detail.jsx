@@ -155,7 +155,6 @@ function Detail() {
   const boards = useSelector(state => state.board);
   const board = boards.find(item => item.boardId === Number(id));
   // console.log(boards);
-  console.log(board);
 
   useEffect(() => {
     // setIsPending(true)
@@ -166,8 +165,8 @@ function Detail() {
             "Content-Type": "application/json",
           },
         });
-        const freshBoard = response.data;
-
+        const freshBoard = response.data; // 받아온 단건 데이터 설정
+        // 단건 데이터(객체)를 교체후 배열로 다시 저장
         const newBoards = boards.map(oldBoard => {
           if (oldBoard.boardId === id) {
             return freshBoard;
@@ -284,7 +283,7 @@ function Detail() {
       id: "expiredDate",
       title: "만료일",
       icon: <FiClock />,
-      children: <p>{board.expiredDate}</p>,
+      children: <p>{board.expiredDateTime}</p>,
       editChildren: (
         <input
           id="expiredDate"
@@ -330,7 +329,7 @@ function Detail() {
             </div>
             <div className="sub-header">
               <div className="author-util">
-                {/* <span style={{ fontWeight: "700" }}>{board.member.memberId}</span> */}
+                <span style={{ fontWeight: "700" }}>{board.member.memberId}</span>
                 <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(board.createdDate))}</span>
               </div>
               <div className="interest">
@@ -347,7 +346,7 @@ function Detail() {
               </div>
               <div className="utils">
                 <button
-                  // disabled={currentUser.memberId !== board.member.memberId}
+                  disabled={currentUser.memberId !== board.member.memberId}
                   type="button"
                   onClick={() => {
                     if (id === openEditor) {
@@ -361,7 +360,7 @@ function Detail() {
                   수정
                 </button>
                 <button
-                  // disabled={currentUser.memberId !== board.member.memberId}
+                  disabled={currentUser.memberId !== board.member.memberId}
                   type="button"
                   onClick={() => handleDelete(id)}
                 >

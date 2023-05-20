@@ -162,7 +162,7 @@ export default function BoardList() {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const boards = useSelector(state => state.board);
-  console.log(boards);
+
   // 전체 데이터 가져옴 -> 단건조회를 하면 -> 전체 중에 일부만 교체
   useEffect(() => {
     getBoards({
