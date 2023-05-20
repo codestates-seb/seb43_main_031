@@ -6,11 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 import getBoards from "../api/getBoards";
-import { guList, dongList } from "../data/SeoulDistricts";
+import { dongList } from "../data/SeoulDistricts";
 
+import Paging from "../components/Paging";
 import WelcomeMessage from "../features/boards/WelcomeMessage";
 import BoardListArea from "../features/boards/BoardListArea";
-import PaginationArea from "../features/boards/PaginationArea";
 import SearchToolArea from "../features/boards/SearchToolArea";
 import SearchBar from "../features/boards/SearchBar";
 import WriteButtonArea from "../features/boards/WriteButtonArea";
@@ -237,7 +237,7 @@ export default function BoardList() {
           />
           <WriteButtonArea onClickWriteBoard={onClickWriteBoard} />
           <BoardListArea boards={boards} />
-          <PaginationArea onChangePage={onChangePage} />
+          <Paging page={currentPage} onChange={onChangePage} />
         </BoardListWrapperStyle>
       </BoardContainerStyle>
     </Main>
