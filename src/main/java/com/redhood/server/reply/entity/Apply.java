@@ -18,7 +18,7 @@ public class Apply extends Timestamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long applyId;
 
-    @Column(length = 16000, nullable = false)
+    @Column(length = 16)
     private String content;
 
     @Enumerated(value = EnumType.STRING)
