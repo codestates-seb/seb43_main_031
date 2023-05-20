@@ -84,7 +84,7 @@ export default function Write() {
   const navigate = useNavigate();
   const editorRef = useRef();
 
-  const currentUser = useSelector(state => state.user);
+  const currentUser = useSelector(state => state.user.userInfo);
 
   const [board, setBoard] = useState({
     title: "",
