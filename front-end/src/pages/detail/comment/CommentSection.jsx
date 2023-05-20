@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, forceUpdate } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import uuid from "react-uuid";
 import axios from "axios";
@@ -121,33 +121,43 @@ const EditForm = styled.div`
 `;
 
 // 댓글 컴포넌트
-// 댓글과 대댓글 연결을 위한 상태(responseTo)를 추가하여 "root" 는 댓글, "responseTo"는 대댓글로 인식하게 했다.
 function CommentSection({ boardId }) {
+  // console.log(typeof boardId); // string type
+
   const inputRef = useRef(null);
   const [text, setText] = useState(""); // 댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
   const [openEditor, setOpenEditor] = useState(""); // 댓글 고유id값 담는 상태
 
   const dispatch = useDispatch();
-  const comments = useSelector(state => state.comment);
-  const currentUser = useSelector(state => state.user);
+  const currentUser = useSelector(state => state.user.userInfo);
+  const token = useSelector(state => state.user.token);
+  const comments = useSelector(state => state.comment) || [];
+  console.log(comments);
+
+  // 전역 comments 데이터 중에서 댓글에 해당하는 것만 핉터링
+  const parentComments = comments.filter(item => item.board !== null && item.comment === null);
+
+  // console.log(parentComments);
 
   // 댓글 조회
   useEffect(() => {
     window.scrollTo(0, 0);
-    (async () => {
+    const fetchData = async () => {
       try {
-        const { comments } = await axios(`${process.env.REACT_APP_BASE_URL}/comments/comments/${boardId}`, {
+        const response = await axios(`${process.env.REACT_APP_BASE_URL}/comments/comments/${boardId}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        dispatch(setComment(comments.filter(comment => comment.board.boardId === boardId))); // 코멘트(댓글)만 필터링해서 코멘츠 데이터 업데이트
+        dispatch(setComment(response.data.data));
       } catch (err) {
         alert("댓글을 불러오지 못했습니다.");
       }
-    })();
-  }, [dispatch, boardId]);
+    };
+
+    fetchData();
+  }, [dispatch]);
 
   // 댓글 생성하기
   const handleSubmit = async e => {
@@ -155,19 +165,18 @@ function CommentSection({ boardId }) {
     try {
       e.preventDefault();
       const newComment = {
-        commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
-        board: {
-          boardId, // params로 받은 id
-        },
-        member: {
-          memberId: currentUser.memberId,
-        },
-        comment: null,
+        boardId: Number(boardId),
         content: text,
-        createdDate: `${new Date()}`,
       };
-      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, newComment);
-      dispatch(addComment(response.data));
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, newComment, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+
+      // dispatch(addComment(response.data));
+      alert("댓글이 성공적으로 보내졌습니다.");
+      setText("");
     } catch (err) {
       alert("댓글을 생성하지 못했습니다.");
     }
@@ -177,8 +186,16 @@ function CommentSection({ boardId }) {
   const handleEdit = async (id, editText) => {
     try {
       const editData = { commentId: id, content: editText };
-      const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/comments/${id}`, editData);
-      dispatch(editComment(response.data));
+      const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/comments/${id}`, editData, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      const { commentId, content } = response.data;
+      dispatch(editComment({ commentId, content }));
+      alert("댓글이 성공적으로 수정되었습니다.");
+
+      forceUpdate();
     } catch (err) {
       alert("댓글 수정을 실패하였습니다.");
     }
@@ -187,8 +204,15 @@ function CommentSection({ boardId }) {
   // 댓글 삭제하기
   const handleDelete = async id => {
     try {
-      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/comments/${id}`);
-      dispatch(deleteComment(response.data));
+      await axios.delete(`${process.env.REACT_APP_BASE_URL}/comments/${id}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      dispatch(deleteComment(id));
+      alert("댓글이 성공적으로 삭제되었습니다.");
+
+      forceUpdate();
     } catch (err) {
       alert("댓글 삭제를 실패하였습니다.");
     }
@@ -196,7 +220,7 @@ function CommentSection({ boardId }) {
 
   return (
     <StyledContainer>
-      <DetailSubHeader count={comments.length} title="개의 댓글" />
+      <DetailSubHeader count={parentComments.length} title="개의 댓글" />
       <DetailSubForm>
         <input
           ref={inputRef}
@@ -209,7 +233,7 @@ function CommentSection({ boardId }) {
           댓글작성
         </button>
       </DetailSubForm>
-      {comments?.map(comment => {
+      {parentComments.map(comment => {
         return (
           <StyledListBlock key={comment.commentId}>
             <StyledItemContents>
@@ -253,7 +277,7 @@ function CommentSection({ boardId }) {
               )}
             </StyledItemContents>
             {/* 코멘트(부모)의 고유 아이디를 대댓글에서 저장할수 있도록 props전달  */}
-            <ReplyCommentSection parentCommentId={comment.commentId} boardId={boardId} />
+            <ReplyCommentSection parentComment={comment} />
           </StyledListBlock>
         );
       })}

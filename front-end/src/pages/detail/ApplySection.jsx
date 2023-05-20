@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import uuid from "react-uuid";
+// import uuid from "react-uuid";
 import axios from "axios";
 
 import styled from "styled-components";
@@ -90,8 +90,10 @@ function ApplySection({ boardId }) {
 
   const currentUser = useSelector(state => state.user.userInfo);
   const token = useSelector(state => state.user.token);
-  const applys = useSelector(state => state.apply);
+  const applys = useSelector(state => state.apply) || [];
   const dispatch = useDispatch();
+
+  // console.log(applys);
 
   // 렌더링 시 모든 신청글 조회
   useEffect(() => {
@@ -109,7 +111,7 @@ function ApplySection({ boardId }) {
         alert("신청을 불러오지 못했습니다.");
       }
     })();
-  }, [dispatch, boardId]);
+  }, []);
 
   // 신청 생성하기
   const handleSubmit = async e => {
@@ -117,16 +119,12 @@ function ApplySection({ boardId }) {
       e.preventDefault();
       const newApply = {
         boardId,
-        applyId: uuid(),
-        applyStatus: false,
-        createdDate: `${new Date()}`,
       };
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/applys`, newApply, {
         headers: {
           Authorization: `${token}`,
         },
       });
-      dispatch(addApply(response.data));
     } catch (err) {
       alert("신청을 성공적으로 보내지 못했습니다.");
     }
@@ -135,7 +133,11 @@ function ApplySection({ boardId }) {
   // 신청 삭제하기
   const handleDelete = async id => {
     try {
-      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/apply/${id}`);
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/apply/${id}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
       dispatch(deleteApply(response.data));
     } catch (err) {
       alert("신청 삭제를 실패하였습니다.");

@@ -1,11 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
-import uuid from "react-uuid";
 
 import styled from "styled-components";
 
+import { useNavigate, useParams } from "react-router-dom";
 import UserBox from "../UserBox";
 import { addComment, editComment, deleteComment, setComment } from "../../../redux/features/commentSlice";
 
@@ -123,92 +122,110 @@ const EditForm = styled.div`
   }
 `;
 
-function ReplyCommentSection({ parentCommentId }) {
+// 현재 문제상황
+// 댓글 컴포넌트에서 전달받은 parentComment props가 해당 댓글 comment의 commentId로 받아와서 대댓글 컴포넌트에서 해당데이터를 사용할때 아예 댓글 자체가 나오지 않고, -> 이 원인은 댓글이 1개가 아닌 여러개가 나오게 되면 당연히 오류가 날것이다.
+
+// 댓글 comment데이터 자체를 내려주면 댓글들은 잘 렌더링이 된다.
+// 댓글 컴포넌트에서 map을 이용해 렌더링을 할때, 왜 1개의 comment가 아닌 서버에 저장된 댓글데이터가 다 담겨져 오는걸까?
+
+// 애초에 댓글 컴포넌트의 멥핑시, 1개의 comment.commentId를 내려줘야하는데 문제를 찾지 못하겠다..
+
+function ReplyCommentSection({ parentComment }) {
+  console.log(parentComment); // ???
+
+  const inputRef = useRef(null);
   const [display, setDisplay] = useState(false); // 대댓글 폼 박스 활성화 상태
   const [text, setText] = useState(""); // 대댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
-  const [user, setUser] = useState({
-    memberId: 1,
-    email: "test@gmail.com",
-    nickName: "nickname",
-    phone: "010-1234-5678",
-    image: "",
-  });
   const [openEditor, setOpenEditor] = useState(""); // 댓글 고유id값 담는 상태
 
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const currentUser = useSelector(state => state.user.userInfo);
+  const token = useSelector(state => state.user.token);
   const comments = useSelector(state => state.comment);
+  console.log(comments);
 
-  const inputRef = useRef(null);
+  // 전역 comments 데이터 중에서 대댓글에 해당하는 것만 핉터링
+  const replyComments = comments.filter(item => item.board === null && item.comment !== null);
+  // console.log(replyComments);
 
   // 모든 대댓글 조회
   useEffect(() => {
-    async () => {
+    const fetchData = async () => {
       try {
-        const { comments } = await axios(`${process.env.REACT_APP_BASE_URL}/comments/replys/${parentCommentId}}`, {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/comments/replys/${parentComment}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        dispatch(setComment(comments.filter(comment => comment.comment.commentId === parentCommentId)));
+        dispatch(setComment(response.data.data));
       } catch (err) {
-        alert("해당 댓글의 답변을 불러오지 못했습니다.");
+        console.log(err);
       }
     };
-  }, [dispatch, parentCommentId]);
+
+    fetchData(); // fetchData 함수 호출
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch]);
 
   // 새로운 대댓글 작성
   const handleSubmit = async e => {
     e.preventDefault();
     if (text === "") return alert("대댓글을 작성해 주세요");
-    const newComment = {
-      commentId: uuid(), // 고유 아이디값 생성을 위한 리엑트 ID라이브러리 사용
-      board: null,
-      member: {
-        memberId: user.memberId,
-      },
-      comment: {
-        commentId: parentCommentId,
-      },
-      content: text,
-      createdDate: `${new Date()}`,
-    };
-    await axios
-      .post(`${process.env.REACT_APP_BASE_URL}/comments`, newComment)
-      .then(response => {
-        dispatch(addComment(response.data));
-        setText("");
-      })
-      .catch(err => {
-        alert("대댓글을 생성하지 못했습니다.");
+    try {
+      const newComment = {
+        commentId: Number(parentComment),
+        content: text,
+      };
+      const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, newComment, {
+        headers: {
+          Authorization: `${token}`,
+        },
       });
+    } catch (err) {
+      alert("댓글을 생성하지 못했습니다.");
+    }
   };
 
   // 대댓글 수정하기
-  const handleEdit = (id, editText) => {
-    const editData = { commentId: id, content: editText };
-    axios
-      .patch(`${process.env.REACT_APP_BASE_URL}/comments/${id}`, editData)
-      .then(res => {
-        dispatch(editComment(res.data));
-      })
-      .catch(err => {
-        alert("대댓글 수정을 실패하였습니다.");
+  const handleEdit = async (id, editText) => {
+    try {
+      const editData = { commentId: id, content: editText };
+      const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/comments/${id}`, editData, {
+        headers: {
+          Authorization: `${token}`,
+        },
       });
+      const { commentId, content } = response.data;
+      dispatch(editComment({ commentId, content }));
+    } catch (err) {
+      alert("대댓글 수정을 실패하였습니다.");
+    }
   };
 
   // 대댓글 삭제하기
-  const handleDelete = id => {
-    axios
-      .delete(`${process.env.REACT_APP_BASE_URL}/comments/${id}`)
-      .then(res => {
-        console.log(res.status);
-        dispatch(deleteComment(res.data));
-      })
-      .catch(err => {
-        alert("대댓글 삭제를 실패하였습니다.");
+  const handleDelete = async id => {
+    try {
+      await axios.delete(`${process.env.REACT_APP_BASE_URL}/comments/${id}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
       });
+      dispatch(deleteComment(id));
+    } catch (err) {
+      alert("댓글 삭제를 실패하였습니다.");
+    }
   };
+
+  // 체인지시 리렌더링 방지 함수
+  const handleChange = useCallback(
+    e => {
+      setEditText(e.target.value);
+    },
+    [setEditText]
+  );
 
   return (
     <ReplyContainer>
@@ -220,16 +237,16 @@ function ReplyCommentSection({ parentCommentId }) {
         }}
       >
         {display && "숨기기"}
-        {!display && (comments.length === 0 ? "대댓글 달기" : `${comments.length} 개의 대댓글 보기`)}
+        {!display && (replyComments.length === 0 ? "대댓글 달기" : `${replyComments.length} 개의 대댓글 보기`)}
       </button>
       {display && (
         <ReplyFormBox>
-          {comments?.map(comment => (
+          {replyComments?.map(comment => (
             <ReplyItem key={comment.commnetId}>
               <UserBox infoData={comment} />
               <div className="reply-msg">{comment.content}</div>
               {/* 유저가 해당 댓글의 작성자일 경우만 */}
-              {user.memberId === comment.member.memberId && (
+              {currentUser.memberId === comment.member.memberId && (
                 // 해당 댓글/대댓글 id가 빈문자가 아니면 수정버튼 클릭시 수정인풋창 보이게
                 <EditForm>
                   {openEditor === comment.commentId && (
@@ -238,7 +255,7 @@ function ReplyCommentSection({ parentCommentId }) {
                       type="text"
                       defaultValue={comment.content}
                       key={comment.content}
-                      onChange={e => setEditText(e.target.value)}
+                      onChange={handleChange}
                     />
                   )}
                   <div className="utils">
