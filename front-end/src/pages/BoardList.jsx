@@ -18,15 +18,12 @@ import { setBoard } from "../redux/features/boardSlice";
 
 // main레이아웃으로 뺄 예정
 const Main = styled.div`
-  width: 100vw;
-  height: 100%;
-  padding: 3rem 0;
   background-color: var(--bg-color);
+  padding: 30px;
 `;
 
 const BoardContainerStyle = styled.div`
   max-width: 600px;
-  height: 100vh;
   display: block;
   margin: 0 auto;
   background-color: #fff;
@@ -163,8 +160,7 @@ export default function BoardList() {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const boards = useSelector(state => state.board);
-  console.log(boards);
-  // 전체 데이터 가져옴 -> 단건조회를 하면 -> 전체 중에 일부만 교체
+
   useEffect(() => {
     getBoards({
       currentPage,
@@ -173,8 +169,6 @@ export default function BoardList() {
       selectedDong,
       sortType,
     }).then(response => {
-      // 필요한것 : 전체 총 아이템 수, 페이지당 아이템 수
-      console.log(response.totalElements);
       setTotalItemsCount(response.totalElements);
       setItemsCountPerPage(response.size);
       dispatch(setBoard(response.content));
@@ -195,6 +189,7 @@ export default function BoardList() {
   };
 
   const onSearchButtonClick = () => {
+    console.log("clicked");
     setSearchText(searchInputText);
   };
 

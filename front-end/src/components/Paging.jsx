@@ -5,12 +5,12 @@ import styled from "styled-components";
 const PagingWrapperStyle = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 25px;
+  height: 50px;
 
   .pagination {
     display: flex;
     margin: 0;
-    margin-top: 20px;
   }
 
   .pagination li {
