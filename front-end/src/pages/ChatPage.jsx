@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
@@ -89,7 +89,9 @@ const SendButton = styled.button`
 `;
 
 export default function ChatPage() {
-  const { id } = useParams();
+  const chatContainerRef = useRef();
+  const { id } = useParams(null);
+
   const currentUser = useSelector(state => state.user.userInfo) || {};
   const { memberId } = currentUser;
   // 의뢰자 id
@@ -109,9 +111,19 @@ export default function ChatPage() {
       setList(response.data.data);
     };
     fetchData(); // 맨처음 랜더링 시 실행
-    const interval = setInterval(fetchData, 5000); // 5초마다 실행
+    const interval = setInterval(fetchData, 5000); // 그후 5초마다 실행
     return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    // 리스트 갱신 시 스크롤 아래로
+    const scrollToBottom = () => {
+      if (chatContainerRef.current) {
+        chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
+      }
+    };
+    scrollToBottom();
+  }, [list]);
 
   const handleChange = event => {
     setChat(previous => ({ ...previous, content: event.target.value }));
@@ -143,7 +155,7 @@ export default function ChatPage() {
     <EntireContainer>
       <ChatContainer>
         {list && list.length > 0 ? (
-          <ChatMessages>
+          <ChatMessages ref={chatContainerRef}>
             {list?.map((message, index) => (
               <ChatMessage key={index} isCurrentUser={memberId === message.member.memberId}>
                 <ChatSender>{message.member.nickName} :</ChatSender>
