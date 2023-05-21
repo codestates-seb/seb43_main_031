@@ -97,7 +97,7 @@ export default function MyPage() {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const currentUser = useSelector(state => state.user.userInfo);
+  const currentUser = useSelector(state => state.user.userInfo) || {};
   const { memberId, email, nickName, phone, images } = currentUser;
   const phoneWithHyphen = formatPhoneNumber(phone);
 
@@ -175,6 +175,7 @@ export default function MyPage() {
   const handleClick = () => {
     deleteMember(memberId).then(response => {
       if (response === "success") {
+        dispatch(setUserInfo(null));
         dispatch(clearToken(null));
         alert("회원 탈퇴 과정이 완료되었습니다.");
         navigate("/");
@@ -185,7 +186,7 @@ export default function MyPage() {
     });
   };
 
-  if (!currentUser) {
+  if (!currentUser || !Object.keys(currentUser).length) {
     return (
       <EntireContainer>
         <WarningWords>로그인이 필요한 페이지입니다.</WarningWords>

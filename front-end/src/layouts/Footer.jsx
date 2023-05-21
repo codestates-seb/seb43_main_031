@@ -21,7 +21,9 @@ const ContentWrapper = styled.div`
   gap: 8px;
   a {
     margin-top: 1rem;
-    color: var(--sub-color);
+    &:hover {
+      color: var(--sub-color);
+    }
   }
 `;
 
