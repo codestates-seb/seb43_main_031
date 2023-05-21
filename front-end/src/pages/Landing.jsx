@@ -1,47 +1,66 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import styled from "styled-components";
 
 import Footer from "../layouts/Footer";
 
-const StyledSection = styled.section`
+const SharedSection = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  height: calc(100vh - 50px);
-  font-size: 24px;
-  background-color: ${props => props.backgroundColor};
+  height: 80vh;
+`;
+
+const SectionOne = styled(SharedSection)`
+  background-color: #fae7e7;
+  opacity: 0;
+  transition: all 3s;
+`;
+
+const SectionTwo = styled(SharedSection)`
+  background-color: #db8787;
+`;
+
+const SectionThree = styled(SharedSection)`
+  background-color: #fff;
+`;
+
+const SectionFour = styled(SharedSection)`
+  background-color: #fae7e7;
 `;
 
 export default function Landing() {
-  const [backgroundColor, setBackgroundColor] = useState("#FAE7E7");
+  const sectionOneRef = useRef(null);
+  const sectionTwoRef = useRef(null);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollTop = window.pageYOffset;
-      const windowHeight = window.innerHeight;
-
-      if (scrollTop > windowHeight / 2) {
-        setBackgroundColor("#DB8787");
-      } else {
-        setBackgroundColor("#FAE7E7");
+    const observerOne = new IntersectionObserver(entries => {
+      const { target } = entries[0];
+      if (entries[0].isIntersecting) {
+        target.style.opacity = 1;
       }
-    };
+      if (!entries[0].isIntersecting) {
+        target.style.opacity = 0;
+      }
+    });
 
-    window.addEventListener("scroll", handleScroll);
-
-    return () => {
-      window.removeEventListener("scroll", handleScroll);
-    };
+    observerOne.observe(sectionOneRef.current);
   }, []);
 
   return (
     <>
-      <StyledSection backgroundColor={backgroundColor}>
-        <h1>Landing Page</h1>
-      </StyledSection>
-      <StyledSection id="section2" backgroundColor="#DB8787">
+      <SectionOne ref={sectionOneRef}>
+        <p>우리동네 심부름은</p>
+        <p>빨간망토에서</p>
+      </SectionOne>
+      <SectionTwo ref={sectionTwoRef}>
         <h1>Section 2</h1>
-      </StyledSection>
+      </SectionTwo>
+      <SectionThree>
+        <h1>Section 3</h1>
+      </SectionThree>
+      <SectionFour>
+        <h1>Section 4</h1>
+      </SectionFour>
       <Footer />
     </>
   );
