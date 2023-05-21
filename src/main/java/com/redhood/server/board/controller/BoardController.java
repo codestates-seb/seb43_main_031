@@ -40,7 +40,7 @@ public class BoardController {
     @PostMapping
     public ResponseEntity postBoard(@RequestBody @Valid BoardPostDto boardPostDto,
                                     @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        if(boardPostDto.getExpiredDateTime().isBefore(LocalDateTime.now())) {
+        if (boardPostDto.getExpiredDateTime().isBefore(LocalDateTime.now())) {
             throw new ValidationException("만료일자 현재 날짜보다 이전입니다.");
         }
         Board board = mapper.boardPostDtoToBoard(boardPostDto);
@@ -63,7 +63,7 @@ public class BoardController {
     @GetMapping("/{boardId}")
     public ResponseEntity getBoard(@PathVariable("boardId") @Positive long boardId) {
         Board response = boardService.findBoard(boardId);
-                         boardService.boardViewCounts(boardId);
+        boardService.boardViewCounts(boardId);
 
         return new ResponseEntity<>(mapper.boardToBoardResponseDto(response), HttpStatus.OK);
     }
@@ -75,8 +75,8 @@ public class BoardController {
                                                             @RequestParam(required = false) String content,
                                                             @RequestParam(name = "sortProperty", required = false) String sortProperty,
                                                             @RequestParam(name = "sortDirection", required = false) String sortDirection,
-                                                            @PageableDefault(size=10, page=0, sort="createdDate", direction=Sort.Direction.DESC)Pageable pageable) {
-        if(sortProperty != null && sortDirection != null) {
+                                                            @PageableDefault(size = 10, page = 0, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
+        if (sortProperty != null && sortDirection != null) {
             Sort sort;
             if (sortProperty.equals("viewCount")) {
                 sort = Sort.by(Sort.Direction.fromString(sortDirection), "viewCount");
@@ -85,74 +85,32 @@ public class BoardController {
             }
             pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
         }
-        Page<Board> boardPage;
-        if ((title != null || content != null) && (guTag != null || dongTag != null)) {
-            boardPage = boardService.searchBoards(title, content, pageable);
-            if(boardPage.isEmpty()) {
-            boardPage = boardService.filterBoardsByGuTagAndDongTag(boardPage, guTag, dongTag, pageable);
 
-        } else if (title != null || content != null) {
-                boardPage = boardService.searchBoards(title, content, pageable);
+        Page<Board> boardPage;
+
+        if ((title != null) && (guTag != null && dongTag != null)) {
+            Page<Board> searchResultPage = boardService.searchBoards(title, guTag, dongTag, pageable);
+            if (searchResultPage.isEmpty()) {
+                boardPage = boardService.filterBoardsByGuTagAndDongTag(searchResultPage, guTag, dongTag, pageable);
+            } else {
+                boardPage = searchResultPage;
             }
-        } else if (guTag != null || dongTag != null) {
+
+        } else if (title != null) {
+            boardPage = boardService.searchBoards(title, guTag, dongTag, pageable);
+
+
+        } else if (guTag != null && dongTag != null) {
             boardPage = boardService.getBoardsByGuTagAndDongTag(guTag, dongTag, pageable);
         } else {
             boardService.deleteExpiredBoards();
             boardPage = boardService.getBoards(pageable);
         }
-        /*Page<Board> filteredBoards = boardService.filterBoardsByGuTagAndDongTag(boardPage, guTag, dongTag, pageable);
-            boardPage = filteredBoards;*/
-        /*Page<Board> boardPage;
-        if(guTag != null || dongTag != null) {
-            boardPage = boardService.getBoardsByGuTagAndDongTag(guTag, dongTag, pageable);
-        } else if(title != null || content != null) {
-            boardPage = boardService.searchBoards(title, content, pageable);
-        } else {
-            boardService.deleteExpiredBoards();
-            boardPage = boardService.getBoards(pageable);
-        }*/
         Page<BoardResponseDto> boardResponseDtoPage = mapper.boardPageToBoardResponseDtoPage(boardPage);
         return new ResponseEntity<>(boardResponseDtoPage, HttpStatus.OK);
+
+
     }
-
-
-     /*@GetMapping
-     public ResponseEntity<Page<BoardResponseDto>> getBoards(@PageableDefault(size=10, page=0, sort="createdDate", direction=Sort.Direction.DESC)Pageable pageable,
-                                                             @RequestParam(name = "sortProperty", required = false) String sortProperty,
-                                                             @RequestParam(name = "sortDirection", required = false) String sortDirection) {
-            if(sortProperty != null && sortDirection != null) {
-                Sort sort;
-                if(sortProperty.equals("viewCount")) {
-                    sort = Sort.by(Sort.Direction.fromString(sortDirection), "viewCount");
-                } else {
-                    sort = Sort.by(Sort.Direction.fromString(sortDirection), "createdDate");
-                }
-                pageable = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize(), sort);
-            }
-            boardService.deleteExpiredBoards();
-            Page<Board> boardPage = boardService.getBoards(pageable);
-            Page<BoardResponseDto> boardResponseDtoPage = mapper.boardPageToBoardResponseDtoPage(boardPage);
-            return new ResponseEntity<>(boardResponseDtoPage, HttpStatus.OK);
-    }*/
-
-   /* @GetMapping("/regions")
-    public ResponseEntity<Page<BoardResponseDto>> getBoardsByRegion(@RequestParam(required = false) String guTag,
-                                                                    @RequestParam(required = false) String dongTag,
-                                                                    @PageableDefault(size = 10, page = 0, sort="createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
-        Page<Board> boardPage = boardService.getBoardsByGuTagAndDongTag(guTag, dongTag, pageable);
-        Page<BoardResponseDto> boardResponseDtoPage = mapper.boardPageToBoardResponseDtoPage(boardPage);
-        return new ResponseEntity<>(boardResponseDtoPage, HttpStatus.OK);
-    }
-
-    @GetMapping("/search")
-    public  ResponseEntity<Page<BoardResponseDto>> searchPaging(@RequestParam(required = false) String title,
-                                                                @RequestParam(required = false) String content,
-                                                                @PageableDefault(size = 10, page = 0, sort="createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
-    Page<Board> boardPage = boardService.searchBoards(title, content, pageable);
-    Page<BoardResponseDto> boardResponseDtoPage = mapper.boardPageToBoardResponseDtoPage(boardPage);
-
-    return  new ResponseEntity<>(boardResponseDtoPage, HttpStatus.OK);
-    }*/
 
     @DeleteMapping("/{boardId}")
     public ResponseEntity deleteBoard(

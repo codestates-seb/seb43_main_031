@@ -24,16 +24,14 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
     List<Board> findByExpiredDateTimeBefore(LocalDateTime currentDateTime);
 
 
-    Page<Board> findByGuTagContainingIgnoreCase(String guTag, Pageable pageable);
-    Page<Board> findByDongTagContainingIgnoreCase(String dongTag, Pageable pageable);
     Page<Board> findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(String guTag, String dongTag, Pageable pageable);
-     // 지역필터링
 
 
+    Page<Board> findByTitleContainingIgnoreCaseAndGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(String title, String guTag, String dongTag, Pageable pageable);
 
-    Page<Board> findByTitleContainingIgnoreCaseAndContentContainingIgnoreCase(String title, String content, Pageable pageable);
+
     Page<Board> findByTitleContainingIgnoreCase(String title, Pageable pageable);
-    Page<Board> findByContentContainingIgnoreCase(String content, Pageable pageable);
+
     //제목&내용 검색
 }
 

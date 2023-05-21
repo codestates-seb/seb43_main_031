@@ -94,21 +94,6 @@ public class BoardService {
         return this.boardRepository.findAll(pageable);
     }
 
-    public Page<Board> searchBoards(String titleKeyword, String contentKeyword, Pageable pageable) {
-        if (StringUtils.isBlank(titleKeyword) && StringUtils.isBlank(contentKeyword)) {
-            return boardRepository.findAll(pageable);
-        }else
-        if (StringUtils.isNotBlank(titleKeyword) && StringUtils.isNotBlank(contentKeyword)) {
-            return boardRepository.findByTitleContainingIgnoreCaseAndContentContainingIgnoreCase(titleKeyword, contentKeyword, pageable);
-        }
-        else if (StringUtils.isNotBlank(titleKeyword)) {
-            return boardRepository.findByTitleContainingIgnoreCase(titleKeyword, pageable);
-        }
-        else if (StringUtils.isNotBlank(contentKeyword)) {
-            return boardRepository.findByContentContainingIgnoreCase(contentKeyword, pageable);
-        }
-        return Page.empty();
-    }
 
 
 
@@ -133,10 +118,6 @@ public class BoardService {
             return boardRepository.findAll(pageable);
         } else if (StringUtils.isNotBlank(guTagKeyword) && StringUtils.isNotBlank(dongTagKeyword)) {
             return boardRepository.findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(guTagKeyword, dongTagKeyword, pageable);
-        } else if (StringUtils.isNotBlank(guTagKeyword)) {
-            return boardRepository.findByGuTagContainingIgnoreCase(guTagKeyword, pageable);
-        } else if (StringUtils.isNotBlank(dongTagKeyword)) {
-            return boardRepository.findByDongTagContainingIgnoreCase(dongTagKeyword, pageable);
         }
         return Page.empty();
 
@@ -146,14 +127,29 @@ public class BoardService {
             return boardPage;
         } else if (StringUtils.isNotBlank(guTagKeyword) && StringUtils.isNotBlank(dongTagKeyword)) {
             return boardRepository.findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(guTagKeyword, dongTagKeyword, pageable);
-        } else if (StringUtils.isNotBlank(guTagKeyword)) {
-            return boardRepository.findByGuTagContainingIgnoreCase(guTagKeyword, pageable);
-        } else if (StringUtils.isNotBlank(dongTagKeyword)) {
-            return boardRepository.findByDongTagContainingIgnoreCase(dongTagKeyword, pageable);
         }
         return Page.empty();
     }
 
+
+  public Page<Board> searchBoards(String titleKeyword, String guTagKeyword, String dongTagKeyword, Pageable pageable) {
+      if (StringUtils.isBlank(guTagKeyword) && StringUtils.isBlank(dongTagKeyword)) {
+          if (StringUtils.isNotBlank(titleKeyword)) {
+              return boardRepository.findByTitleContainingIgnoreCase(titleKeyword, pageable);
+          } else {
+              return boardRepository.findAll(pageable);
+          }
+      } else if (StringUtils.isNotBlank(guTagKeyword) && StringUtils.isNotBlank(dongTagKeyword)) {
+          if (StringUtils.isNotBlank(titleKeyword)) {
+              return boardRepository.findByTitleContainingIgnoreCaseAndGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(titleKeyword, guTagKeyword, dongTagKeyword, pageable);
+          } else {
+              return boardRepository.findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(guTagKeyword, dongTagKeyword, pageable);
+          }
+
+      }
+      return Page.empty();
+
+  }
 
     public  Board findVerifiedBoard(long boardId) {
         Optional<Board> optionalBoard =
