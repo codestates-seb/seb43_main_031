@@ -5,12 +5,12 @@ import styled from "styled-components";
 const PagingWrapperStyle = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 15px;
+  margin-top: 25px;
+  height: 50px;
 
   .pagination {
     display: flex;
     margin: 0;
-    margin-top: 20px;
   }
 
   .pagination li {
@@ -41,14 +41,14 @@ const PagingWrapperStyle = styled.div`
     color: #f45050;
   }
 `;
-function Paging({ page, onChange }) {
+function Paging({ page, onChange, totalItemsCount, itemsCountPerPage }) {
   return (
     <PagingWrapperStyle>
       <Pagination
         innerClass="pagination"
         activePage={page}
-        itemsCountPerPage={10}
-        totalItemsCount={500}
+        itemsCountPerPage={itemsCountPerPage}
+        totalItemsCount={totalItemsCount}
         pageRangeDisplayed={5}
         prevPageText="<"
         nextPageText=">"

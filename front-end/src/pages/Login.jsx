@@ -8,6 +8,13 @@ import { setToken, setUserInfo } from "../redux/features/userSlice";
 
 import kakaoLogin from "../img/kakao_login.png";
 
+const Main = styled.div`
+  width: 100vw;
+  min-height: calc(100vh - 50px);
+  padding: 3rem 0;
+  background-color: var(--bg-color);
+`;
+
 const LoginWrapperStyle = styled.div`
   border: 1px solid #ccc;
   display: flex;
@@ -126,7 +133,7 @@ export default function Login() {
   };
 
   return (
-    <div style={{ minHeight: "100vh" }}>
+    <Main>
       <LoginWrapperStyle>
         <h1>로그인</h1>
         <form>
@@ -169,6 +176,6 @@ export default function Login() {
           회원가입 하러가기
         </div>
       </RegisterStyle>
-    </div>
+    </Main>
   );
 }
