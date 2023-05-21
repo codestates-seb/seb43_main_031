@@ -5,7 +5,7 @@ export const commentSlice = createSlice({
   initialState: [],
   reducers: {
     addComment(state, action) {
-      return [...action.payload, ...state];
+      return [...state, action.payload];
     },
     editComment(state, action) {
       const { commentId, content } = action.payload;

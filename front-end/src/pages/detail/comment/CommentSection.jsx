@@ -6,6 +6,7 @@ import axios from "axios";
 import styled from "styled-components";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
+import { useParams } from "react-router-dom";
 import { addComment, editComment, deleteComment, setComment } from "../../../redux/features/commentSlice";
 
 import ReplyCommentSection from "./ReplyCommentSection";
@@ -121,9 +122,9 @@ const EditForm = styled.div`
 `;
 
 // 댓글 컴포넌트
-function CommentSection({ boardId }) {
+function CommentSection() {
   // console.log(typeof boardId); // string type
-
+  const { id } = useParams();
   const inputRef = useRef(null);
   const [text, setText] = useState(""); // 댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
@@ -138,14 +139,14 @@ function CommentSection({ boardId }) {
   // 전역 comments 데이터 중에서 댓글에 해당하는 것만 핉터링
   const parentComments = comments.filter(item => item.board !== null && item.comment === null);
 
-  // console.log(parentComments);
+  console.log(parentComments);
 
   // 댓글 조회
   useEffect(() => {
     window.scrollTo(0, 0);
     const fetchData = async () => {
       try {
-        const response = await axios(`${process.env.REACT_APP_BASE_URL}/comments/comments/${boardId}`, {
+        const response = await axios(`${process.env.REACT_APP_BASE_URL}/comments/comments/${id}`, {
           headers: {
             "Content-Type": "application/json",
           },
@@ -157,15 +158,15 @@ function CommentSection({ boardId }) {
     };
 
     fetchData();
-  }, [dispatch]);
+  }, [dispatch, id]);
 
   // 댓글 생성하기
   const handleSubmit = async e => {
+    e.preventDefault();
     if (text === "") return alert("댓글을 작성해 주세요");
     try {
-      e.preventDefault();
       const newComment = {
-        boardId: Number(boardId),
+        boardId: Number(id),
         content: text,
       };
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, newComment, {
@@ -173,9 +174,7 @@ function CommentSection({ boardId }) {
           Authorization: `${token}`,
         },
       });
-
-      // dispatch(addComment(response.data));
-      alert("댓글이 성공적으로 보내졌습니다.");
+      dispatch(addComment(response.data.data));
       setText("");
     } catch (err) {
       alert("댓글을 생성하지 못했습니다.");
@@ -191,11 +190,8 @@ function CommentSection({ boardId }) {
           Authorization: `${token}`,
         },
       });
-      const { commentId, content } = response.data;
+      const { commentId, content } = response.data.data;
       dispatch(editComment({ commentId, content }));
-      alert("댓글이 성공적으로 수정되었습니다.");
-
-      forceUpdate();
     } catch (err) {
       alert("댓글 수정을 실패하였습니다.");
     }
@@ -210,9 +206,6 @@ function CommentSection({ boardId }) {
         },
       });
       dispatch(deleteComment(id));
-      alert("댓글이 성공적으로 삭제되었습니다.");
-
-      forceUpdate();
     } catch (err) {
       alert("댓글 삭제를 실패하였습니다.");
     }
@@ -277,7 +270,7 @@ function CommentSection({ boardId }) {
               )}
             </StyledItemContents>
             {/* 코멘트(부모)의 고유 아이디를 대댓글에서 저장할수 있도록 props전달  */}
-            <ReplyCommentSection parentComment={comment} />
+            <ReplyCommentSection />
           </StyledListBlock>
         );
       })}
