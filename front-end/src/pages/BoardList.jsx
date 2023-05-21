@@ -6,11 +6,11 @@ import { useDispatch, useSelector } from "react-redux";
 import styled from "styled-components";
 
 import getBoards from "../api/getBoards";
-import { guList, dongList } from "../data/SeoulDistricts";
+import { dongList } from "../data/SeoulDistricts";
 
+import Paging from "../components/Paging";
 import WelcomeMessage from "../features/boards/WelcomeMessage";
 import BoardListArea from "../features/boards/BoardListArea";
-import PaginationArea from "../features/boards/PaginationArea";
 import SearchToolArea from "../features/boards/SearchToolArea";
 import SearchBar from "../features/boards/SearchBar";
 import WriteButtonArea from "../features/boards/WriteButtonArea";
@@ -18,15 +18,12 @@ import { setBoard } from "../redux/features/boardSlice";
 
 // main레이아웃으로 뺄 예정
 const Main = styled.div`
-  width: 100vw;
-  height: 100%;
-  padding: 3rem 0;
   background-color: var(--bg-color);
+  padding: 30px;
 `;
 
 const BoardContainerStyle = styled.div`
   max-width: 600px;
-  height: 100vh;
   display: block;
   margin: 0 auto;
   background-color: #fff;
@@ -156,26 +153,27 @@ export default function BoardList() {
   const [selectedGu, setSelectedGu] = useState("지역구");
   const [selectedDong, setSelectedDong] = useState("지역동");
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortTypeViewCount, setSortTypeViewCount] = useState("");
-  const [sortTypeCreateDate, setSortTypeCreateDate] = useState("");
+  const [sortType, setSortType] = useState("viewCount"); // ["viewCount", "createDate"]
+  const [totalItemsCount, setTotalItemsCount] = useState(0);
+  const [itemsCountPerPage, setItemsCountPerPage] = useState(10);
 
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const boards = useSelector(state => state.board);
 
-  // 전체 데이터 가져옴 -> 단건조회를 하면 -> 전체 중에 일부만 교체
   useEffect(() => {
     getBoards({
       currentPage,
       searchText,
       selectedGu,
       selectedDong,
-      sortTypeCreateDate,
-      sortTypeViewCount,
+      sortType,
     }).then(response => {
+      setTotalItemsCount(response.totalElements);
+      setItemsCountPerPage(response.size);
       dispatch(setBoard(response.content));
     });
-  }, [currentPage, searchText, sortTypeCreateDate, sortTypeViewCount, selectedGu, selectedDong]);
+  }, [currentPage, searchText, sortType, selectedGu, selectedDong]);
 
   useEffect(() => {
     if (selectedGu === "지역구") return;
@@ -191,6 +189,7 @@ export default function BoardList() {
   };
 
   const onSearchButtonClick = () => {
+    console.log("clicked");
     setSearchText(searchInputText);
   };
 
@@ -203,13 +202,11 @@ export default function BoardList() {
   };
 
   const onClickSortCreateDate = () => {
-    setSortTypeViewCount("");
-    setSortTypeCreateDate("&sortDirection=createDate");
+    setSortType("createDate");
   };
 
   const onClickSortViewCount = () => {
-    setSortTypeCreateDate("");
-    setSortTypeViewCount("&sortProperty=viewCount");
+    setSortType("viewCount");
   };
 
   const onClickWriteBoard = () => {
@@ -241,7 +238,12 @@ export default function BoardList() {
           />
           <WriteButtonArea onClickWriteBoard={onClickWriteBoard} />
           <BoardListArea boards={boards} />
-          <PaginationArea onChangePage={onChangePage} />
+          <Paging
+            page={currentPage}
+            onChange={onChangePage}
+            totalItemsCount={totalItemsCount}
+            itemsCountPerPage={itemsCountPerPage}
+          />
         </BoardListWrapperStyle>
       </BoardContainerStyle>
     </Main>
