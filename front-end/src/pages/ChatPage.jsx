@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 
-import { authAxios } from "../api/core/instance";
+import axios, { authAxios } from "../api/core/instance";
 
 const EntireContainer = styled.div`
   display: flex;
@@ -94,16 +94,23 @@ export default function ChatPage() {
 
   const currentUser = useSelector(state => state.user.userInfo) || {};
   const { memberId } = currentUser;
-  // 의뢰자 id
-  const employer = 44;
-  // 수행자 id
-  const employee = 45;
+  const [employer, setEmployer] = useState(0);
+  const [employee, setEmployee] = useState(0);
 
   const [list, setList] = useState([]);
   const [chat, setChat] = useState({
     applyId: id,
     content: "",
   });
+
+  useEffect(() => {
+    const getMembersId = async () => {
+      const response = await axios.get(`/applys/${id}`);
+      setEmployer(response.data.data.member.memberId);
+      setEmployee(response.data.data.board.member.memberId);
+    };
+    getMembersId();
+  }, []);
 
   useEffect(() => {
     const fetchData = async () => {
