@@ -14,6 +14,13 @@ import {
   validatePasswordCheck,
 } from "../data/validator";
 
+const Main = styled.div`
+  width: 100vw;
+  min-height: calc(100vh - 50px);
+  padding: 3rem 0;
+  background-color: var(--bg-color);
+`;
+
 const RegisterWrapperStyle = styled.div`
   border: 1px solid #ccc;
   display: flex;
@@ -206,7 +213,7 @@ export default function Register() {
   };
 
   return (
-    <div style={{ minHeight: "100vh" }}>
+    <Main>
       <RegisterWrapperStyle>
         <h1>회원가입</h1>
 
@@ -278,6 +285,6 @@ export default function Register() {
           로그인 하러가기
         </div>
       </LoginToGoStyle>
-    </div>
+    </Main>
   );
 }
