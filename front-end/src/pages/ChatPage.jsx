@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
 
@@ -31,6 +31,20 @@ const ChatContainer = styled.div`
   background-color: #fff;
   @media (max-width: 500px) {
     width: 380px;
+  }
+`;
+
+const ButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  .backButtton {
+    width: 30%;
+    border-style: none;
+    background-color: transparent;
+    color: var(--error-color);
+    font-weight: 600;
+    cursor: pointer;
   }
 `;
 
@@ -71,6 +85,7 @@ const ChatContent = styled.span`
 const ChatInputContainer = styled.form`
   display: flex;
   align-items: center;
+  margin-bottom: 1.5rem;
 `;
 
 const ChatInput = styled.input`
@@ -89,6 +104,7 @@ const SendButton = styled.button`
 `;
 
 export default function ChatPage() {
+  const navigate = useNavigate();
   const chatContainerRef = useRef();
   const { id } = useParams(null);
 
@@ -183,6 +199,11 @@ export default function ChatPage() {
           />
           <SendButton type="submit">Send</SendButton>
         </ChatInputContainer>
+        <ButtonWrapper>
+          <button className="backButtton" type="button" onClick={() => navigate(-1)}>
+            뒤로가기
+          </button>
+        </ButtonWrapper>
       </ChatContainer>
     </EntireContainer>
   );
