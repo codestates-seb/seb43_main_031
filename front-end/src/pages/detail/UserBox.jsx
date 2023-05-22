@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { FaUserAlt } from "react-icons/fa";
 import elapsedText from "../../utils/elapsedText";
 
+import blankProfileImage from "../../img/blank-profile.png";
+
 const UserInfoWrapper = styled.div`
   width: 9rem;
   padding: 0.5rem 0.3rem 0.5rem;
@@ -41,12 +43,15 @@ const UserInfoWrapper = styled.div`
 
 // 유저 정보 컴포넌트
 function UserBox({ infoData }) {
-  // console.log(infoData.memberId);
   return (
     <UserInfoWrapper>
       <div className="avatar">
         {/* <FaUserAlt size="70%" /> */}
-        <img src={infoData.image} alt="avatarImage" />
+        {infoData.images ? (
+          <img src={infoData.images} alt="user profile" />
+        ) : (
+          <img src={blankProfileImage} alt="blanked user profile" />
+        )}
       </div>
       <div className="info">
         <div className="author">{infoData.member.nickName}</div>

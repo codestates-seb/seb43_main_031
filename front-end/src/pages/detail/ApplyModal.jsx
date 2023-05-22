@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 import styled from "styled-components";
@@ -80,13 +80,18 @@ function ApplyModal({ setModalOpen, applyData }) {
   const handleMoveChat = async id => {
     if (selectedApply) {
       try {
-        const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/applys/accept/${id}`, {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `${token}`,
-          },
-        });
+        const response = await axios.patch(
+          `${process.env.REACT_APP_BASE_URL}/applys/accept/${id}`,
+          {},
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `${token}`,
+            },
+          }
+        );
         dispatch(setApply(response.data.data));
+        window.location.reload();
       } catch (err) {
         alert("채택이 정상적으로 되지 못했습니다.");
       }

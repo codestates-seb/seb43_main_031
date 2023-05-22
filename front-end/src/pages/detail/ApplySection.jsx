@@ -105,8 +105,6 @@ function ApplySection() {
   const token = useSelector(state => state.user.token);
   const applys = useSelector(state => state.apply) || [];
 
-  // console.log(applys);
-
   // 렌더링 시 모든 신청글 조회
   useEffect(() => {
     window.scrollTo(0, 0);
