@@ -17,7 +17,6 @@ const userSlice = createSlice({
     },
     clearToken(state, action) {
       state.token = action.payload;
-      state.userInfo = action.payload;
       localStorage.removeItem("token");
     },
   },
