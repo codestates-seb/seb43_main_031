@@ -161,6 +161,7 @@ function ApplySection() {
     navigate(`/chat/${id}`);
   };
 
+  if (applys.length === undefined) return null;
   return (
     <StyledContainer>
       <DetailSubHeader count={applys.length} title="개의 신청" />
@@ -175,22 +176,29 @@ function ApplySection() {
               <UserBox infoData={apply} />
               {/* 신청글이 채택된 것들중에 현재 접속한 유저가 게시글 작성자이거나 신청을 작성한 유저이면 채팅방 갈수 있도록 */}
               {apply.applyStatus === "APLLY_ACCEPT" &&
+              currentUser !== null &&
               (currentUser.memberId === apply.board.member.memberId ||
                 currentUser.memberId === apply.member.memberId) ? (
                 <GoChat onClick={() => goChatRoom(apply.applyId)}>채팅방 가기</GoChat>
               ) : (
                 <UtilBox>
-                  {currentUser.memberId === apply.board.member.memberId && apply.applyStatus === "APPLY_REQUEST" ? (
-                    <>
-                      <button className="acceptedBtn" type="button" onClick={handleShowModal}>
-                        채택하기
+                  {/* 게시글 작성자가 유저일때  */}
+                  {currentUser !== null &&
+                  currentUser.memberId === apply.board.member.memberId &&
+                  apply.applyStatus === "APPLY_REQUEST" ? (
+                    <button className="acceptedBtn" type="button" onClick={handleShowModal}>
+                      채택하기
+                    </button>
+                  ) : null}
+                  {/* 신청글 작성자가 유저일때 */}
+                  {currentUser !== null &&
+                  currentUser.memberId === apply.member.memberId &&
+                  apply.applyStatus === "APPLY_REQUEST" ? (
+                    <div className="fixAndDelete">
+                      <button type="button" onClick={() => handleDelete(apply.applyId)}>
+                        삭제
                       </button>
-                      <div className="fixAndDelete">
-                        <button type="button" onClick={() => handleDelete(apply.applyId)}>
-                          삭제
-                        </button>
-                      </div>
-                    </>
+                    </div>
                   ) : null}
                   {modalOpen && <ApplyModal setModalOpen={setModalOpen} applyData={selectedApply} />}
                 </UtilBox>

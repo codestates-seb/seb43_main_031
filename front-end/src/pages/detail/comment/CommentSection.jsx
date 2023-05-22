@@ -233,7 +233,7 @@ function CommentSection() {
               <UserBox infoData={comment} />
               <div className="msg">{comment.content}</div>
               {/* 유저가 해당 댓글의 작성자일 경우만 */}
-              {currentUser.memberId === comment.member.memberId && (
+              {currentUser !== null && currentUser.memberId === comment.member.memberId && (
                 <EditForm>
                   {/* 해당 댓글/대댓글 id가 빈문자가 아니면 수정버튼 클릭시 수정인풋창 보이게 */}
                   {openEditor === comment.commentId && (

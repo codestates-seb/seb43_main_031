@@ -142,18 +142,26 @@ const BodyMain = styled.div`
 function Detail() {
   const { id } = useParams();
   const navigate = useNavigate();
-
-  const editorRef = useRef();
-  const [isPending, setIsPending] = useState(false);
-  const [editText, setEditText] = useState(""); // 수정할 인풋값 상태
-  const [openEditor, setOpenEditor] = useState(""); // 게시글 고유id값 담는 상태
-
   const token = useSelector(state => state.user.token);
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
-
   const boards = useSelector(state => state.board);
   const board = boards.find(item => item.boardId === Number(id));
+
+  const editorRef = useRef();
+  const [isPending, setIsPending] = useState(false);
+  const [editText, setEditText] = useState({
+    title: board.title,
+    content: board.content,
+    cost: board.cost,
+    expiredDateTime: board.expiredDateTime,
+    dongTag: board.dongTag,
+    guTag: board.guTag,
+    detailAddress: board.detailAddress,
+  }); // 수정할 인풋값 상태
+  const [openEditorInBoardId, setOpenEditorInBoardId] = useState(""); // 게시글 고유id값 담는 상태
+  // console.log(editText);
+
   // console.log(boards);
 
   useEffect(() => {
@@ -185,18 +193,16 @@ function Detail() {
     fetchBoard();
   }, []);
 
-  if (!board?.boardId) return null;
-
   // 게시글 수정
   const handleEdit = async (id, editText) => {
     try {
-      const editData = { boardId: Number(id), content: editText };
-      const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, editData, {
+      const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, editText, {
         headers: {
           Authorization: `${token}`,
         },
       });
-      dispatch(editBoard(response.data.data));
+      console.log(response.data);
+      dispatch(editBoard(response.data));
     } catch (err) {
       alert("게시글을 수정하지 못했습니다.");
     }
@@ -210,6 +216,7 @@ function Detail() {
           Authorization: `${token}`,
         },
       });
+      console.log(response.data);
       dispatch(deleteBoard(response.data));
       navigate("/boards");
     } catch (err) {
@@ -218,10 +225,10 @@ function Detail() {
   };
 
   // 수정할 인풋 이벤트
-  // const handleChange = event => {
-  //   const { name, defaultValue } = event.target;
-  //   setBoard(previous => ({ ...previous, [name]: defaultValue }));
-  // };
+  const handleChange = event => {
+    const { name, value } = event.target;
+    setEditText(previous => ({ ...previous, [name]: value }));
+  };
 
   // 에디터 변경 함수
   const handleEditorChange = () => {
@@ -269,19 +276,11 @@ function Detail() {
       icon: <FaWonSign />,
       children: <p>{board.cost}</p>,
       editChildren: (
-        <input
-          id="cost"
-          type="number"
-          name="cost"
-          defaultValue={board.cost}
-          key={board.cost}
-          onChange={e => setEditText(e.target.valueAsNumber)}
-          required
-        />
+        <input id="cost" type="number" name="cost" value={editText.cost} onChange={handleChange} required />
       ),
     },
     {
-      id: "expiredDate",
+      id: "expiredDateTime",
       title: "만료일",
       icon: <FiClock />,
       children: <p>{board.expiredDateTime}</p>,
@@ -289,10 +288,9 @@ function Detail() {
         <input
           id="expiredDate"
           type="datetime-local"
-          name="expiredDate"
-          defaultValue={board.expiredDate}
-          key={board.expiredDate}
-          onChange={e => setEditText(e.target.value)}
+          name="expiredDateTime"
+          value={editText.expiredDateTime}
+          onChange={handleChange}
           required
         />
       ),
@@ -303,20 +301,15 @@ function Detail() {
       icon: <FaMapPin />,
       children: <p>{board.detailAddress}</p>,
       editChildren: (
-        <input
-          id="detail"
-          type="text"
-          name="detailAddress"
-          defaultValue={board.detailAddress}
-          key={board.detailAddress}
-          onChange={e => setEditText(e.target.value)}
-        />
+        <input id="detail" type="text" name="detailAddress" value={editText.detailAddress} onChange={handleChange} />
       ),
     },
   ];
 
   // 얼리리턴(예외처리)
   if (isPending) return <div>로딩중입니다.</div>;
+  if (!board?.boardId) return null;
+
   return (
     <DetailTemplate>
       <DetailWrapper>
@@ -345,16 +338,16 @@ function Detail() {
                 <div>{board.guTag}</div>
                 <div>{board.dongTag}</div>
               </div>
-              {currentUser.memberId === board.member.memberId && (
+              {currentUser !== null && currentUser.memberId === board.member.memberId && (
                 <div className="utils">
                   <button
                     type="button"
                     onClick={() => {
-                      if (id === openEditor) {
+                      if (id === openEditorInBoardId) {
                         handleEdit(id, editText);
-                        setOpenEditor("");
+                        setOpenEditorInBoardId("");
                       } else {
-                        setOpenEditor(id);
+                        setOpenEditorInBoardId(id);
                       }
                     }}
                   >
@@ -373,7 +366,7 @@ function Detail() {
                     {label.icon}
                     {label.title}
                   </label>
-                  {openEditor === id ? <p>{label.editChildren}</p> : <p>{label.children}</p>}
+                  {openEditorInBoardId === id ? <p>{label.editChildren}</p> : <p>{label.children}</p>}
                 </BodyMain>
               );
             })}

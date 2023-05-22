@@ -69,6 +69,7 @@ function ApplyModal({ setModalOpen, applyData }) {
   const dispatch = useDispatch();
   const token = useSelector(state => state.user.token);
   const initialApplys = useSelector(state => state.apply);
+  console.log(token);
 
   console.log(applyData);
   // 기존 저장된 신청글과 모달 클릭시 전달된 특정 신청글과 id 값 비교하여 맞는 신청글찾기
@@ -81,6 +82,7 @@ function ApplyModal({ setModalOpen, applyData }) {
       try {
         const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/applys/accept/${id}`, {
           headers: {
+            "Content-Type": "application/json",
             Authorization: `${token}`,
           },
         });
