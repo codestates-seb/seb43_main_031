@@ -134,12 +134,12 @@ function CommentSection() {
   const currentUser = useSelector(state => state.user.userInfo);
   const token = useSelector(state => state.user.token);
   const comments = useSelector(state => state.comment) || [];
-  console.log(comments);
+  // console.log(comments);
 
   // 전역 comments 데이터 중에서 댓글에 해당하는 것만 핉터링
   const parentComments = comments.filter(item => item.board !== null && item.comment === null);
 
-  console.log(parentComments);
+  // console.log(parentComments);
 
   // 댓글 조회
   useEffect(() => {

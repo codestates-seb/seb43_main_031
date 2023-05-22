@@ -130,8 +130,8 @@ const EditForm = styled.div`
 
 // 애초에 댓글 컴포넌트의 멥핑시, 1개의 comment.commentId를 내려줘야하는데 문제를 찾지 못하겠다..
 
-function ReplyCommentSection({ parentComment }) {
-  console.log(parentComment); // ???
+function ReplyCommentSection({ parentCommentId }) {
+  // console.log(parentCommentId); // ???
 
   const inputRef = useRef(null);
   const [display, setDisplay] = useState(false); // 대댓글 폼 박스 활성화 상태
@@ -143,32 +143,31 @@ function ReplyCommentSection({ parentComment }) {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const token = useSelector(state => state.user.token);
-  const comments = useSelector(state => state.comment);
-  console.log(comments);
+  const comments = useSelector(state => state.comment) || [];
+  // console.log(comments);
 
+  // const replyIdByParentComment = comments.find(item => item.commet.commentId === item.commentId).
   // 전역 comments 데이터 중에서 대댓글에 해당하는 것만 핉터링
   const replyComments = comments.filter(item => item.board === null && item.comment !== null);
   // console.log(replyComments);
 
   // 모든 대댓글 조회
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/comments/replys/${parentComment}`, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
-        dispatch(setComment(response.data.data));
-      } catch (err) {
-        console.log(err);
-      }
-    };
-
-    fetchData(); // fetchData 함수 호출
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dispatch]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/comments/replys/${parentCommentId}`, {
+  //         headers: {
+  //           "Content-Type": "application/json",
+  //         },
+  //       });
+  //       dispatch(setComment(response.data.data));
+  //     } catch (err) {
+  //       alert("err");
+  //     }
+  //   };
+  //   fetchData(); // fetchData 함수 호출
+  //   // eslint-disable-next-line react-hooks/exhaustive-deps
+  // }, [dispatch, parentCommentId]);
 
   // 새로운 대댓글 작성
   const handleSubmit = async e => {
@@ -176,7 +175,7 @@ function ReplyCommentSection({ parentComment }) {
     if (text === "") return alert("대댓글을 작성해 주세요");
     try {
       const newComment = {
-        commentId: Number(parentComment),
+        commentId: Number(parentCommentId),
         content: text,
       };
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, newComment, {

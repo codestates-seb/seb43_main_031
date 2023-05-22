@@ -49,7 +49,7 @@ function UserBox({ infoData }) {
         <img src={infoData.image} alt="avatarImage" />
       </div>
       <div className="info">
-        <div className="author">{infoData.member.memberId}</div>
+        <div className="author">{infoData.member.nickName}</div>
         <div className="createdAt">{elapsedText(new Date(infoData.createdDate))}</div>
       </div>
     </UserInfoWrapper>

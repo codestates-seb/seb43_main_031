@@ -190,13 +190,13 @@ function Detail() {
   // 게시글 수정
   const handleEdit = async (id, editText) => {
     try {
-      const editData = { id, content: editText };
+      const editData = { boardId: Number(id), content: editText };
       const response = await axios.patch(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, editData, {
         headers: {
           Authorization: `${token}`,
         },
       });
-      dispatch(editBoard(response.data));
+      dispatch(editBoard(response.data.data));
     } catch (err) {
       alert("게시글을 수정하지 못했습니다.");
     }
@@ -211,6 +211,7 @@ function Detail() {
         },
       });
       dispatch(deleteBoard(response.data));
+      navigate("/boards");
     } catch (err) {
       alert("게시글을 삭제하지 못했습니다.");
     }
@@ -225,7 +226,7 @@ function Detail() {
   // 에디터 변경 함수
   const handleEditorChange = () => {
     const editorInstance = editorRef.current.getInstance();
-    setBoard(previous => ({ ...previous, content: editorInstance.getMarkdown() }));
+    setEditText(previous => ({ ...previous, content: editorInstance.getMarkdown() }));
   };
 
   // 이미지 업로드 비동기 요청 함수
@@ -329,7 +330,7 @@ function Detail() {
             </div>
             <div className="sub-header">
               <div className="author-util">
-                <span style={{ fontWeight: "700" }}>{board.member.memberId}</span>
+                <span style={{ fontWeight: "700" }}>{board.member.nickName}</span>
                 <span style={{ fontSize: "0.8rem" }}>{elapsedText(new Date(board.createdDate))}</span>
               </div>
               <div className="interest">
@@ -344,29 +345,26 @@ function Detail() {
                 <div>{board.guTag}</div>
                 <div>{board.dongTag}</div>
               </div>
-              <div className="utils">
-                <button
-                  disabled={currentUser.memberId !== board.member.memberId}
-                  type="button"
-                  onClick={() => {
-                    if (id === openEditor) {
-                      handleEdit(id, editText);
-                      setOpenEditor("");
-                    } else {
-                      setOpenEditor(id);
-                    }
-                  }}
-                >
-                  수정
-                </button>
-                <button
-                  disabled={currentUser.memberId !== board.member.memberId}
-                  type="button"
-                  onClick={() => handleDelete(id)}
-                >
-                  삭제
-                </button>
-              </div>
+              {currentUser.memberId === board.member.memberId && (
+                <div className="utils">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      if (id === openEditor) {
+                        handleEdit(id, editText);
+                        setOpenEditor("");
+                      } else {
+                        setOpenEditor(id);
+                      }
+                    }}
+                  >
+                    수정
+                  </button>
+                  <button type="button" onClick={() => handleDelete(id)}>
+                    삭제
+                  </button>
+                </div>
+              )}
             </BodyUtils>
             {labels.map(label => {
               return (
@@ -396,56 +394,4 @@ export default Detail;
 // 해당 게시글 수정
 // const updateBoard = (boardId, body) => {
 //   axios.patch(`http://localhost:8080/boards/${boardId}`, { ...board, body });
-// };
-// 해당 게시글 삭제
-
-// 새로운 코멘트/신청글 생성
-// const onSubmitHandler = e => {
-//   e.preventDefault();
-//   if (e.target.value === "comments") {
-//     // 새로운 글 정보 담아서 보내기(이 정보들이 필요할까?)
-//     const newComment = {
-//       commentId: nextId.current,
-//       boardId: boardsData.id,
-//       memberId: boardsData.memberId,
-//       createdDate: new Date(),
-//       content: commentValue,
-//     };
-//     nextId.current += 1;
-//     axios
-//       .post(`http://localhost:8080/comments`, newComment, {
-//         headers: {
-//           Authorization: localStorage.getItem("token"),
-//         },
-//       })
-//       .then(res => {
-//         navigate(`/boards/:id`);
-//         setCommentValue("");
-//       })
-//       .catch(err => {
-//         alert("새로운 문의를 생성하지 못했습니다.");
-//       });
-//   } else if (e.target.value === "applys") {
-//     const newApply = {
-//       applyId: nextId.current,
-//       boardId: boardsData.id,
-//       memberId: boardsData.memberId,
-//       createdDate: new Date(),
-//       content: applyValue,
-//     };
-//     nextId.current += 1;
-//     axios
-//       .post(`http://localhost:8080/applys`, newApply, {
-//         headers: {
-//           Authorization: localStorage.getItem("token"),
-//         },
-//       })
-//       .then(res => {
-//         navigate(`/boards/:id`);
-//         setApplyValue("");
-//       })
-//       .catch(err => {
-//         alert("새로운 신청을 생성하지 못했습니다.");
-//       });
-//   }
 // };
