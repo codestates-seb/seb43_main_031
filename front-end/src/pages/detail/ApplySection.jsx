@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import uuid from "react-uuid";
+// import uuid from "react-uuid";
 import axios from "axios";
 
 import styled from "styled-components";
 
+import { useNavigate, useParams } from "react-router-dom";
 import { addApply, deleteApply, setApply } from "../../redux/features/applySlice";
 
 import UserBox from "./UserBox";
@@ -66,6 +67,15 @@ const UtilBox = styled.div`
   }
 `;
 
+const GoChat = styled.button`
+  padding: 1rem;
+  background-color: #fff;
+  font-size: 1.2rem;
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+`;
+
 // 신청 버튼
 const ApplyBtn = styled.button`
   width: 100%;
@@ -84,49 +94,49 @@ const ApplyBtn = styled.button`
 `;
 
 // 신청 컴포넌트
-function ApplySection({ boardId }) {
+function ApplySection() {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [selectedApply, setSelectedApply] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
+  const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const token = useSelector(state => state.user.token);
-  const applys = useSelector(state => state.apply);
-  const dispatch = useDispatch();
+  const applys = useSelector(state => state.apply) || [];
+
+  // console.log(applys);
 
   // 렌더링 시 모든 신청글 조회
   useEffect(() => {
     window.scrollTo(0, 0);
     (async () => {
       try {
-        const response = await axios(`${process.env.REACT_APP_BASE_URL}/applys/boardId/${boardId}`, {
+        const response = await axios(`${process.env.REACT_APP_BASE_URL}/applys/boardId/${id}`, {
           headers: {
             "Content-Type": "application/json",
           },
         });
-        // console.log(response.data.data);
         dispatch(setApply(response.data.data));
       } catch (err) {
         alert("신청을 불러오지 못했습니다.");
       }
     })();
-  }, [dispatch, boardId]);
+  }, [dispatch, id]);
 
   // 신청 생성하기
   const handleSubmit = async e => {
     try {
       e.preventDefault();
       const newApply = {
-        boardId,
-        applyId: uuid(),
-        applyStatus: false,
-        createdDate: `${new Date()}`,
+        boardId: Number(id),
       };
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/applys`, newApply, {
         headers: {
           Authorization: `${token}`,
         },
       });
-      dispatch(addApply(response.data));
+      dispatch(addApply(response.data.data));
     } catch (err) {
       alert("신청을 성공적으로 보내지 못했습니다.");
     }
@@ -135,11 +145,20 @@ function ApplySection({ boardId }) {
   // 신청 삭제하기
   const handleDelete = async id => {
     try {
-      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/apply/${id}`);
-      dispatch(deleteApply(response.data));
+      const response = await axios.delete(`${process.env.REACT_APP_BASE_URL}/applys/${id}`, {
+        headers: {
+          Authorization: `${token}`,
+        },
+      });
+      dispatch(deleteApply(id));
     } catch (err) {
       alert("신청 삭제를 실패하였습니다.");
     }
+  };
+
+  // 채팅방 가기
+  const goChatRoom = id => {
+    navigate(`/chat/${id}`);
   };
 
   return (
@@ -154,21 +173,28 @@ function ApplySection({ boardId }) {
           <StyledListBlock key={apply.applyId} bg={apply.applyStatus === "APLLY_ACCEPT" && "var(--sub-color)"}>
             <StyledItemContents>
               <UserBox infoData={apply} />
-              <UtilBox>
-                {currentUser.memberId === apply.board.member.memberId && apply.applyStatus === "APPLY_REQUEST" ? (
-                  <>
-                    <button className="acceptedBtn" type="button" onClick={handleShowModal}>
-                      채택하기
-                    </button>
-                    <div className="fixAndDelete">
-                      <button type="button" onClick={() => handleDelete(apply.applyId)}>
-                        삭제
+              {/* 신청글이 채택된 것들중에 현재 접속한 유저가 게시글 작성자이거나 신청을 작성한 유저이면 채팅방 갈수 있도록 */}
+              {apply.applyStatus === "APLLY_ACCEPT" &&
+              (currentUser.memberId === apply.board.member.memberId ||
+                currentUser.memberId === apply.member.memberId) ? (
+                <GoChat onClick={() => goChatRoom(apply.applyId)}>채팅방 가기</GoChat>
+              ) : (
+                <UtilBox>
+                  {currentUser.memberId === apply.board.member.memberId && apply.applyStatus === "APPLY_REQUEST" ? (
+                    <>
+                      <button className="acceptedBtn" type="button" onClick={handleShowModal}>
+                        채택하기
                       </button>
-                    </div>
-                  </>
-                ) : null}
-                {modalOpen && <ApplyModal setModalOpen={setModalOpen} applyData={selectedApply} />}
-              </UtilBox>
+                      <div className="fixAndDelete">
+                        <button type="button" onClick={() => handleDelete(apply.applyId)}>
+                          삭제
+                        </button>
+                      </div>
+                    </>
+                  ) : null}
+                  {modalOpen && <ApplyModal setModalOpen={setModalOpen} applyData={selectedApply} />}
+                </UtilBox>
+              )}
             </StyledItemContents>
           </StyledListBlock>
         );

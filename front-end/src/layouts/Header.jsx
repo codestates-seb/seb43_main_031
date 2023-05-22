@@ -84,12 +84,13 @@ export default function Header() {
               <HeaderMenuItemStyle
                 onClick={() => {
                   dispatch(setUserInfo(null));
+
                   dispatch(clearToken(null));
                   navigate("/login");
                 }}
                 onKeyDown={event => {
                   if (event.key === "Enter" || event.key === " ") {
-                    dispatch(setUserInfo(null));
+                    dispatch(clearToken(null));
                     navigate("/login");
                   }
                 }}

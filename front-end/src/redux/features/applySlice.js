@@ -5,7 +5,7 @@ const applySlice = createSlice({
   initialState: [],
   reducers: {
     addApply(state, action) {
-      return [...state, { ...action.payload }];
+      return [...state, action.payload];
     },
     deleteApply(state, action) {
       return state.filter(item => item.applyId !== action.payload);
