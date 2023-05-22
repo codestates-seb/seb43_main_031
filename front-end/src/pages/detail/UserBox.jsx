@@ -4,10 +4,10 @@ import { FaUserAlt } from "react-icons/fa";
 import elapsedText from "../../utils/elapsedText";
 
 const UserInfoWrapper = styled.div`
-  width: 7rem;
+  width: 9rem;
   padding: 0.5rem 0.3rem 0.5rem;
   display: flex;
-  gap: 0.7rem;
+  gap: 0.8rem;
 
   .avatar {
     width: 2.4rem;
