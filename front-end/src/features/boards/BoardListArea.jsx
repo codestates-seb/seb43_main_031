@@ -24,8 +24,8 @@ function BoardListArea({ boards = [] }) {
                 <div className="board-title">{title}</div>
                 <div className="board-meta">
                   <div>{cost}원</div>
-                  <div>{formattedDate}</div>
-                  <div>조회수 {viewCount}</div>
+                  <div className="createdDate">{formattedDate}</div>
+                  <div className="viewCount">조회수 {viewCount}</div>
                 </div>
               </div>
               <div className="completed-checkbox">{completed ? <AiFillCheckCircle /> : <AiOutlineCheckCircle />}</div>

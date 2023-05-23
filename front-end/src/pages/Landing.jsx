@@ -4,6 +4,9 @@ import styled, { keyframes } from "styled-components";
 import mapClick from "../img/mapClick.jpeg";
 import Footer from "../layouts/Footer";
 
+import chatMobile from "../img/chat-mobile.png";
+import detailMobile from "../img/detail-mobile.png";
+
 const SharedSection = styled.div`
   display: flex;
   justify-content: center;
@@ -39,11 +42,44 @@ const SpanWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  text-align: center;
+  color: black;
+`;
+
+const SpanTwoWrapper = styled(SpanWrapper)`
+  color: #fff;
+  font-size: 2.5rem;
+  font-weight: 700;
+
+  .sub-content {
+    margin: 1rem 2rem 1rem 0;
+    font-size: 1.5rem;
+  }
+`;
+
+const ImgChatMobile = styled.div`
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0;
+  position: relative;
+
+  .detail-mobile {
+    width: 300px;
+    height: 370px;
+    position: absolute;
+    top: 90px;
+    left: 58px;
+    z-index: 1;
+  }
+
+  .chat-mobile {
+    width: 300px;
+    height: 370px;
+  }
 `;
 
 const SectionTwo = styled(SharedSection)`
   background-color: #db8787;
+  flex-direction: row;
 `;
 
 const SectionThree = styled(SharedSection)`
@@ -106,10 +142,15 @@ export default function Landing() {
         </SpanWrapper>
       </SectionOne>
       <SectionTwo ref={sectionTwoRef}>
-        <SpanWrapper>
+        <SpanTwoWrapper>
           <span>1:1 채팅으로</span>
           <span>간편하고 빠르게 매칭</span>
-        </SpanWrapper>
+          <span className="sub-content">연결된 사람과 원활히 소통하여 윈윈할 수 있는 활동을 할 수 있어요!</span>
+        </SpanTwoWrapper>
+        <ImgChatMobile>
+          <img src={detailMobile} alt="detail-mobile" className="detail-mobile" />
+          <img src={chatMobile} alt="chat-mobile" className="chat-mobile" />
+        </ImgChatMobile>
       </SectionTwo>
       <SectionThree>
         <SpanWrapper>

@@ -17,7 +17,6 @@ import SearchBar from "../features/boards/SearchBar";
 import WriteButtonArea from "../features/boards/WriteButtonArea";
 import { setBoard } from "../redux/features/boardSlice";
 
-// main레이아웃으로 뺄 예정
 const Main = styled.div`
   background-color: var(--bg-color);
   padding: 30px;
@@ -36,12 +35,12 @@ const BoardListWrapperStyle = styled.div`
   flex-direction: column;
   max-width: 720px;
   margin: 0 auto;
-  padding: 0 20px;
+  padding: 0 14px;
   background-color: #fff;
   border-radius: 0.5rem;
 
   .welcome-message {
-    font-size: 1.5rem;
+    font-size: 2.5rem;
     font-weight: 700;
     margin-top: 1.5rem;
     margin-bottom: 20px;
@@ -57,6 +56,14 @@ const BoardListWrapperStyle = styled.div`
     align-items: center;
     padding: 5px;
     margin-bottom: 20px;
+
+    .search-icon {
+      margin: 0 8px;
+      font-size: large;
+      :hover {
+        cursor: pointer;
+      }
+    }
   }
 
   .input-text {
@@ -69,18 +76,21 @@ const BoardListWrapperStyle = styled.div`
     display: flex;
     justify-content: space-between;
     width: 100%;
-    margin: 0 auto 20px auto;
+    margin: 0 0 20px;
   }
 
   .location-search-dropdown {
+    width: 80px;
     margin-right: 10px;
-    padding: 3px;
+    padding: 5px 10px;
     border-radius: 5px;
     background-color: #ffd3c2;
     border: none;
     color: #bd181f;
     :hover {
       cursor: pointer;
+      background-color: #ffc3c2;
+      color: red;
     }
   }
 
@@ -89,20 +99,27 @@ const BoardListWrapperStyle = styled.div`
   }
 
   .sort-button {
+    width: 80px;
     margin-left: 10px;
     border-radius: 5px;
     border: none;
     background-color: #ffd3c2;
     color: #bd181f;
-    padding: 4px 10px;
+    padding: 6px 10px;
+    :hover {
+      cursor: pointer;
+      background-color: #ffc3c2;
+      color: red;
+    }
   }
 
   .write-button-area {
     margin-bottom: 20px;
+    display: flex;
+    justify-content: space-between;
   }
 
   .write-button {
-    float: right;
     border-radius: 5px;
     border: none;
     background-color: #f8f8a0;
@@ -137,6 +154,10 @@ const BoardListWrapperStyle = styled.div`
   .board-meta {
     display: flex;
     gap: 20px;
+    .viewCount,
+    .createdData {
+      font-size: 1rem;
+    }
   }
   .completed-checkbox {
     float: right;
@@ -144,6 +165,24 @@ const BoardListWrapperStyle = styled.div`
     margin-left: 20px;
     font-size: 2rem;
     color: #bd181f;
+  }
+
+  @media (max-width: 450px) {
+    .welcome-message {
+      font-size: 2rem;
+    }
+    .location-search-dropdown {
+      width: 60px;
+      padding: 3px;
+    }
+    .sort-button {
+      width: 60px;
+      padding: 4px;
+    }
+    .viewCount,
+    .createdDate {
+      display: none;
+    }
   }
 `;
 export default function BoardList() {
@@ -195,22 +234,33 @@ export default function BoardList() {
   const onSearchButtonClick = () => {
     console.log("clicked");
     setSearchText(searchInputText);
+    setCurrentPage(1);
   };
 
   const onSelectedGu = event => {
     setSelectedGu(event.target.value);
+    setCurrentPage(1);
   };
 
   const onSelectedDong = event => {
     setSelectedDong(event.target.value);
+    setCurrentPage(1);
   };
 
   const onClickSortCreateDate = () => {
     setSortType("createDate");
+    setCurrentPage(1);
   };
 
   const onClickSortViewCount = () => {
     setSortType("viewCount");
+    setCurrentPage(1);
+  };
+
+  const onClickAllList = () => {
+    setSelectedGu("지역구");
+    setSelectedDong("지역동");
+    setSearchText("");
   };
 
   const onClickWriteBoard = () => {
@@ -241,7 +291,7 @@ export default function BoardList() {
             onClickSortCreateDate={onClickSortCreateDate}
             onClickSortViewCount={onClickSortViewCount}
           />
-          <WriteButtonArea onClickWriteBoard={onClickWriteBoard} />
+          <WriteButtonArea onClickWriteBoard={onClickWriteBoard} onClickAllList={onClickAllList} />
           <BoardListArea boards={boards} />
           <Paging
             page={currentPage}
