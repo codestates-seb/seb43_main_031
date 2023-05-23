@@ -7,11 +7,10 @@ spring:
     username: admin
     password: Baek102504!
     driver-class-name: com.mysql.cj.jdbc.Driver
-    hibernate:
-      dialect: org.hibernate.dialect.MySQLDialect
   properties:
     hibernate:
       dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
 amazon:
   aws:
     accesskey: AKIAZAIMFDB7DGYXHOGG
@@ -19,6 +18,7 @@ amazon:
     s3:
       region: ap-northeast-2
       bucket: redhood
+
 email:
   address:
     admin: admin@gmail.com
@@ -26,24 +26,6 @@ email:
 jwt:
   header: Authorization
   secret: dkssudgktpdydkdkfjdksfidfkjdflsuijj1dksduskdfjkdfj123
-  token-validity-in-seconds: 1800000
+  access-token-expiration-minutes: 30
+  refresh-token-expiration-minutes: 420
 
-security:
-  oauth2:
-    client:
-      registration:
-        kakao:
-          client-id: 9bd3a2f29125e4958ba27c25b57df48a #[REST API 키]
-          redirect-uri: http://localhost:8080/oauth/kakao #[Redirect URI]
-          authorization-grant-type: authorization_code
-          client-authentication-method: POST
-          client-name: Kakao
-          scope:
-            - profile_nickname
-            - account_email
-      provider:
-        kakao:
-          authorization-uri: https://kauth.kakao.com/oauth/authorize
-          token-uri: https://kauth.kakao.com/oauth/token
-          user-info-uri: https://kapi.kakao.com/v2/user/me
-          user-name-attribute: id
