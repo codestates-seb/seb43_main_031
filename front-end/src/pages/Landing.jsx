@@ -49,6 +49,13 @@ const SpanTwoWrapper = styled(SpanWrapper)`
   color: #fff;
   font-size: 2.5rem;
   font-weight: 700;
+  @media (max-width: 450px) {
+    font-size: 2rem;
+    text-align: center;
+    .sub-content {
+      font-size: 1rem;
+    }
+  }
 
   .sub-content {
     margin: 1rem 2rem 1rem 0;
@@ -59,7 +66,7 @@ const SpanTwoWrapper = styled(SpanWrapper)`
 const ImgChatMobile = styled.div`
   max-width: 100%;
   max-height: 100%;
-  margin: 0;
+  margin: 40px;
   position: relative;
 
   .detail-mobile {
@@ -67,7 +74,7 @@ const ImgChatMobile = styled.div`
     height: 370px;
     position: absolute;
     top: 90px;
-    left: 58px;
+    left: 90px;
     z-index: 1;
   }
 
@@ -80,6 +87,22 @@ const ImgChatMobile = styled.div`
 const SectionTwo = styled(SharedSection)`
   background-color: #db8787;
   flex-direction: row;
+  @media (max-width: 600px) {
+    flex-direction: column;
+    .chat-mobile {
+      width: 200px;
+      height: 250px;
+      margin: 1rem 5rem 0rem -2rem;
+    }
+    .detail-mobile {
+      width: 200px;
+      height: 250px;
+      position: absolute;
+      top: 49px;
+      left: 69px;
+      z-index: 1;
+    }
+  }
 `;
 
 const SectionThree = styled(SharedSection)`
