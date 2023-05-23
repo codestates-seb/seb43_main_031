@@ -1,6 +1,5 @@
 import React from "react";
 import styled from "styled-components";
-import { FaUserAlt } from "react-icons/fa";
 import elapsedText from "../../utils/elapsedText";
 
 import blankProfileImage from "../../img/blank-profile.png";
@@ -33,6 +32,7 @@ const UserInfoWrapper = styled.div`
   .info {
     .author {
       margin: 0.2rem 0 0.4rem;
+      font-weight: 600;
     }
     .createdAt {
       font-size: 0.6rem;
@@ -46,7 +46,6 @@ function UserBox({ infoData }) {
   return (
     <UserInfoWrapper>
       <div className="avatar">
-        {/* <FaUserAlt size="70%" /> */}
         {infoData.images ? (
           <img src={infoData.images} alt="user profile" />
         ) : (

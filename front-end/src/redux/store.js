@@ -19,6 +19,7 @@ import { persistStore, persistReducer } from "redux-persist";
 import storage from "redux-persist/lib/storage";
 import boardReducer from "./features/boardSlice";
 import commentReducer from "./features/commentSlice";
+import replyReducer from "./features/replySlice";
 import applyReducer from "./features/applySlice";
 import userReducer from "./features/userSlice";
 import pageReducer from "./features/pageSlice";
@@ -40,6 +41,7 @@ const persistedReducer = persistReducer(
   combineReducers({
     board: boardReducer,
     comment: commentReducer,
+    reply: replyReducer,
     apply: applyReducer,
     user: userReducer,
     page: pageReducer,

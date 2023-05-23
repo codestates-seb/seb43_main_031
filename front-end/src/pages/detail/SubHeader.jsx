@@ -6,7 +6,7 @@ import { BsFillCaretRightFill } from "react-icons/bs";
 // 달린 답변 갯수 헤더
 const SubHeaderWrapper = styled.div`
   display: flex;
-  align-items: end;
+  align-items: center;
   padding: 2rem 0;
 
   .arrow {
