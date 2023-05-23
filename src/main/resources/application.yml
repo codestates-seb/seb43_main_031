@@ -28,4 +28,5 @@ jwt:
   secret: dkssudgktpdydkdkfjdksfidfkjdflsuijj1dksduskdfjkdfj123
   access-token-expiration-minutes: 30
   refresh-token-expiration-minutes: 420
+  token-validity-in-seconds: 1800000
 
