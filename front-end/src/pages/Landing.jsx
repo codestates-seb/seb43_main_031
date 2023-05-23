@@ -7,6 +7,28 @@ import Footer from "../layouts/Footer";
 import chatMobile from "../img/chat-mobile.png";
 import detailMobile from "../img/detail-mobile.png";
 
+const fadeIn = keyframes`
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+`;
+
+const AnimatedSDelay = styled.span`
+  animation: ${fadeIn} 1s ease-in-out;
+  animation-fill-mode: both;
+  &:nth-child(1) {
+    animation-delay: 0.3s;
+  }
+  &:nth-child(2) {
+    animation-delay: 1.1s;
+  }
+`;
+
 const SharedSection = styled.div`
   display: flex;
   justify-content: center;
@@ -76,11 +98,15 @@ const ImgChatMobile = styled.div`
     top: 90px;
     left: 90px;
     z-index: 1;
+    animation: ${fadeIn} 4s ease-in-out;
+    animation-fill-mode: both;
   }
 
   .chat-mobile {
     width: 300px;
     height: 370px;
+    animation: ${fadeIn} 3s ease-in-out;
+    animation-fill-mode: both;
   }
 `;
 
@@ -107,32 +133,6 @@ const SectionTwo = styled(SharedSection)`
 
 const SectionThree = styled(SharedSection)`
   background-color: #fff;
-`;
-
-const SectionFour = styled(SharedSection)`
-  background-color: #fae7e7;
-`;
-
-const fadeIn = keyframes`
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-`;
-
-const AnimatedSDelay = styled.span`
-  animation: ${fadeIn} 1s ease-in-out;
-  animation-fill-mode: both;
-  &:nth-child(1) {
-    animation-delay: 0.3s;
-  }
-  &:nth-child(2) {
-    animation-delay: 1.1s;
-  }
 `;
 
 export default function Landing() {
@@ -165,11 +165,13 @@ export default function Landing() {
         </SpanWrapper>
       </SectionOne>
       <SectionTwo ref={sectionTwoRef}>
-        <SpanTwoWrapper>
-          <span>1:1 채팅으로</span>
-          <span>간편하고 빠르게 매칭</span>
-          <span className="sub-content">연결된 사람과 원활히 소통하여 윈윈할 수 있는 활동을 할 수 있어요!</span>
-        </SpanTwoWrapper>
+        <AnimatedSDelay>
+          <SpanTwoWrapper>
+            <span>1:1 채팅으로</span>
+            <span>간편하고 빠르게 매칭</span>
+            <span className="sub-content">연결된 사람과 원활히 소통하여 윈윈할 수 있는 활동을 할 수 있어요!</span>
+          </SpanTwoWrapper>
+        </AnimatedSDelay>
         <ImgChatMobile>
           <img src={detailMobile} alt="detail-mobile" className="detail-mobile" />
           <img src={chatMobile} alt="chat-mobile" className="chat-mobile" />
