@@ -245,6 +245,14 @@ function Detail() {
       console.log(error);
     }
   };
+
+  const formattedDate = new Date(board.expiredDateTime).toLocaleString("ko-KR", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
   // 게시글 배열
   const labels = [
     {
@@ -281,7 +289,7 @@ function Detail() {
       id: "expiredDateTime",
       title: "만료일",
       icon: <FiClock />,
-      children: <p>{board.expiredDateTime}</p>,
+      children: <p>{formattedDate}</p>,
       editChildren: (
         <input
           id="expiredDate"
@@ -305,7 +313,7 @@ function Detail() {
   ];
 
   // 얼리리턴(예외처리)
-  if (isLoading) return <Loading />;
+  if (!isLoading) return <Loading />;
   if (error) return <div>{error}</div>;
   if (!board?.boardId) return null;
 
