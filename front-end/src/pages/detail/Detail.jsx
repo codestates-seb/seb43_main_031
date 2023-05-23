@@ -127,16 +127,30 @@ const BodyMain = styled.div`
   padding-left: 1rem;
   margin: 1rem 0 1rem;
   & > label {
+    width: 20%;
+    padding: 0.4rem;
     display: flex;
     align-items: center;
     margin-bottom: 1rem;
-    gap: 0.3rem;
-    font-size: 1.1rem;
-    font-weight: 600;
+    gap: 0.4rem;
+    font-size: 1.2rem;
+    border-radius: 0.6rem;
+    background-color: var(--bg-color);
   }
 
   & > p {
     margin: 1rem;
+    font-size: 1.2rem;
+  }
+
+  input {
+    padding: 0.4rem;
+    border: none;
+    border-radius: 0.5rem;
+    background-color: var(--bg-color);
+  }
+  .viewer {
+    font-size: 1.4rem;
   }
 `;
 
@@ -246,6 +260,7 @@ function Detail() {
     }
   };
 
+  // 만료일자 날짜 정제 함수
   const formattedDate = new Date(board.expiredDateTime).toLocaleString("ko-KR", {
     year: "numeric",
     month: "2-digit",
@@ -259,7 +274,11 @@ function Detail() {
       id: "editor",
       title: "상세내용",
       icon: <RxFileText />,
-      children: <Viewer initialValue={board.content} />,
+      children: (
+        <p>
+          <Viewer className="viewer" initialValue={board.content} />
+        </p>
+      ),
       editChildren: (
         <Editor
           initialValue={board.content}
@@ -313,7 +332,7 @@ function Detail() {
   ];
 
   // 얼리리턴(예외처리)
-  if (!isLoading) return <Loading />;
+  if (isLoading) return <Loading />;
   if (error) return <div>{error}</div>;
   if (!board?.boardId) return null;
 

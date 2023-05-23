@@ -8,15 +8,15 @@ import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 import { useNavigate, useParams } from "react-router-dom";
 import { addComment, editComment, deleteComment, setComment } from "../../../redux/features/commentSlice";
 
-import ReplyCommentSection from "./ReplyCommentSection";
 import UserBox from "../UserBox";
 import DetailSubHeader from "../SubHeader";
+import ReplyCommentSection from "./ReplyCommentSection";
 // import useRequest from "../../../shared/useRequest";
 
 // 전체 컨테이너
 const StyledContainer = styled.div`
   width: 90%;
-  height: 100%;
+  height: 42rem;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
@@ -32,7 +32,7 @@ const StyledListBlock = styled.div`
   box-shadow: 0 0.2rem 0.7rem 0.2rem rgba(0, 0, 0, 0.1);
 `;
 
-// 새로운 글 작성 박스
+// 새로운 댓글 작성 박스
 const DetailSubForm = styled.div`
   width: 100%;
   margin: 0 auto 2rem;
@@ -51,13 +51,13 @@ const DetailSubForm = styled.div`
     font-size: 1.1rem;
   }
   & > button {
-    width: 20%;
     align-self: end;
-    padding: 0.7rem;
+    padding: 0.7rem 1rem;
     background-color: var(--primary-color);
     border: none;
     border-radius: 1.5rem;
     color: #fff;
+    font-size: 1rem;
     cursor: pointer;
 
     &:hover {
@@ -121,25 +121,24 @@ const EditForm = styled.div`
 `;
 
 // 댓글 컴포넌트
-function CommentSection({ setIsLoading }) {
+function CommentSection() {
   const { id } = useParams();
   const navigate = useNavigate();
   const inputRef = useRef(null);
   const [text, setText] = useState(""); // 댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
-  const [openEditor, setOpenEditor] = useState(""); // 댓글 고유id값 담는 상태
+  const [openEditorInCommentId, setOpenEditorInCommentId] = useState(""); // 댓글 고유id값 담는 상태
 
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const token = useSelector(state => state.user.token);
   const comments = useSelector(state => state.comment) || [];
 
-  // 전역 comments 데이터 중에서 댓글에 해당하는 것만 핉터링
+  // 댓글 필터링
   const parentComments = comments.filter(item => item.board !== null && item.comment === null);
 
   // 댓글 조회
   useEffect(() => {
-    // setIsLoading(true);
     const fetchData = async () => {
       try {
         const response = await axios(`${process.env.REACT_APP_BASE_URL}/comments/comments/${id}`, {
@@ -148,14 +147,15 @@ function CommentSection({ setIsLoading }) {
           },
         });
         dispatch(setComment(response.data.data));
-        // setIsLoading(false);
+        // 전역 comments 데이터 중에서 댓글에 해당하는 것만 핉터해서 저장
+        // setParentComments(comments.filter(item => item.board !== null && item.comment === null));
       } catch (err) {
         alert("댓글을 불러오지 못했습니다.");
       }
     };
 
     fetchData();
-  }, [dispatch, id]);
+  }, [dispatch, id]); // 업데이트가 되는 상태는 꼭 종속성에 추가해주자
 
   // 댓글 생성하기
   const handleSubmit = async e => {
@@ -237,7 +237,7 @@ function CommentSection({ setIsLoading }) {
               {currentUser !== null && currentUser.memberId === comment.member.memberId && (
                 <EditForm>
                   {/* 해당 댓글/대댓글 id가 빈문자가 아니면 수정버튼 클릭시 수정인풋창 보이게 */}
-                  {openEditor === comment.commentId && (
+                  {openEditorInCommentId === comment.commentId && (
                     <input
                       ref={inputRef}
                       type="text"
@@ -252,11 +252,11 @@ function CommentSection({ setIsLoading }) {
                         type="button"
                         onClick={() => {
                           // 수정버튼 클릭시 일치하는 댓글이면 수정하고 아니면 id문자만 등록하여 인풋창 유지만 할 수 있게
-                          if (comment.commentId === openEditor) {
+                          if (comment.commentId === openEditorInCommentId) {
                             handleEdit(comment.commentId, editText);
-                            setOpenEditor("");
+                            setOpenEditorInCommentId("");
                           } else {
-                            setOpenEditor(comment.commentId);
+                            setOpenEditorInCommentId(comment.commentId);
                           }
                         }}
                       >
@@ -271,7 +271,7 @@ function CommentSection({ setIsLoading }) {
               )}
             </StyledItemContents>
             {/* 코멘트(부모)의 고유 아이디를 대댓글에서 저장할수 있도록 props전달  */}
-            <ReplyCommentSection />
+            <ReplyCommentSection parentId={comment.commentId} />
           </StyledListBlock>
         );
       })}
@@ -280,6 +280,8 @@ function CommentSection({ setIsLoading }) {
 }
 
 export default CommentSection;
+
+// 시도했다가 안된 코드들
 
 // 수정버튼 클릭시 수정가능한 코멘트만 수정창 오픈
 // const handleEditClick = commentId => {
@@ -295,6 +297,7 @@ export default CommentSection;
 //   );
 // };
 
+// 요청 훅으로 리펙토링할 코드
 // const { data, isLoading, isError, error } = useRequest(
 //   `/comments/comments/${id}`,
 //   comments => {
@@ -303,3 +306,26 @@ export default CommentSection;
 //   "질문을 불러오지 못했습니다.",
 //   [dispatch, id]
 // );
+
+// 풀어야했던 로직 설명
+
+// 먼저 부모의 댓글의 id를 찾아야한다. -> 그래야 대댓글 조회요청을 보낼때 엔드포인트에 주소로 해당 댓글 id를 넣어 보낼수 있기 때문이다.
+// 전역으로 저장된 commentsd에서 부모댓글을 필터링 쭉 해서 변수에 저장하고, 그 변수에 해당하는 부모댓글 배열중 find메소드를 사용하여, 부모댓글중 같은 코멘트 아이디를 찾아서 그거에 맞는 대댓글을 추가해주는 배열을 만들어야한다.
+
+// 대댓글 필터링
+// const childComments = comments.filter(item => item.board === null && item.comment !== null);
+// console.log(childComments);
+
+// 대댓글이 있음 추가하고, 없음 그대로 담기는 댓글배열들
+// const commentsWithReplies = childComments.map(childComment => {
+//   const parentComment = parentComments.find(comment => comment.commentId === childComment.comment.commentId);
+//   if (parentComment) {
+//     // 대댓글을 댓글 객체에 추가
+//     if (!parentComment.replies) {
+//       parentComment.replies = [];
+//     }
+//     parentComment.replies.push(childComment);
+//   }
+//   return childComment;
+// });
+// console.log(commentsWithReplies);

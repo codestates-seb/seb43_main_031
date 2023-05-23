@@ -6,7 +6,7 @@ import styled from "styled-components";
 
 import { useNavigate, useParams } from "react-router-dom";
 import UserBox from "../UserBox";
-import { addComment, editComment, deleteComment, setComment } from "../../../redux/features/commentSlice";
+import { addReply, editReply, deleteReply, setReply } from "../../../redux/features/replySlice";
 
 // 대댓글 컨테이너
 const ReplyContainer = styled.div`
@@ -122,60 +122,49 @@ const EditForm = styled.div`
   }
 `;
 
-// 현재 문제상황
-// 댓글 컴포넌트에서 전달받은 parentComment props가 해당 댓글 comment의 commentId로 받아와서 대댓글 컴포넌트에서 해당데이터를 사용할때 아예 댓글 자체가 나오지 않고, -> 이 원인은 댓글이 1개가 아닌 여러개가 나오게 되면 당연히 오류가 날것이다.
-
-// 댓글 comment데이터 자체를 내려주면 댓글들은 잘 렌더링이 된다.
-// 댓글 컴포넌트에서 map을 이용해 렌더링을 할때, 왜 1개의 comment가 아닌 서버에 저장된 댓글데이터가 다 담겨져 오는걸까?
-
-// 애초에 댓글 컴포넌트의 멥핑시, 1개의 comment.commentId를 내려줘야하는데 문제를 찾지 못하겠다..
-
-function ReplyCommentSection({ parentCommentId }) {
-  // console.log(parentCommentId); // ???
-
+function ReplyCommentSection({ parentId }) {
   const inputRef = useRef(null);
   const [display, setDisplay] = useState(false); // 대댓글 폼 박스 활성화 상태
   const [text, setText] = useState(""); // 대댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
-  const [openEditor, setOpenEditor] = useState(""); // 댓글 고유id값 담는 상태
+  const [openEditorInCommentId, setOpenEditorInCommentId] = useState(""); // 댓글 고유id값 담는 상태
 
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const token = useSelector(state => state.user.token);
-  const comments = useSelector(state => state.comment) || [];
-  // console.log(comments);
+  const replys = useSelector(state => state.reply) || [];
 
-  // const replyIdByParentComment = comments.find(item => item.commet.commentId === item.commentId).
-  // 전역 comments 데이터 중에서 대댓글에 해당하는 것만 핉터링
-  const replyComments = comments.filter(item => item.board === null && item.comment !== null);
-  // console.log(replyComments);
+  // console.log(parentId);
+  // console.log(replys);
+  const childComments = replys.filter(reply => reply.comment.commentId === parentId) || [];
+  // console.log(childComments);
 
   // 모든 대댓글 조회
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/comments/replys/${parentCommentId}`, {
-  //         headers: {
-  //           "Content-Type": "application/json",
-  //         },
-  //       });
-  //       dispatch(setComment(response.data.data));
-  //     } catch (err) {
-  //       alert("err");
-  //     }
-  //   };
-  //   fetchData(); // fetchData 함수 호출
-  //   // eslint-disable-next-line react-hooks/exhaustive-deps
-  // }, [dispatch, parentCommentId]);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/comments/replys/${parentId}`, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        dispatch(setReply(response.data.data));
+      } catch (err) {
+        alert("err");
+      }
+    };
+    fetchData(); // fetchData 함수 호출
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch, parentId]);
 
   // 새로운 대댓글 작성
   const handleSubmit = async e => {
+    // console.log(parentId);
     e.preventDefault();
     if (text === "") return alert("대댓글을 작성해 주세요");
     try {
       const newComment = {
-        commentId: Number(parentCommentId),
+        commentId: Number(parentId),
         content: text,
       };
       const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/comments`, newComment, {
@@ -183,6 +172,8 @@ function ReplyCommentSection({ parentCommentId }) {
           Authorization: `${token}`,
         },
       });
+      dispatch(addReply(response.data.data));
+      setText("");
     } catch (err) {
       alert("댓글을 생성하지 못했습니다.");
     }
@@ -197,8 +188,8 @@ function ReplyCommentSection({ parentCommentId }) {
           Authorization: `${token}`,
         },
       });
-      const { commentId, content } = response.data;
-      dispatch(editComment({ commentId, content }));
+      const { commentId, content } = response.data.data;
+      dispatch(editReply({ commentId, content }));
     } catch (err) {
       alert("대댓글 수정을 실패하였습니다.");
     }
@@ -212,7 +203,7 @@ function ReplyCommentSection({ parentCommentId }) {
           Authorization: `${token}`,
         },
       });
-      dispatch(deleteComment(id));
+      dispatch(deleteReply(id));
     } catch (err) {
       alert("댓글 삭제를 실패하였습니다.");
     }
@@ -236,11 +227,11 @@ function ReplyCommentSection({ parentCommentId }) {
         }}
       >
         {display && "숨기기"}
-        {!display && (replyComments.length === 0 ? "대댓글 달기" : `${replyComments.length} 개의 대댓글 보기`)}
+        {!display && (childComments.length === 0 ? "대댓글 달기" : `${childComments.length} 개의 대댓글 보기`)}
       </button>
       {display && (
         <ReplyFormBox>
-          {replyComments?.map(comment => (
+          {childComments?.map(comment => (
             <ReplyItem key={comment.commnetId}>
               <UserBox infoData={comment} />
               <div className="reply-msg">{comment.content}</div>
@@ -248,7 +239,7 @@ function ReplyCommentSection({ parentCommentId }) {
               {currentUser.memberId === comment.member.memberId && (
                 // 해당 댓글/대댓글 id가 빈문자가 아니면 수정버튼 클릭시 수정인풋창 보이게
                 <EditForm>
-                  {openEditor === comment.commentId && (
+                  {openEditorInCommentId === comment.commentId && (
                     <input
                       ref={inputRef}
                       type="text"
@@ -263,11 +254,11 @@ function ReplyCommentSection({ parentCommentId }) {
                         type="button"
                         onClick={() => {
                           // 수정버튼 클릭시 일치하는 댓글이면 수정하고 아니면 id문자만 등록하여 인풋창 유지만 할 수 있게
-                          if (comment.commentId === openEditor) {
+                          if (comment.commentId === openEditorInCommentId) {
                             handleEdit(comment.commentId, editText);
-                            setOpenEditor("");
+                            setOpenEditorInCommentId("");
                           } else {
-                            setOpenEditor(comment.commentId);
+                            setOpenEditorInCommentId(comment.commentId);
                           }
                         }}
                       >
@@ -304,3 +295,25 @@ function ReplyCommentSection({ parentCommentId }) {
 }
 
 export default ReplyCommentSection;
+
+// const replyIdByParentComment = comments.find(item => item.commet.commentId === item.commentId).
+// 전역 comments 데이터 중에서 대댓글에 해당하는 것만 핉터링
+// const replyComments = comments.filter(item => item.board === null && item.comment !== null);
+// console.log(replyComments);
+
+// 현재 문제상황
+// 댓글 컴포넌트에서 전달받은 parentComment props가 해당 댓글 comment의 commentId로 받아와서 대댓글 컴포넌트에서 해당데이터를 사용할때 아예 댓글 자체가 나오지 않고, -> 이 원인은 댓글이 1개가 아닌 여러개가 나오게 되면 당연히 오류가 날것이다.
+
+// 댓글 comment데이터 자체를 내려주면 댓글들은 잘 렌더링이 된다.
+// 댓글 컴포넌트에서 map을 이용해 렌더링을 할때, 왜 1개의 comment가 아닌 서버에 저장된 댓글데이터가 다 담겨져 오는걸까?
+
+// 애초에 댓글 컴포넌트의 멥핑시, 1개의 comment.commentId를 내려줘야하는데 문제를 찾지 못하겠다..
+
+// // 부모 댓글만 필터링
+// const parentComments = useSelector(state => state.comment.filter(comment => comment.comment === null));
+
+// // 해당 commentId와 맞는 댓글 하나 찾기
+// const parentComment = parentComments.find(comment => comment.commentId === parentId);
+
+// // 댓글에 포함된 대댓글이나 포함되지 않는 대댓글 배열 선언
+// const filteredComments = parentComment?.replies || [];
