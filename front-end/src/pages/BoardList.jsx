@@ -9,6 +9,7 @@ import getBoards from "../api/getBoards";
 import { dongList } from "../data/SeoulDistricts";
 
 import Paging from "../components/Paging";
+import Loading from "./Loading";
 import WelcomeMessage from "../features/boards/WelcomeMessage";
 import BoardListArea from "../features/boards/BoardListArea";
 import SearchToolArea from "../features/boards/SearchToolArea";
@@ -153,15 +154,17 @@ export default function BoardList() {
   const [selectedGu, setSelectedGu] = useState("지역구");
   const [selectedDong, setSelectedDong] = useState("지역동");
   const [currentPage, setCurrentPage] = useState(1);
-  const [sortType, setSortType] = useState("viewCount"); // ["viewCount", "createDate"]
+  const [sortType, setSortType] = useState("createdDate"); // ["viewCount", "createDate"]
   const [totalItemsCount, setTotalItemsCount] = useState(0);
   const [itemsCountPerPage, setItemsCountPerPage] = useState(10);
+  const [isLoading, setIsLoading] = useState(false);
 
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const boards = useSelector(state => state.board);
 
   useEffect(() => {
+    setIsLoading(true);
     getBoards({
       currentPage,
       searchText,
@@ -172,6 +175,7 @@ export default function BoardList() {
       setTotalItemsCount(response.totalElements);
       setItemsCountPerPage(response.size);
       dispatch(setBoard(response.content));
+      setIsLoading(false);
     });
   }, [currentPage, searchText, sortType, selectedGu, selectedDong]);
 
@@ -218,6 +222,7 @@ export default function BoardList() {
     navigate("/write");
   };
 
+  if (isLoading) return <Loading />;
   return (
     <Main>
       <BoardContainerStyle>

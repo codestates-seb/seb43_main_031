@@ -94,7 +94,7 @@ const ApplyBtn = styled.button`
 `;
 
 // 신청 컴포넌트
-function ApplySection() {
+function ApplySection({ setIsLoading }) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedApply, setSelectedApply] = useState(null);
@@ -107,7 +107,7 @@ function ApplySection() {
 
   // 렌더링 시 모든 신청글 조회
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // setIsLoading(true);
     (async () => {
       try {
         const response = await axios(`${process.env.REACT_APP_BASE_URL}/applys/boardId/${id}`, {
@@ -116,6 +116,7 @@ function ApplySection() {
           },
         });
         dispatch(setApply(response.data.data));
+        // setIsLoading(false);
       } catch (err) {
         alert("신청을 불러오지 못했습니다.");
       }

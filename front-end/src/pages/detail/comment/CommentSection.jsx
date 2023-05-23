@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef, forceUpdate } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import uuid from "react-uuid";
 import axios from "axios";
 
 import styled from "styled-components";
 import "@toast-ui/editor/dist/toastui-editor-viewer.css";
 
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { addComment, editComment, deleteComment, setComment } from "../../../redux/features/commentSlice";
 
 import ReplyCommentSection from "./ReplyCommentSection";
@@ -122,9 +121,9 @@ const EditForm = styled.div`
 `;
 
 // 댓글 컴포넌트
-function CommentSection() {
-  // console.log(typeof boardId); // string type
+function CommentSection({ setIsLoading }) {
   const { id } = useParams();
+  const navigate = useNavigate();
   const inputRef = useRef(null);
   const [text, setText] = useState(""); // 댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
@@ -134,16 +133,13 @@ function CommentSection() {
   const currentUser = useSelector(state => state.user.userInfo);
   const token = useSelector(state => state.user.token);
   const comments = useSelector(state => state.comment) || [];
-  // console.log(comments);
 
   // 전역 comments 데이터 중에서 댓글에 해당하는 것만 핉터링
   const parentComments = comments.filter(item => item.board !== null && item.comment === null);
 
-  // console.log(parentComments);
-
   // 댓글 조회
   useEffect(() => {
-    window.scrollTo(0, 0);
+    // setIsLoading(true);
     const fetchData = async () => {
       try {
         const response = await axios(`${process.env.REACT_APP_BASE_URL}/comments/comments/${id}`, {
@@ -152,6 +148,7 @@ function CommentSection() {
           },
         });
         dispatch(setComment(response.data.data));
+        // setIsLoading(false);
       } catch (err) {
         alert("댓글을 불러오지 못했습니다.");
       }
@@ -164,6 +161,10 @@ function CommentSection() {
   const handleSubmit = async e => {
     e.preventDefault();
     if (text === "") return alert("댓글을 작성해 주세요");
+    if (currentUser === null) {
+      alert("댓글을 남기기 위해선 로그인이 필요합니다.");
+      navigate("/login");
+    }
     try {
       const newComment = {
         boardId: Number(id),

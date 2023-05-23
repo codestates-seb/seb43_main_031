@@ -10,7 +10,7 @@ import kakaoLogin from "../img/kakao_login.png";
 
 const Main = styled.div`
   width: 100vw;
-  min-height: calc(100vh - 50px);
+  min-height: calc(100vh - 53px);
   padding: 3rem 0;
   background-color: var(--bg-color);
 `;
@@ -22,7 +22,6 @@ const LoginWrapperStyle = styled.div`
   align-items: center;
   margin: 80px auto 20px auto;
   max-width: 300px;
-  height: 450px;
   background-color: #fff;
   border-radius: 5px;
   padding: 20px;
@@ -67,8 +66,7 @@ const LoginWrapperStyle = styled.div`
     font-size: 1.2rem;
     font-weight: bold;
     padding: 10px 10px;
-    margin: auto;
-    margin-top: 20px;
+    margin: 20px auto 0;
     cursor: pointer;
     &:hover {
       cursor: pointer;
@@ -78,10 +76,20 @@ const LoginWrapperStyle = styled.div`
   }
 
   .kakaoLoginButton {
-    width: 70%;
-    margin: auto;
-    padding: 10px;
+    width: 90%;
+    background-color: var(--kakao-btn-color);
+    color: var(--kakao-font-color);
+    border: none;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    padding: 10px 10px;
     cursor: pointer;
+    &:hover {
+      cursor: pointer;
+      background-color: rgb(221, 199, 5);
+    }
   }
 `;
 
@@ -168,7 +176,9 @@ export default function Login() {
             로그인
           </button>
         </form>
-        <img className="kakaoLoginButton" src={kakaoLogin} alt="logo" onClick={handleKakaoLogin} />
+        <button type="button" className="kakaoLoginButton" onClick={handleKakaoLogin}>
+          카카오 로그인
+        </button>
       </LoginWrapperStyle>
       <RegisterStyle>
         <div>혹시 회원이 아니신가요?</div>

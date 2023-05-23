@@ -28,7 +28,7 @@ const RegisterWrapperStyle = styled.div`
   align-items: center;
   margin: 30px auto 20px auto;
   max-width: 300px;
-  height: 680px;
+  /* height: 680px; */
   background-color: #fff;
   border-radius: 5px;
 
@@ -81,11 +81,22 @@ const RegisterWrapperStyle = styled.div`
         color: #bd181f;
       }
     }
-    .kakaoLoginButton {
-      width: 70%;
+    .kakaoRegisterButton {
+      width: 90%;
+      background-color: var(--kakao-btn-color);
+      color: var(--kakao-font-color);
+      border: none;
+      border-radius: 4px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 10px 10px;
       margin: auto;
-      padding: 10px;
+      margin-top: 20px;
       cursor: pointer;
+      &:hover {
+        cursor: pointer;
+        background-color: rgb(221, 199, 5);
+      }
     }
   }
 `;
@@ -112,13 +123,11 @@ export default function Register() {
   const [passwordCheck, setpasswordCheck] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
 
-  const [nickNameErrorMessage, setNickNameErrorMessage] = useState("닉네임을 2자 이상 입력해주세요");
-  const [emailErrorMessage, setEmailErrorMessage] = useState("이메일 형식을 확인해주세요");
-  const [passwordErrorMessage, setPasswordErrorMessage] = useState(
-    "영문,숫자,특수문자를 조합해서 8자 이상 입력해주세요"
-  );
-  const [passwordCheckErrorMessage, setPasswordCheckErrorMessage] = useState("비밀번호가 일치하지 않습니다");
-  const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState("휴대폰 번호를 확인해주세요");
+  const [nickNameErrorMessage, setNickNameErrorMessage] = useState("");
+  const [emailErrorMessage, setEmailErrorMessage] = useState("");
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState("");
+  const [passwordCheckErrorMessage, setPasswordCheckErrorMessage] = useState("");
+  const [phoneNumberErrorMessage, setPhoneNumberErrorMessage] = useState("");
 
   const [isNickNameValid, setIsNickNameValid] = useState(false);
   const [isEmailValid, setIsEmailValid] = useState(false);
@@ -208,7 +217,7 @@ export default function Register() {
       });
   };
 
-  const handleKakaoLogin = () => {
+  const handleKakaoRegister = () => {
     alert("준비중입니다.");
   };
 
@@ -272,12 +281,13 @@ export default function Register() {
             />
             {isPhoneNumberValid ? null : <div style={{ color: "red", padding: "3px" }}>{phoneNumberErrorMessage}</div>}
           </label>
-
           <button className="registerButton" type="button" onClick={handleRegister}>
             가입하기
           </button>
+          <button type="button" className="kakaoRegisterButton" onClick={handleKakaoRegister}>
+            카카오 회원가입
+          </button>
         </form>
-        <img className="kakaoLoginButton" src={kakaoLogin} alt="logo" onClick={handleKakaoLogin} />
       </RegisterWrapperStyle>
       <LoginToGoStyle>
         <div>이미 계정이 있으신가요?</div>

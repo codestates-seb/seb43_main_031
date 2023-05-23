@@ -10,7 +10,7 @@ const EntireContainer = styled.div`
   flex-direction: column;
   align-items: center;
   width: 100vw;
-  height: calc(100vh - 50px);
+  height: calc(100vh - 53px);
   padding: 3rem;
   color: var(--font-color-bold);
 `;
@@ -34,16 +34,15 @@ const ChatContainer = styled.div`
   }
 `;
 
-const ButtonWrapper = styled.div`
+const BackButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  .backButtton {
-    width: 30%;
-    border-style: none;
-    background-color: transparent;
+
+  & span {
+    text-align: center;
     color: var(--error-color);
-    font-weight: 600;
+    font-weight: 550;
     cursor: pointer;
   }
 `;
@@ -110,6 +109,7 @@ export default function ChatPage() {
 
   const currentUser = useSelector(state => state.user.userInfo) || {};
   const { memberId } = currentUser;
+
   const [employer, setEmployer] = useState(0);
   const [employee, setEmployee] = useState(0);
 
@@ -199,11 +199,9 @@ export default function ChatPage() {
           />
           <SendButton type="submit">Send</SendButton>
         </ChatInputContainer>
-        <ButtonWrapper>
-          <button className="backButtton" type="button" onClick={() => navigate(-1)}>
-            뒤로가기
-          </button>
-        </ButtonWrapper>
+        <BackButtonWrapper>
+          <span onClick={() => navigate(-1)}>뒤로가기</span>
+        </BackButtonWrapper>
       </ChatContainer>
     </EntireContainer>
   );

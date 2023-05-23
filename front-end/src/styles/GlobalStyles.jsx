@@ -8,6 +8,8 @@ const GlobalStyles = createGlobalStyle`
     --sub-color: #E4EA7C; // 서브컬러
     --sub-btn-color : #FFD3D5; // 서브 버튼컬러
     --cancle-btn-color: #7e7f80; // 취소 버튼 컬러
+    --kakao-btn-color:  rgb(254, 229, 0); // 카카오 버튼 컬러
+    --kakao-font-color: #181600; // 카카오 글씨 컬러
 
     
     --al-color: #0074cc; // 기본 a 링크 색상
@@ -30,9 +32,23 @@ const GlobalStyles = createGlobalStyle`
     --question-tip-box-bg-color: #EBF4FA;// 파란박스 배경 색상
     --question-tip-box-border-color: #A5CFED;// 파란박스 테두리 색상
     --question-foem-focus-color: #59A4DE;// 포커스 테두리 색상
+
+    overflow-x: hidden;
   }
   * {
     box-sizing: border-box;
+    font-family: 'SUITE-Regular';
+  }
+  
+  @font-face {
+    font-family: 'SUITE-Regular';
+    src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/SUITE-Regular.woff2') format('woff2');
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  button {
+    cursor: pointer;
   }
 
   html, body, div, span, applet, object, iframe,
@@ -52,7 +68,6 @@ const GlobalStyles = createGlobalStyle`
     padding: 0;
     border: 0;
     font-size: 100%;
-    font: inherit;
     vertical-align: baseline;
   }
   /* HTML5 display-role reset for older browsers */

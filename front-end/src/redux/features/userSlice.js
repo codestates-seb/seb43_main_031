@@ -5,7 +5,7 @@ const userSlice = createSlice({
   name: "user",
   initialState: {
     token: localStorage.getItem("token") || [],
-    userInfo: {},
+    userInfo: null,
   },
   reducers: {
     setUserInfo(state, action) {

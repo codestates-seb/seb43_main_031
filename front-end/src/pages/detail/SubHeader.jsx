@@ -27,8 +27,7 @@ function DetailSubHeader({ count, title }) {
     <SubHeaderWrapper>
       <BsFillCaretRightFill className="arrow" />
       <h2>
-        {count > 0 && `${count}`}
-        &nbsp;
+        {count > 0 ? `${count}` : "0"}
         {title}
       </h2>
     </SubHeaderWrapper>

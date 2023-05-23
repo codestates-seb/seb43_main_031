@@ -15,6 +15,7 @@ import { Editor, Viewer } from "@toast-ui/react-editor";
 // 이미지
 import RedShoesImg from "../../img/shoes.png";
 // 컴포넌트
+import Loading from "../Loading";
 import ApplySection from "./ApplySection";
 import CommentSection from "./comment/CommentSection";
 import { editBoard, deleteBoard, setBoard } from "../../redux/features/boardSlice";
@@ -146,10 +147,11 @@ function Detail() {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const boards = useSelector(state => state.board);
-  const board = boards.find(item => item.boardId === Number(id));
+  const board = boards.find(item => item.boardId === Number(id)) || {};
 
   const editorRef = useRef();
-  const [isPending, setIsPending] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
   const [editText, setEditText] = useState({
     title: board.title,
     content: board.content,
@@ -160,12 +162,9 @@ function Detail() {
     detailAddress: board.detailAddress,
   }); // 수정할 인풋값 상태
   const [openEditorInBoardId, setOpenEditorInBoardId] = useState(""); // 게시글 고유id값 담는 상태
-  // console.log(editText);
-
-  // console.log(boards);
 
   useEffect(() => {
-    // setIsPending(true)
+    setIsLoading(true);
     const fetchBoard = async () => {
       try {
         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/boards/${id}`, {
@@ -185,10 +184,11 @@ function Detail() {
 
         // setBoard로 갱신해줘야하는 데이터는 배열이여야함.
         dispatch(setBoard(newBoards));
-      } catch (err) {
-        alert("게시글을 불러오지 못했습니다.");
+        setIsLoading(false);
+      } catch (error) {
+        console.error(error);
+        setError("게시글을 불러오지 못했습니다.");
       }
-      // setIsPending(false);
     };
     fetchBoard();
   }, []);
@@ -201,7 +201,6 @@ function Detail() {
           Authorization: `${token}`,
         },
       });
-      console.log(response.data);
       dispatch(editBoard(response.data));
     } catch (err) {
       alert("게시글을 수정하지 못했습니다.");
@@ -216,7 +215,6 @@ function Detail() {
           Authorization: `${token}`,
         },
       });
-      console.log(response.data);
       dispatch(deleteBoard(response.data));
       navigate("/boards");
     } catch (err) {
@@ -307,7 +305,8 @@ function Detail() {
   ];
 
   // 얼리리턴(예외처리)
-  if (isPending) return <div>로딩중입니다.</div>;
+  if (isLoading) return <Loading />;
+  if (error) return <div>{error}</div>;
   if (!board?.boardId) return null;
 
   return (
@@ -372,8 +371,8 @@ function Detail() {
             })}
           </ContentsSectionBody>
         </DetailContentsSection>
-        <ApplySection boardId={id} />
-        <CommentSection boardId={id} />
+        <ApplySection setIsLoading={setIsLoading} />
+        <CommentSection setIsLoading={setIsLoading} />
       </DetailWrapper>
     </DetailTemplate>
   );

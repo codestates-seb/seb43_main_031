@@ -13,7 +13,7 @@ import { patchMember, deleteMember } from "../api/member";
 
 const EntireContainer = styled.div`
   width: 100vw;
-  min-height: calc(100vh - 50px);
+  min-height: calc(100vh - 53px);
   padding: 5rem 0;
   color: var(--font-color-bold);
 `;
