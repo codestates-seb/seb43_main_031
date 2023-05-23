@@ -158,9 +158,6 @@ export default function Landing() {
           <span>우리 동네 다양한 이야기를 함께 나눠요</span>
         </SpanWrapper>
       </SectionThree>
-      <SectionFour>
-        <h1>도와주러 가기</h1>
-      </SectionFour>
       <Footer />
     </>
   );

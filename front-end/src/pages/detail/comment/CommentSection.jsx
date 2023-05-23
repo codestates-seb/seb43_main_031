@@ -16,7 +16,7 @@ import ReplyCommentSection from "./ReplyCommentSection";
 // 전체 컨테이너
 const StyledContainer = styled.div`
   width: 90%;
-  height: 42rem;
+  height: 100%;
   margin: 0 auto;
   display: flex;
   flex-direction: column;
