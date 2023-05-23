@@ -6,6 +6,7 @@ import com.redhood.server.exception.BusinessLogicException;
 import com.redhood.server.exception.ExceptionCode;
 import com.redhood.server.member.Member;
 import com.redhood.server.member.MemberRepository;
+
 import com.redhood.server.reply.entity.Comment;
 import com.redhood.server.reply.repository.CommentRepository;
 import com.redhood.server.security.UserDetailsImpl;
@@ -34,10 +35,12 @@ public class CommentService {
         if (comment.getBoard() != null) {
             comment.setBoard(findVerifiedBoard(comment.getBoard().getBoardId()));
             comment.setMember(findVerifiedMember(userDetails.getUserId()));
+            comment.setCommentStatus(Comment.CommentStatus.COMMENT_ONE);
             savecomment = commentRepository.save(comment);
         } else if (comment.getComment() != null){
             comment.setComment(findVerifiedComment(comment.getComment().getCommentId()));
             comment.setMember(findVerifiedMember(userDetails.getUserId()));
+            comment.setCommentStatus(Comment.CommentStatus.COMMENT_TWO);
             savecomment = commentRepository.save(comment);
         }
         return savecomment;
@@ -50,11 +53,11 @@ public class CommentService {
         return commentRepository.save(findComment);
     }
     public List<Comment> findComments(long boardId){
-        List<Comment> findComments = commentRepository.findByBoardBoardId(boardId);
+        List<Comment> findComments = commentRepository.findByBoardBoardIdAndCommentStatusNot(boardId, Comment.CommentStatus.COMMENT_DELET);
         return findComments;
     }
     public List<Comment> findReplys(long commentId){
-        List<Comment> findComments = commentRepository.findByCommentCommentId(commentId);
+        List<Comment> findComments = commentRepository.findByCommentCommentIdAndCommentStatusNot(commentId,Comment.CommentStatus.COMMENT_DELET);
         return findComments;
     }
     public Comment findComment(long commentId){
@@ -63,7 +66,8 @@ public class CommentService {
     public void deleteComment(long commentId,UserDetailsImpl userDetails) {
         Comment findComment = findVerifiedComment(commentId);
         if(findComment.getMember().getMemberId() == userDetails.getUserId()){
-            commentRepository.delete(findComment);
+            findComment.setCommentStatus(Comment.CommentStatus.COMMENT_DELET);
+            commentRepository.save(findComment);
         } else { new BusinessLogicException(ExceptionCode.AUTHOR_NOT_MATCH); }
     }
     @Transactional(readOnly = true)

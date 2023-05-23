@@ -19,6 +19,9 @@ public class Comment extends Timestamped {
 
     @Column(length = 400, nullable = false)
     private String content;
+    @Enumerated(value = EnumType.STRING)
+    @Column(length = 20)
+    private CommentStatus commentStatus;
 
     @ManyToOne
     @JoinColumn(name = "MEMBER_ID")
@@ -30,4 +33,17 @@ public class Comment extends Timestamped {
     @ManyToOne
     @JoinColumn(name = "REPLY_ID")
     private Comment comment;
+
+    public enum CommentStatus {
+        COMMENT_ONE("댓글"),
+        COMMENT_TWO("대댓글"),
+        COMMENT_DELET("삭제");
+
+        @Getter
+        private String status;
+
+        CommentStatus(String status) {
+            this.status = status;
+        }
+    }
 }

@@ -2,6 +2,7 @@ package com.redhood.server.reply.dto;
 
 import com.redhood.server.board.dto.BoardResponseDto;
 import com.redhood.server.member.MemberDto;
+import com.redhood.server.reply.entity.Comment;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -40,9 +41,12 @@ public class CommentDto {
 
         private LocalDateTime updateDate;
 
+        private Comment.CommentStatus commentStatus;
+
         private MemberDto.ReplyResponse member;
 
         private BoardResponseDto.ReplyResponse board;
+
         private CommentDto.Reply comment;
 
     }
