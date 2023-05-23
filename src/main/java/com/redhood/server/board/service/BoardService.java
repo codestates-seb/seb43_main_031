@@ -99,10 +99,11 @@ public class BoardService {
 
     public void deleteBoard(UserDetailsImpl userDetails, long boardId) {
         Board findBoard = findVerifiedBoard(boardId);
+        findBoard.setBoardStatus(Board.BoardStatus.ADOPTION_DELETE);
 
         memberService.verifyLogInMemberMatchesMember(userDetails.getUserId(), findBoard.getMember().getMemberId());
 
-        boardRepository.delete(findBoard);
+        boardRepository.save(findBoard);
 
     }
 
@@ -117,7 +118,7 @@ public class BoardService {
         if (StringUtils.isBlank(guTagKeyword) && StringUtils.isBlank(dongTagKeyword)) {
             return boardRepository.findAll(pageable);
         } else if (StringUtils.isNotBlank(guTagKeyword) && StringUtils.isNotBlank(dongTagKeyword)) {
-            return boardRepository.findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(guTagKeyword, dongTagKeyword, pageable);
+            return boardRepository.findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCaseAndBoardStatusNot(guTagKeyword, dongTagKeyword, Board.BoardStatus.ADOPTION_DELETE,pageable);
         }
         return Page.empty();
 
@@ -126,7 +127,7 @@ public class BoardService {
         if (StringUtils.isBlank(guTagKeyword) && StringUtils.isBlank(dongTagKeyword)) {
             return boardPage;
         } else if (StringUtils.isNotBlank(guTagKeyword) && StringUtils.isNotBlank(dongTagKeyword)) {
-            return boardRepository.findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(guTagKeyword, dongTagKeyword, pageable);
+            return boardRepository.findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCaseAndBoardStatusNot(guTagKeyword, dongTagKeyword, Board.BoardStatus.ADOPTION_DELETE,pageable);
         }
         return Page.empty();
     }
@@ -135,15 +136,15 @@ public class BoardService {
   public Page<Board> searchBoards(String titleKeyword, String guTagKeyword, String dongTagKeyword, Pageable pageable) {
       if (StringUtils.isBlank(guTagKeyword) && StringUtils.isBlank(dongTagKeyword)) {
           if (StringUtils.isNotBlank(titleKeyword)) {
-              return boardRepository.findByTitleContainingIgnoreCase(titleKeyword, pageable);
+              return boardRepository.findByTitleContainingIgnoreCaseAndBoardStatusNot(titleKeyword,Board.BoardStatus.ADOPTION_DELETE,pageable);
           } else {
               return boardRepository.findAll(pageable);
           }
       } else if (StringUtils.isNotBlank(guTagKeyword) && StringUtils.isNotBlank(dongTagKeyword)) {
           if (StringUtils.isNotBlank(titleKeyword)) {
-              return boardRepository.findByTitleContainingIgnoreCaseAndGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(titleKeyword, guTagKeyword, dongTagKeyword, pageable);
+              return boardRepository.findByTitleContainingIgnoreCaseAndGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCaseAndBoardStatusNot(titleKeyword, guTagKeyword, dongTagKeyword, Board.BoardStatus.ADOPTION_DELETE,pageable);
           } else {
-              return boardRepository.findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(guTagKeyword, dongTagKeyword, pageable);
+              return boardRepository.findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCaseAndBoardStatusNot(guTagKeyword, dongTagKeyword, Board.BoardStatus.ADOPTION_DELETE,pageable);
           }
 
       }

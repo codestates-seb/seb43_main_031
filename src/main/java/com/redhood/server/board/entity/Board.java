@@ -73,7 +73,9 @@ public class Board {
 
     public enum BoardStatus {
         ADOPTION_IN_PROGRESS("채택진행중"),
-        ADOPTION_COMPLETE("채택완료");
+        ADOPTION_COMPLETE("채택완료"),
+
+        ADOPTION_DELETE("게시물삭제");
 
 
         @Getter

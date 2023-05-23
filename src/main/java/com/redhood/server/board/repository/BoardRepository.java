@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static com.redhood.server.board.entity.Board.BoardStatus.ADOPTION_DELETE;
+
 
 @Repository
 public interface BoardRepository extends JpaRepository<Board, Long> {
@@ -23,14 +25,19 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     List<Board> findByExpiredDateTimeBefore(LocalDateTime currentDateTime);
 
+    Page<Board> findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCaseAndBoardStatusNot(String guTag, String dongTag,Board.BoardStatus boardStatus,Pageable pageable);
 
-    Page<Board> findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(String guTag, String dongTag, Pageable pageable);
-
-
-    Page<Board> findByTitleContainingIgnoreCaseAndGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(String title, String guTag, String dongTag, Pageable pageable);
+    //Page<Board> findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(String guTag, String dongTag, Pageable pageable);
 
 
-    Page<Board> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+    //Page<Board> findByTitleContainingIgnoreCaseAndGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(String title, String guTag, String dongTag, Pageable pageable);
+
+    Page<Board> findByTitleContainingIgnoreCaseAndGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCaseAndBoardStatusNot(String title, String guTag, String dongTag, Board.BoardStatus boardStatus,Pageable pageable);
+
+
+    //Page<Board> findByTitleContainingIgnoreCase(String title, Pageable pageable);
+
+    Page<Board> findByTitleContainingIgnoreCaseAndBoardStatusNot(String title,  Board.BoardStatus boardStatus, Pageable pageable);
 
     //제목&내용 검색
 }

@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 
 @Generated(
     value = "org.mapstruct.ap.MappingProcessor",
-    date = "2023-05-18T15:43:24+0900",
+    date = "2023-05-23T14:05:30+0900",
     comments = "version: 1.5.1.Final, compiler: javac, environment: Java 19.0.2 (Oracle Corporation)"
 )
 @Component
@@ -87,6 +87,7 @@ public class ApplyMapperImpl implements ApplyMapper {
         BoardResponseDto.ReplyResponse replyResponse = new BoardResponseDto.ReplyResponse();
 
         replyResponse.setBoardId( board.getBoardId() );
+        replyResponse.setMember( memberToReplyResponse( board.getMember() ) );
 
         return replyResponse;
     }
