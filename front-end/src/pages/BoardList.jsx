@@ -234,22 +234,27 @@ export default function BoardList() {
   const onSearchButtonClick = () => {
     console.log("clicked");
     setSearchText(searchInputText);
+    setCurrentPage(1);
   };
 
   const onSelectedGu = event => {
     setSelectedGu(event.target.value);
+    setCurrentPage(1);
   };
 
   const onSelectedDong = event => {
     setSelectedDong(event.target.value);
+    setCurrentPage(1);
   };
 
   const onClickSortCreateDate = () => {
     setSortType("createDate");
+    setCurrentPage(1);
   };
 
   const onClickSortViewCount = () => {
     setSortType("viewCount");
+    setCurrentPage(1);
   };
 
   const onClickAllList = () => {
