@@ -7,8 +7,7 @@ const TagContainer = styled.div`
   margin-top: 2%;
   margin-bottom: 5%;
   > select {
-    height: 30px;
-    width: 78px;
+    height: 33px;
     margin-right: 10px;
     border-radius: 20px;
     padding: 0.5rem;

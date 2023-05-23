@@ -33,6 +33,9 @@ const FormSection = styled.form`
   padding: 3rem;
   color: var(--font-color-bold);
   > label {
+    display: flex;
+    align-items: center;
+    gap: 0.2rem;
     margin-bottom: 3%;
     font-size: 1.1rem;
     font-weight: 550;

@@ -27,6 +27,7 @@ const RegisterWrapperStyle = styled.div`
   flex-direction: column;
   align-items: center;
   margin: 30px auto 20px auto;
+  padding: 20px 0;
   max-width: 300px;
   /* height: 680px; */
   background-color: #fff;

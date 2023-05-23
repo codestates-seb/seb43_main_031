@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import styled, { keyframes } from "styled-components";
 
+import mapClick from "../img/mapClick.jpeg";
 import Footer from "../layouts/Footer";
 
 const SharedSection = styled.div`
@@ -13,8 +14,25 @@ const SharedSection = styled.div`
 
 const SectionOne = styled(SharedSection)`
   background-color: #fae7e7;
-  opacity: 0;
-  transition: all 3s;
+  span {
+    font-size: 3rem;
+    color: #743e3e;
+    font-weight: 700;
+    text-shadow: #12000358 0px 4px 4px;
+    opacity: 0;
+    transition: all 3s;
+    .hightLight {
+      display: inline;
+      color: rgb(208, 68, 71);
+    }
+  }
+  img {
+    margin-top: 3rem;
+    height: 25rem;
+    width: 25rem;
+    border-radius: 20px;
+    box-shadow: #12000358 0px 4px 8px;
+  }
 `;
 
 const SpanWrapper = styled.div`
@@ -47,14 +65,14 @@ const fadeIn = keyframes`
   }
 `;
 
-const AnimatedSpan = styled.span`
+const AnimatedSDelay = styled.span`
   animation: ${fadeIn} 1s ease-in-out;
   animation-fill-mode: both;
   &:nth-child(1) {
     animation-delay: 0.3s;
   }
   &:nth-child(2) {
-    animation-delay: 1.2s;
+    animation-delay: 1.1s;
   }
 `;
 
@@ -80,8 +98,11 @@ export default function Landing() {
     <>
       <SectionOne ref={sectionOneRef}>
         <SpanWrapper>
-          <AnimatedSpan>우리동네 심부름은</AnimatedSpan>
-          <AnimatedSpan>빨간망토에서</AnimatedSpan>
+          <AnimatedSDelay>
+            우리동네 <p className="hightLight">심부름</p>은
+          </AnimatedSDelay>
+          <AnimatedSDelay>빨간망토에서</AnimatedSDelay>
+          <img src={mapClick} alt="map" />
         </SpanWrapper>
       </SectionOne>
       <SectionTwo ref={sectionTwoRef}>
