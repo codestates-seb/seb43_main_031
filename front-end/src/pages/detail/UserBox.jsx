@@ -46,8 +46,8 @@ function UserBox({ infoData }) {
   return (
     <UserInfoWrapper>
       <div className="avatar">
-        {infoData.images ? (
-          <img src={infoData.images} alt="user profile" />
+        {infoData.member.images ? (
+          <img src={infoData.member.images} alt="user profile" />
         ) : (
           <img src={blankProfileImage} alt="blanked user profile" />
         )}
