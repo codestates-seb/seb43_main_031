@@ -18,6 +18,10 @@ import GlobalStyles from "./styles/GlobalStyles";
 
 // App
 function App() {
+  // 배포 환경에서 console.log 지우기
+  if (process.env.NODE_ENV === "production") {
+    console.log = function no_console() {};
+  }
   return (
     <div className="App" style={{ backgroundColor: "var(--bg-color)" }}>
       <GlobalStyles />
