@@ -82,6 +82,7 @@ public class MemberDto {
 		private Long memberId;
 		private String email;
 		private String nickName;
+		private String images;
 
 	}
 
