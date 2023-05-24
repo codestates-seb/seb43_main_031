@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from "react";
 import styled, { keyframes } from "styled-components";
+import { useInView } from "react-intersection-observer";
 
 import mapClick from "../img/mapClick.jpeg";
 import Footer from "../layouts/Footer";
 
 import chatMobile from "../img/chat-mobile.png";
 import detailMobile from "../img/detail-mobile.png";
+import boardLaptop from "../img/list-laptop.png";
 
 const SharedSection = styled.div`
   display: flex;
@@ -83,11 +85,17 @@ const SectionTwo = styled(SharedSection)`
 `;
 
 const SectionThree = styled(SharedSection)`
+  width: 100%;
+  height: 900px;
+  text-align: center;
   background-color: #fff;
+
+  display: flex;
+  flex-direction: column;
 `;
 
-const SectionFour = styled(SharedSection)`
-  background-color: #fae7e7;
+const SpanThreeWrapper = styled(SpanWrapper)`
+  display: flex;
 `;
 
 const fadeIn = keyframes`
@@ -111,6 +119,24 @@ const AnimatedSDelay = styled.span`
     animation-delay: 1.1s;
   }
 `;
+
+function ObserverPattern({ children }) {
+  const { ref, inView } = useInView({
+    threshold: 0.7,
+  });
+
+  return (
+    <SectionThree
+      ref={ref}
+      style={{
+        transition: "all 1s ease-in-out",
+        opacity: inView ? 1 : 0,
+      }}
+    >
+      {children}
+    </SectionThree>
+  );
+}
 
 export default function Landing() {
   const sectionOneRef = useRef(null);
@@ -152,13 +178,73 @@ export default function Landing() {
           <img src={chatMobile} alt="chat-mobile" className="chat-mobile" />
         </ImgChatMobile>
       </SectionTwo>
-      <SectionThree>
-        <SpanWrapper>
-          <span>이웃과 함께하는 동네 생활</span>
-          <span>우리 동네 다양한 이야기를 함께 나눠요</span>
-        </SpanWrapper>
-      </SectionThree>
+      <ObserverPattern>
+        <SpanThreeWrapper>
+          <AnimatedSDelaySecond>
+            <p>이웃과 함께하는 동네 생활</p>
+          </AnimatedSDelaySecond>
+          <AnimatedSDelaySecond>
+            <span>우리 동네 다양한 이야기를 함께 나눠요</span>
+          </AnimatedSDelaySecond>
+        </SpanThreeWrapper>
+        <ImgBoardLaptop>
+          <img src={boardLaptop} alt="board-laptop" />
+        </ImgBoardLaptop>
+        <GoToLogin type="button">소통하러 가기</GoToLogin>
+      </ObserverPattern>
       <Footer />
     </>
   );
 }
+
+const ImgBoardLaptop = styled.div`
+  margin: 0;
+  position: relative;
+  top: 0;
+  left: 0;
+  opacity: 1;
+  animation: ${fadeIn} 1s ease-in;
+
+  & > img {
+    width: 50rem;
+    height: 40rem;
+  }
+`;
+
+const GoToLogin = styled.button`
+  padding: 1rem;
+  background-color: var(--primary-color);
+  border: none;
+  border-radius: 2rem;
+  color: #fff;
+  font-size: 1.4rem;
+  box-shadow: 0 4px 5px rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+`;
+
+const AnimatedSDelaySecond = styled.span`
+  animation: ${fadeIn} 1s ease-in-out;
+  animation-fill-mode: both;
+  &:nth-child(1) {
+    animation-delay: 0.3s;
+  }
+  &:nth-child(2) {
+    animation-delay: 1.1s;
+  }
+
+  & > p {
+    color: var(--primary-color);
+    font-size: 4rem;
+    font-weight: 900;
+    text-shadow: var(--bg-color) 3px 4px 2px;
+    margin-bottom: 1rem;
+  }
+
+  & > span {
+    color: var(--font-color-light);
+  }
+`;
