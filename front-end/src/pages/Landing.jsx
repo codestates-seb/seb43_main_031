@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled, { keyframes } from "styled-components";
 import { useInView } from "react-intersection-observer";
@@ -15,7 +16,7 @@ const SharedSection = styled.div`
   justify-content: center;
   align-items: center;
   height: 80vh;
-  font-size: 24px;
+  font-size: 1.5rem;
 `;
 
 // 공통 텍스트 래퍼
@@ -93,6 +94,7 @@ const SectionOne = styled(SharedSection)`
   }
   @media (max-width: 450px) {
     flex-direction: column;
+    margin-top: 6rem;
   }
 `;
 
@@ -100,6 +102,9 @@ const SectionOne = styled(SharedSection)`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
+  @media (max-width: 450px) {
+    margin-bottom: 10rem;
+  }
   & button {
     height: 3rem;
     width: 13rem;
@@ -177,14 +182,16 @@ const SpanTwoWrapper = styled(SpanWrapper)`
   @media (max-width: 450px) {
     font-size: 2rem;
     text-align: center;
-    .sub-content {
-      font-size: 1rem;
-    }
   }
 
   .sub-content {
     margin: 1rem 2rem 1rem 0;
     font-size: 1.5rem;
+    @media (max-width: 450px) {
+      font-size: 1.2rem;
+      line-height: 1.5rem;
+      margin: 1rem 2.3rem;
+    }
   }
 `;
 
@@ -192,7 +199,7 @@ const SpanTwoWrapper = styled(SpanWrapper)`
 const ImgChatMobile = styled.div`
   max-width: 100%;
   max-height: 100%;
-  margin: 40px;
+  margin: 20px;
   position: relative;
 
   .detail-mobile {
@@ -204,6 +211,12 @@ const ImgChatMobile = styled.div`
     z-index: 1;
     animation: ${fadeIn} 4s ease-in-out;
     animation-fill-mode: both;
+    @media (max-width: 450px) {
+      width: 150px;
+      height: 185px;
+      top: 40px;
+      left: 40px;
+    }
   }
 
   .chat-mobile {
@@ -211,6 +224,10 @@ const ImgChatMobile = styled.div`
     height: 370px;
     animation: ${fadeIn} 3s ease-in-out;
     animation-fill-mode: both;
+    @media (max-width: 450px) {
+      width: 150px;
+      height: 185px;
+    }
   }
 `;
 
@@ -223,6 +240,10 @@ const SectionThree = styled(SharedSection)`
 
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 450px) {
+    height: 600px;
+  }
 `;
 
 // 세번째 페이지 안 텍스트 래퍼
@@ -242,12 +263,17 @@ const ImgBoardLaptop = styled.div`
   & > img {
     width: 50rem;
     height: 40rem;
+    @media (max-width: 450px) {
+      width: 24rem;
+      height: 20rem;
+    }
   }
 `;
 
-// 세번째 페이지 안 로그인 이동 버튼
+// 세번째 페이지 안 회원가입 이동 버튼
 const GoToLogin = styled.button`
-  padding: 1rem;
+  width: 10rem;
+  padding: 0.6rem;
   background-color: var(--primary-color);
   border: none;
   border-radius: 2rem;
@@ -263,6 +289,12 @@ const GoToLogin = styled.button`
 
 export default function Landing() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    window.onbeforeunload = function pushRefresh() {
+      window.scrollTo(0, 0);
+    };
+  }, []);
 
   return (
     <>
@@ -308,8 +340,8 @@ export default function Landing() {
         <ImgBoardLaptop>
           <img src={boardLaptop} alt="board-laptop" />
         </ImgBoardLaptop>
-        <GoToLogin type="button" onClick={() => navigate("/login")}>
-          소통하러 가기
+        <GoToLogin type="button" onClick={() => navigate("/register")}>
+          시작하기
         </GoToLogin>
       </ObserverPattern>
       <Footer />
@@ -329,7 +361,7 @@ const AnimatedSDelaySecond = styled.span`
 
   & > p {
     color: var(--primary-color);
-    font-size: 4rem;
+    font-size: 2.5rem;
     font-weight: 900;
     text-shadow: var(--bg-color) 3px 4px 2px;
     margin-bottom: 1rem;

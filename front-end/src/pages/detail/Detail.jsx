@@ -136,6 +136,9 @@ const BodyMain = styled.div`
     font-size: 1.2rem;
     border-radius: 0.6rem;
     background-color: var(--bg-color);
+    @media (max-width: 450px) {
+      width: 35%;
+    }
   }
 
   & > p {

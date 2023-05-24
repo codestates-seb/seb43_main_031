@@ -22,7 +22,13 @@ function SearchToolArea({
             </option>
           ))}
         </select>
-        <select className="location-search-dropdown" onChange={onSelectedDong} name="dong" value={selectedDong}>
+        <select
+          className="location-search-dropdown"
+          onChange={onSelectedDong}
+          name="dong"
+          value={selectedDong}
+          disabled={selectedGu === "지역구"}
+        >
           <option value="지역동" hidden>
             지역동
           </option>

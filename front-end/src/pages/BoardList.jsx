@@ -20,6 +20,7 @@ import { setBoard } from "../redux/features/boardSlice";
 const Main = styled.div`
   background-color: var(--bg-color);
   padding: 30px;
+  min-height: calc(100vh - 53px);
 `;
 
 const BoardContainerStyle = styled.div`
@@ -176,7 +177,7 @@ const BoardListWrapperStyle = styled.div`
       padding: 3px;
     }
     .sort-button {
-      width: 60px;
+      width: 55px;
       padding: 4px;
     }
     .viewCount,
