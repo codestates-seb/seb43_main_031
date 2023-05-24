@@ -7,6 +7,7 @@ import com.redhood.server.exception.ExceptionCode;
 import com.redhood.server.member.Member;
 import com.redhood.server.member.MemberRepository;
 import com.redhood.server.member.MemberService;
+import com.redhood.server.reply.entity.Comment;
 import com.redhood.server.security.UserDetailsImpl;
 import org.junit.platform.commons.util.StringUtils;
 import org.springframework.data.domain.Page;
@@ -91,7 +92,7 @@ public class BoardService {
 
 
     public Page<Board> getBoards(Pageable pageable) {
-        return this.boardRepository.findAll(pageable);
+        return this.boardRepository.findAllByBoardStatusNot(Board.BoardStatus.ADOPTION_DELETE, pageable);
     }
 
 
@@ -107,11 +108,15 @@ public class BoardService {
 
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public void deleteExpiredBoards() {
         LocalDateTime currentDateTime = LocalDateTime.now();
-        List<Board> expiredBoards = boardRepository.findByExpiredDateTimeBefore(currentDateTime);
-        boardRepository.deleteAll(expiredBoards);
+        List<Board> expiredBoards = boardRepository.findByExpiredDateTimeBeforeAndBoardStatusNot(currentDateTime, Board.BoardStatus.ADOPTION_DELETE);
+        for(Board board : expiredBoards) {
+            board.setBoardStatus(Board.BoardStatus.ADOPTION_DELETE);
+        }
+
+        boardRepository.saveAll(expiredBoards);
     }
 
     public Page<Board> getBoardsByGuTagAndDongTag(String guTagKeyword, String dongTagKeyword, Pageable pageable) {

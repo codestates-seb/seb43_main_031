@@ -21,9 +21,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Optional<Board> findByBoardId(long boardId);
     Optional<Board> findByTitle(String title);
-    Page<Board> findAll(Pageable pageable);
+    Page<Board> findAllByBoardStatusNot(Board.BoardStatus boardStatus, Pageable pageable);
 
-    List<Board> findByExpiredDateTimeBefore(LocalDateTime currentDateTime);
+    List<Board> findByExpiredDateTimeBeforeAndBoardStatusNot(LocalDateTime currentDateTime, Board.BoardStatus boardStatus);
 
     Page<Board> findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCaseAndBoardStatusNot(String guTag, String dongTag,Board.BoardStatus boardStatus,Pageable pageable);
 
