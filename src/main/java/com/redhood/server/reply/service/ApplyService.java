@@ -52,6 +52,9 @@ public class ApplyService {
         Apply findApply = findVerifiedApply(applyId);
         if(findApply.getBoard().getMember().getMemberId() == userDetails.getUserId()){
             if(findApply.getApplyStatus() == Apply.ApplyStatus.APPLY_REQUEST){
+                Board findBoard = findVerifiedBoard(findApply.getBoard().getBoardId());
+                findBoard.setBoardStatus(Board.BoardStatus.ADOPTION_COMPLETE);
+                boardRepository.save(findBoard);
                 findApply.setApplyStatus(Apply.ApplyStatus.APLLY_ACCEPT);
             } else { new BusinessLogicException(ExceptionCode.ALREADY_ACCEPT); }
         } else { new BusinessLogicException(ExceptionCode.AUTHOR_NOT_MATCH); }
@@ -61,6 +64,8 @@ public class ApplyService {
         Apply findApply = findVerifiedApply(applyId);
         if(findApply.getBoard().getMember().getMemberId() == userDetails.getUserId()){
             if(findApply.getApplyStatus() == Apply.ApplyStatus.APLLY_ACCEPT){
+                Board findBoard = findVerifiedBoard(findApply.getBoard().getBoardId());
+                findBoard.setBoardStatus(Board.BoardStatus.ADOPTION_IN_PROGRESS);
                 findApply.setApplyStatus(Apply.ApplyStatus.APPLY_REQUEST);
             } else { new BusinessLogicException(ExceptionCode.ALREADY_REQUEST); }
         } else { new BusinessLogicException(ExceptionCode.AUTHOR_NOT_MATCH); }
