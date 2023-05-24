@@ -10,7 +10,7 @@ const FooterStyle = styled.footer`
   color: #fff;
   padding: 10px;
   position: relative;
-  height: 160px;
+  height: 180px;
 `;
 
 const ContentWrapper = styled.div`
@@ -28,12 +28,12 @@ const ContentWrapper = styled.div`
 `;
 
 const CopyrightText = styled.p`
-  font-size: 14px;
+  font-size: 1.2rem;
   margin-bottom: 5px;
 `;
 
 const ContributorText = styled.p`
-  font-size: 12px;
+  font-size: 1rem;
   margin: 0;
   padding: 1px;
 `;
