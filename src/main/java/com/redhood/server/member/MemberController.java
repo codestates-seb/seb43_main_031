@@ -38,9 +38,11 @@ public class MemberController {
 	public ResponseEntity loginMember(@Valid @RequestBody MemberDto.Login postDto){
 		Member member = mapper.memberPostToMember(postDto);
 		Member response = memberService.login(member);
-		String token = jwtTokenProvider.createToken(response.getEmail(), response.getRoles());
+		String accessToken  = jwtTokenProvider.createAccessToken(response.getEmail(), response.getRoles());
+		String refreshToken  = jwtTokenProvider.createRefreshToken(response.getEmail(), response.getRoles());
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.add("Authorization", token.trim());
+		httpHeaders.add("Authorization", accessToken.trim());
+		httpHeaders.add("Refresh-Token", refreshToken.trim());
 		return new ResponseEntity(mapper.memberToMemberResponseDto(response), httpHeaders, HttpStatus.OK);
 	}
 
