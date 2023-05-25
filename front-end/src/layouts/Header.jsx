@@ -19,9 +19,6 @@ const HeaderStyle = styled.div`
   line-height: 50px;
   max-width: 720px;
   margin: auto;
-  @media (max-width: 500px) {
-    justify-content: space-evenly;
-  }
 `;
 
 const HeaderLogoStyle = styled.div`
@@ -52,10 +49,12 @@ const HeaderHome = styled.div`
 
 const HeaderMenuStyle = styled.div`
   display: flex;
-  justify-content: space-between;
   align-items: center;
   gap: 10px;
   margin-right: 8px;
+  @media (max-width: 500px), (max-device-width: 500px) {
+    font-size: 0.8rem;
+  }
 `;
 
 const HeaderMenuItemStyle = styled.div`
@@ -108,7 +107,6 @@ export default function Header() {
               <HeaderMenuItemStyle
                 onClick={() => {
                   dispatch(setUserInfo(null));
-
                   dispatch(clearToken(null));
                   navigate("/login");
                 }}
