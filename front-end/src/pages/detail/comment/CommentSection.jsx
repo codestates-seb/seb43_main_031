@@ -11,6 +11,7 @@ import { addComment, editComment, deleteComment, setComment } from "../../../red
 import UserBox from "../UserBox";
 import DetailSubHeader from "../SubHeader";
 import ReplyCommentSection from "./ReplyCommentSection";
+import Loading from "../../Loading";
 // import useRequest from "../../../shared/useRequest";
 
 // 전체 컨테이너
@@ -125,6 +126,8 @@ function CommentSection() {
   const { id } = useParams();
   const navigate = useNavigate();
   const inputRef = useRef(null);
+
+  const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState(""); // 댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
   const [openEditorInCommentId, setOpenEditorInCommentId] = useState(""); // 댓글 고유id값 담는 상태
@@ -137,8 +140,11 @@ function CommentSection() {
   // 댓글 필터링
   const parentComments = comments.filter(item => item.board !== null && item.comment === null);
 
+  // 추후, useRequest hook을통해 비동기 통신 최적화 진행 예정
+
   // 댓글 조회
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         const response = await axios(`${process.env.REACT_APP_BASE_URL}/comments/comments/${id}`, {
@@ -147,8 +153,7 @@ function CommentSection() {
           },
         });
         dispatch(setComment(response.data.data));
-        // 전역 comments 데이터 중에서 댓글에 해당하는 것만 핉터해서 저장
-        // setParentComments(comments.filter(item => item.board !== null && item.comment === null));
+        setIsLoading(false);
       } catch (err) {
         alert("댓글을 불러오지 못했습니다.");
       }
@@ -178,7 +183,7 @@ function CommentSection() {
       dispatch(addComment(response.data.data));
       setText("");
     } catch (err) {
-      alert("댓글을 생성하지 못했습니다.");
+      if (currentUser !== null) return alert("댓글을 생성하지 못했습니다.");
     }
   };
 
@@ -211,6 +216,8 @@ function CommentSection() {
       alert("댓글 삭제를 실패하였습니다.");
     }
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <StyledContainer>
@@ -280,52 +287,3 @@ function CommentSection() {
 }
 
 export default CommentSection;
-
-// 시도했다가 안된 코드들
-
-// 수정버튼 클릭시 수정가능한 코멘트만 수정창 오픈
-// const handleEditClick = commentId => {
-//   setEdit(!edit); // 수정 버튼 토글
-//   setLocal(
-//     comments.map(comment => {
-//       if (comment.commentId === commentId) {
-//         return { ...comment, isEditing: true };
-//       } else {
-//         return { ...comment, isEditing: false };
-//       }
-//     })
-//   );
-// };
-
-// 요청 훅으로 리펙토링할 코드
-// const { data, isLoading, isError, error } = useRequest(
-//   `/comments/comments/${id}`,
-//   comments => {
-//     dispatch(setComment(comments.filter(comment => comment.board.boardId === id)));
-//   },
-//   "질문을 불러오지 못했습니다.",
-//   [dispatch, id]
-// );
-
-// 풀어야했던 로직 설명
-
-// 먼저 부모의 댓글의 id를 찾아야한다. -> 그래야 대댓글 조회요청을 보낼때 엔드포인트에 주소로 해당 댓글 id를 넣어 보낼수 있기 때문이다.
-// 전역으로 저장된 commentsd에서 부모댓글을 필터링 쭉 해서 변수에 저장하고, 그 변수에 해당하는 부모댓글 배열중 find메소드를 사용하여, 부모댓글중 같은 코멘트 아이디를 찾아서 그거에 맞는 대댓글을 추가해주는 배열을 만들어야한다.
-
-// 대댓글 필터링
-// const childComments = comments.filter(item => item.board === null && item.comment !== null);
-// console.log(childComments);
-
-// 대댓글이 있음 추가하고, 없음 그대로 담기는 댓글배열들
-// const commentsWithReplies = childComments.map(childComment => {
-//   const parentComment = parentComments.find(comment => comment.commentId === childComment.comment.commentId);
-//   if (parentComment) {
-//     // 대댓글을 댓글 객체에 추가
-//     if (!parentComment.replies) {
-//       parentComment.replies = [];
-//     }
-//     parentComment.replies.push(childComment);
-//   }
-//   return childComment;
-// });
-// console.log(commentsWithReplies);

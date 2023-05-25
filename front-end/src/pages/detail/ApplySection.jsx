@@ -94,7 +94,7 @@ const ApplyBtn = styled.button`
 `;
 
 // 신청 컴포넌트
-function ApplySection({ setIsLoading }) {
+function ApplySection() {
   const { id } = useParams();
   const navigate = useNavigate();
   const [selectedApply, setSelectedApply] = useState(null);

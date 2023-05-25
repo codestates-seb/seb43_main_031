@@ -1,12 +1,13 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 import styled from "styled-components";
 
-import { useNavigate, useParams } from "react-router-dom";
-import UserBox from "../UserBox";
 import { addReply, editReply, deleteReply, setReply } from "../../../redux/features/replySlice";
+
+import UserBox from "../UserBox";
 
 // 대댓글 컨테이너
 const ReplyContainer = styled.div`
@@ -123,7 +124,9 @@ const EditForm = styled.div`
 `;
 
 function ReplyCommentSection({ parentId }) {
+  const navigate = useNavigate();
   const inputRef = useRef(null);
+
   const [display, setDisplay] = useState(false); // 대댓글 폼 박스 활성화 상태
   const [text, setText] = useState(""); // 대댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
@@ -132,14 +135,13 @@ function ReplyCommentSection({ parentId }) {
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const token = useSelector(state => state.user.token);
+  // 댓글과 다른 대댓글 전역상태 따로 관리
   const replys = useSelector(state => state.reply) || [];
 
-  // console.log(parentId);
-  // console.log(replys);
+  // 대댓글 전역상태중 부모의 커멘트 아이디와 같은 커멘트 아이디 찾아서 필터링(서버에서 응답으로 오는 데이터를 찾는데 시간을 많이 허비함)
   const childComments = replys.filter(reply => reply.comment.commentId === parentId) || [];
   // console.log(childComments);
 
-  // 모든 대댓글 조회
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -153,8 +155,7 @@ function ReplyCommentSection({ parentId }) {
         alert("err");
       }
     };
-    fetchData(); // fetchData 함수 호출
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    fetchData();
   }, [dispatch, parentId]);
 
   // 새로운 대댓글 작성
@@ -162,6 +163,10 @@ function ReplyCommentSection({ parentId }) {
     // console.log(parentId);
     e.preventDefault();
     if (text === "") return alert("대댓글을 작성해 주세요");
+    if (currentUser === null) {
+      alert("댓글을 남기기 위해선 로그인이 필요합니다.");
+      navigate("/login");
+    }
     try {
       const newComment = {
         commentId: Number(parentId),
@@ -175,7 +180,7 @@ function ReplyCommentSection({ parentId }) {
       dispatch(addReply(response.data.data));
       setText("");
     } catch (err) {
-      alert("댓글을 생성하지 못했습니다.");
+      if (currentUser !== null) return alert("댓글을 생성하지 못했습니다.");
     }
   };
 
@@ -227,7 +232,7 @@ function ReplyCommentSection({ parentId }) {
         }}
       >
         {display && "숨기기"}
-        {!display && (childComments.length === 0 ? "대댓글 달기" : `${childComments.length} 개의 대댓글 보기`)}
+        {!display && (childComments?.length === 0 ? "대댓글 달기" : `${childComments?.length} 개의 대댓글 보기`)}
       </button>
       {display && (
         <ReplyFormBox>
@@ -236,7 +241,7 @@ function ReplyCommentSection({ parentId }) {
               <UserBox infoData={comment} />
               <div className="reply-msg">{comment.content}</div>
               {/* 유저가 해당 댓글의 작성자일 경우만 */}
-              {currentUser.memberId === comment.member.memberId && (
+              {currentUser?.memberId === comment.member.memberId && (
                 // 해당 댓글/대댓글 id가 빈문자가 아니면 수정버튼 클릭시 수정인풋창 보이게
                 <EditForm>
                   {openEditorInCommentId === comment.commentId && (
@@ -295,25 +300,3 @@ function ReplyCommentSection({ parentId }) {
 }
 
 export default ReplyCommentSection;
-
-// const replyIdByParentComment = comments.find(item => item.commet.commentId === item.commentId).
-// 전역 comments 데이터 중에서 대댓글에 해당하는 것만 핉터링
-// const replyComments = comments.filter(item => item.board === null && item.comment !== null);
-// console.log(replyComments);
-
-// 현재 문제상황
-// 댓글 컴포넌트에서 전달받은 parentComment props가 해당 댓글 comment의 commentId로 받아와서 대댓글 컴포넌트에서 해당데이터를 사용할때 아예 댓글 자체가 나오지 않고, -> 이 원인은 댓글이 1개가 아닌 여러개가 나오게 되면 당연히 오류가 날것이다.
-
-// 댓글 comment데이터 자체를 내려주면 댓글들은 잘 렌더링이 된다.
-// 댓글 컴포넌트에서 map을 이용해 렌더링을 할때, 왜 1개의 comment가 아닌 서버에 저장된 댓글데이터가 다 담겨져 오는걸까?
-
-// 애초에 댓글 컴포넌트의 멥핑시, 1개의 comment.commentId를 내려줘야하는데 문제를 찾지 못하겠다..
-
-// // 부모 댓글만 필터링
-// const parentComments = useSelector(state => state.comment.filter(comment => comment.comment === null));
-
-// // 해당 commentId와 맞는 댓글 하나 찾기
-// const parentComment = parentComments.find(comment => comment.commentId === parentId);
-
-// // 댓글에 포함된 대댓글이나 포함되지 않는 대댓글 배열 선언
-// const filteredComments = parentComment?.replies || [];
