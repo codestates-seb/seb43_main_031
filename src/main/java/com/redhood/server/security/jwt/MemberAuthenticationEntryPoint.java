@@ -22,7 +22,8 @@ public class MemberAuthenticationEntryPoint implements AuthenticationEntryPoint 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException, ServletException {
         Exception exception = (Exception) request.getAttribute("exception");
-        sendErrorResponse(response,ExceptionCode.JWT_EXPIRATION);
+
+        sendErrorResponse(response,ExceptionCode.JWT_EXPIRATION,exception);
 
         logExceptionMessage(authException, exception);
     }
@@ -31,11 +32,12 @@ public class MemberAuthenticationEntryPoint implements AuthenticationEntryPoint 
         String message = exception != null ? exception.getMessage() : authException.getMessage();
         log.warn("Unauthorized error happened: {}", message);
     }
-    public static void sendErrorResponse(HttpServletResponse response, ExceptionCode exceptionCode) throws IOException {
+    public static void sendErrorResponse(HttpServletResponse response, ExceptionCode exceptionCode,Exception exception ) throws IOException {
         Gson gson = new Gson();
-        ErrorResponse.ExceptionStatus errorResponse = ErrorResponse.exceptionStatus(exceptionCode);
+        ErrorResponse.ExceptionStatus errorResponse = ErrorResponse.exceptionStatus(exceptionCode.getStatus(),exception.getMessage());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(exceptionCode.getStatus());
+        response.setCharacterEncoding("UTF-8");
         response.getWriter().write(gson.toJson(errorResponse, ErrorResponse.ExceptionStatus.class));
     }
 }
