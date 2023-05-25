@@ -53,7 +53,8 @@ const HeaderMenuStyle = styled.div`
   gap: 10px;
   margin-right: 8px;
   @media (max-width: 500px), (max-device-width: 500px) {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
+    margin-right: 20px;
   }
 `;
 
