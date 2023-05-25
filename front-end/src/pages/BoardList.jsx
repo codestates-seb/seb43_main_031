@@ -168,7 +168,7 @@ const BoardListWrapperStyle = styled.div`
     color: #bd181f;
   }
 
-  @media (max-width: 450px) {
+  @media (max-width: 500px) {
     .welcome-message {
       font-size: 2rem;
     }

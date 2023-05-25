@@ -19,6 +19,9 @@ const HeaderStyle = styled.div`
   line-height: 50px;
   max-width: 720px;
   margin: auto;
+  @media (max-width: 500px) {
+    justify-content: space-evenly;
+  }
 `;
 
 const HeaderLogoStyle = styled.div`
@@ -30,6 +33,20 @@ const HeaderLogoStyle = styled.div`
   font-weight: 700;
   :hover {
     cursor: pointer;
+  }
+  @media (max-width: 300px) {
+    display: none;
+  }
+`;
+
+const HeaderHome = styled.div`
+  font-weight: 600;
+  :hover {
+    cursor: pointer;
+    color: var(--primary-color);
+  }
+  @media (min-width: 301px) {
+    display: none;
   }
 `;
 
@@ -75,6 +92,13 @@ export default function Header() {
         <HeaderMenuStyle>
           {user ? (
             <>
+              <HeaderHome
+                onClick={() => {
+                  navigate("/");
+                }}
+              >
+                홈
+              </HeaderHome>
               <HeaderMenuItemStyle>
                 <Link to="/boards">게시판</Link>
               </HeaderMenuItemStyle>
@@ -100,6 +124,13 @@ export default function Header() {
             </>
           ) : (
             <>
+              <HeaderHome
+                onClick={() => {
+                  navigate("/");
+                }}
+              >
+                홈
+              </HeaderHome>
               <HeaderMenuItemStyle>
                 <Link to="/boards">게시판</Link>
               </HeaderMenuItemStyle>

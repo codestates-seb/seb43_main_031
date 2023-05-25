@@ -87,12 +87,12 @@ const SectionOne = styled(SharedSection)`
     width: 25rem;
     border-radius: 20px;
     box-shadow: #12000358 0px 4px 8px;
-    @media (max-width: 450px) {
+    @media (max-width: 500px) {
       height: 15rem;
       width: 15rem;
     }
   }
-  @media (max-width: 450px) {
+  @media (max-width: 500px) {
     flex-direction: column;
     margin-top: 6rem;
   }
@@ -102,7 +102,7 @@ const SectionOne = styled(SharedSection)`
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
-  @media (max-width: 450px) {
+  @media (max-width: 500px) {
     margin-bottom: 10rem;
   }
   & button {
@@ -118,7 +118,7 @@ const ButtonWrapper = styled.div`
     &:hover {
       background-color: var(--primary-color);
     }
-    @media (max-width: 450px) {
+    @media (max-width: 500px) {
       margin-top: 3rem;
     }
   }
@@ -129,7 +129,7 @@ const SpanOneWrapper = styled(SpanWrapper)`
   margin-top: 3rem;
   color: #743e3e;
   font-weight: 700;
-  @media (max-width: 450px) {
+  @media (max-width: 500px) {
     margin-top: 0;
     text-align: center;
   }
@@ -145,7 +145,7 @@ const SpanOneWrapper = styled(SpanWrapper)`
   .subTitle {
     font-size: 1.5rem;
     margin-top: 2.5rem;
-    @media (max-width: 450px) {
+    @media (max-width: 500px) {
       margin-top: 1rem;
       text-align: center;
     }
@@ -179,7 +179,7 @@ const SpanTwoWrapper = styled(SpanWrapper)`
   color: #fff;
   font-size: 2.5rem;
   font-weight: 700;
-  @media (max-width: 450px) {
+  @media (max-width: 500px) {
     font-size: 2rem;
     text-align: center;
   }
@@ -187,7 +187,7 @@ const SpanTwoWrapper = styled(SpanWrapper)`
   .sub-content {
     margin: 1rem 2rem 1rem 0;
     font-size: 1.5rem;
-    @media (max-width: 450px) {
+    @media (max-width: 500px) {
       font-size: 1.2rem;
       line-height: 1.5rem;
       margin: 1rem 2.3rem;
@@ -211,7 +211,7 @@ const ImgChatMobile = styled.div`
     z-index: 1;
     animation: ${fadeIn} 4s ease-in-out;
     animation-fill-mode: both;
-    @media (max-width: 450px) {
+    @media (max-width: 500px) {
       width: 150px;
       height: 185px;
       top: 40px;
@@ -224,7 +224,7 @@ const ImgChatMobile = styled.div`
     height: 370px;
     animation: ${fadeIn} 3s ease-in-out;
     animation-fill-mode: both;
-    @media (max-width: 450px) {
+    @media (max-width: 500px) {
       width: 150px;
       height: 185px;
     }
@@ -241,7 +241,7 @@ const SectionThree = styled(SharedSection)`
   display: flex;
   flex-direction: column;
 
-  @media (max-width: 450px) {
+  @media (max-width: 500px) {
     height: 600px;
   }
 `;
@@ -263,7 +263,7 @@ const ImgBoardLaptop = styled.div`
   & > img {
     width: 50rem;
     height: 40rem;
-    @media (max-width: 450px) {
+    @media (max-width: 500px) {
       width: 24rem;
       height: 20rem;
     }
