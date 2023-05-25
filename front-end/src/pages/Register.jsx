@@ -4,8 +4,6 @@ import axios from "axios";
 
 import styled from "styled-components";
 
-import kakaoLogin from "../img/kakao_login.png";
-
 import {
   validateNickName,
   validateEmail,

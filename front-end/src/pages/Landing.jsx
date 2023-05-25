@@ -88,13 +88,14 @@ const SectionOne = styled(SharedSection)`
     border-radius: 20px;
     box-shadow: #12000358 0px 4px 8px;
     @media (max-width: 500px) {
-      height: 15rem;
-      width: 15rem;
+      height: 13rem;
+      width: 13rem;
     }
   }
   @media (max-width: 500px) {
     flex-direction: column;
     margin-top: 6rem;
+    gap: 4rem;
   }
 `;
 
@@ -141,6 +142,9 @@ const SpanOneWrapper = styled(SpanWrapper)`
       display: inline;
       color: rgb(208, 68, 71);
     }
+    @media (max-width: 500px) {
+      font-size: 2rem;
+    }
   }
   .subTitle {
     font-size: 1.5rem;
@@ -148,6 +152,8 @@ const SpanOneWrapper = styled(SpanWrapper)`
     @media (max-width: 500px) {
       margin-top: 1rem;
       text-align: center;
+      font-size: 1.2rem;
+      line-height: 1.5rem;
     }
   }
 `;
@@ -264,8 +270,9 @@ const ImgBoardLaptop = styled.div`
     width: 50rem;
     height: 40rem;
     @media (max-width: 500px) {
-      width: 24rem;
-      height: 20rem;
+      width: 20rem;
+      height: 16rem;
+      margin: 1rem 0;
     }
   }
 `;
@@ -365,10 +372,17 @@ const AnimatedSDelaySecond = styled.span`
     font-weight: 900;
     text-shadow: var(--bg-color) 3px 4px 2px;
     margin-bottom: 1rem;
+    @media (max-width: 500px) {
+      font-size: 2rem;
+    }
   }
 
   & > span {
     color: var(--font-color-light);
+    @media (max-width: 500px) {
+      font-size: 1.2rem;
+      line-height: 1.5rem;
+    }
   }
 `;
 

@@ -6,8 +6,6 @@ import axios from "axios";
 import styled from "styled-components";
 import { setToken, setUserInfo } from "../redux/features/userSlice";
 
-import kakaoLogin from "../img/kakao_login.png";
-
 const Main = styled.div`
   width: 100vw;
   min-height: calc(100vh - 53px);
