@@ -23,7 +23,6 @@ const HeaderStyle = styled.div`
 
 const HeaderLogoStyle = styled.div`
   display: flex;
-  min-width: 125px;
   height: 100%;
   display: flex;
   font-size: 1.3rem;
@@ -31,18 +30,21 @@ const HeaderLogoStyle = styled.div`
   :hover {
     cursor: pointer;
   }
-  @media (max-width: 300px) {
+  @media (max-width: 500px) {
     display: none;
   }
 `;
 
-const HeaderHome = styled.div`
-  font-weight: 600;
+const MobileHeaderLodgoStyle = styled.div`
+  display: flex;
+  height: 100%;
+  display: flex;
+  font-size: 1.3rem;
+  font-weight: 700;
   :hover {
     cursor: pointer;
-    color: var(--primary-color);
   }
-  @media (min-width: 301px) {
+  @media (min-width: 501px) {
     display: none;
   }
 `;
@@ -52,10 +54,6 @@ const HeaderMenuStyle = styled.div`
   align-items: center;
   gap: 10px;
   margin-right: 8px;
-  @media (max-width: 500px), (max-device-width: 500px) {
-    font-size: 0.9rem;
-    margin-right: 20px;
-  }
 `;
 
 const HeaderMenuItemStyle = styled.div`
@@ -89,16 +87,18 @@ export default function Header() {
             빨간망토
           </div>
         </HeaderLogoStyle>
+        <MobileHeaderLodgoStyle>
+          <img
+            src={redHoodImg}
+            alt="logo"
+            onClick={() => {
+              navigate("/");
+            }}
+          />
+        </MobileHeaderLodgoStyle>
         <HeaderMenuStyle>
           {user ? (
             <>
-              <HeaderHome
-                onClick={() => {
-                  navigate("/");
-                }}
-              >
-                홈
-              </HeaderHome>
               <HeaderMenuItemStyle>
                 <Link to="/boards">게시판</Link>
               </HeaderMenuItemStyle>
@@ -123,13 +123,6 @@ export default function Header() {
             </>
           ) : (
             <>
-              <HeaderHome
-                onClick={() => {
-                  navigate("/");
-                }}
-              >
-                홈
-              </HeaderHome>
               <HeaderMenuItemStyle>
                 <Link to="/boards">게시판</Link>
               </HeaderMenuItemStyle>
