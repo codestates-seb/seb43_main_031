@@ -11,6 +11,7 @@ import { addComment, editComment, deleteComment, setComment } from "../../../red
 import UserBox from "../UserBox";
 import DetailSubHeader from "../SubHeader";
 import ReplyCommentSection from "./ReplyCommentSection";
+import Loading from "../../Loading";
 // import useRequest from "../../../shared/useRequest";
 
 // 전체 컨테이너
@@ -125,6 +126,8 @@ function CommentSection() {
   const { id } = useParams();
   const navigate = useNavigate();
   const inputRef = useRef(null);
+
+  const [isLoading, setIsLoading] = useState(false);
   const [text, setText] = useState(""); // 댓글 인풋 상태
   const [editText, setEditText] = useState(""); // 댓글 수정창 인풋 상태
   const [openEditorInCommentId, setOpenEditorInCommentId] = useState(""); // 댓글 고유id값 담는 상태
@@ -137,8 +140,11 @@ function CommentSection() {
   // 댓글 필터링
   const parentComments = comments.filter(item => item.board !== null && item.comment === null);
 
+  // 추후, useRequest hook을통해 비동기 통신 최적화 진행 예정
+
   // 댓글 조회
   useEffect(() => {
+    setIsLoading(true);
     const fetchData = async () => {
       try {
         const response = await axios(`${process.env.REACT_APP_BASE_URL}/comments/comments/${id}`, {
@@ -147,8 +153,7 @@ function CommentSection() {
           },
         });
         dispatch(setComment(response.data.data));
-        // 전역 comments 데이터 중에서 댓글에 해당하는 것만 핉터해서 저장
-        // setParentComments(comments.filter(item => item.board !== null && item.comment === null));
+        setIsLoading(false);
       } catch (err) {
         alert("댓글을 불러오지 못했습니다.");
       }
@@ -178,7 +183,7 @@ function CommentSection() {
       dispatch(addComment(response.data.data));
       setText("");
     } catch (err) {
-      alert("댓글을 생성하지 못했습니다.");
+      if (currentUser !== null) return alert("댓글을 생성하지 못했습니다.");
     }
   };
 
@@ -211,6 +216,8 @@ function CommentSection() {
       alert("댓글 삭제를 실패하였습니다.");
     }
   };
+
+  if (isLoading) return <Loading />;
 
   return (
     <StyledContainer>
@@ -329,3 +336,9 @@ export default CommentSection;
 //   return childComment;
 // });
 // console.log(commentsWithReplies);
+
+// 문제상황 2
+
+// 각 댓글마다 대댓글이 달려있는데 ,새로고침 할때마다 어쩔때는 A라는 댓글에 대댓글이 4개였다가, 다시 새로고침 몇번 하면 또 갑자기 1개였다가 하는 버그 발생.
+
+// 이러한 상황에서 발생할 수 있는 문제 중 하나는 데이터의 불일치일것 같다. 화면을 새로 고침할 때마다 서버에서 댓글과 대댓글 데이터를 가져오는데, 데이터를 가져오는 동안 렌더링되는 컴포넌트가 서버의 응답을 기다리지 않고 렌더링되기 때문에, 초기 렌더링 시점에 가져온 데이터와 실제 서버에서 받은 데이터가 일치하지 않을 수 있게된다. 이로 인해 댓글과 대댓글의 수에 불일치가 발생할 수 있는것같다.

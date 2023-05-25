@@ -127,7 +127,7 @@ const BodyMain = styled.div`
   padding-left: 1rem;
   margin: 1rem 0 1rem;
   & > label {
-    width: 20%;
+    max-width: 8rem;
     padding: 0.4rem;
     display: flex;
     align-items: center;
@@ -136,9 +136,6 @@ const BodyMain = styled.div`
     font-size: 1.2rem;
     border-radius: 0.6rem;
     background-color: var(--bg-color);
-    @media (max-width: 450px) {
-      width: 35%;
-    }
   }
 
   & > p {
