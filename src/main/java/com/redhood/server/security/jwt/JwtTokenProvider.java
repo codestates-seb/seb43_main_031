@@ -26,8 +26,8 @@ public class JwtTokenProvider {
 
 	@Value("${jwt.secret}")
 	private String secretKey;
-	@Value("${jwt.token-validity-in-seconds}")
-	private long tokenValidityInMilliseconds;
+
+	private long accessTokenValidity = 4 * 60 * 60 * 1000;
 
 
 	@PostConstruct
@@ -40,11 +40,12 @@ public class JwtTokenProvider {
 		Claims claims = Jwts.claims().setSubject(email); //JWT payload에 저장되는 정보단위
 		claims.put("roles", roles); //정보는 key/value 쌍으로 저장
 		Date now = new Date();
+		Date expiryDate = new Date(now.getTime() + accessTokenValidity);
 
 		return Jwts.builder()
 				       .setClaims(claims) //정보 저장
-				       .setIssuedAt(now) //토큰 발행 시간 정보
-				       .setExpiration(new Date(now.getTime() + tokenValidityInMilliseconds)) //토큰 유효 시각 설정
+				       .setIssuedAt(new Date()) //토큰 발행 시간 정보
+				       .setExpiration(expiryDate) //토큰 유효 시각 설정
 							 .signWith(SignatureAlgorithm.HS256, secretKey)
 				       .compact();
 	}
