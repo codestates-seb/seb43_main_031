@@ -87,19 +87,19 @@ public class JwtTokenProvider {
 			return !claims.getBody().getExpiration().before(new Date());
 		} catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
 			logger.info("잘못된 JWT 토큰입니다.");
-				throw  new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+				throw  new JwtException("잘못된 JWT 토큰입니다.");
 		} catch (ExpiredJwtException e) {
 			logger.info("만료된 JWT 토큰입니다.");
-			throw  new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+			throw  new JwtException("만료된 JWT 토큰입니다.");
 		} catch (UnsupportedJwtException e) {
 			logger.info("지원되지 않는 JWT 토큰입니다.");
-			throw  new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+			throw  new JwtException("지원되지 않는 JWT 토큰입니다.");
 		} catch (IllegalArgumentException e) {
 			logger.info("JWT 토큰이 잘못되었습니다.");
-			throw  new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+			throw  new JwtException("JWT 토큰이 잘못되었습니다.");
 		} catch (Exception e) {
 			logger.info("Exception e", e);
-			throw  new BusinessLogicException(ExceptionCode.MEMBER_NOT_FOUND);
+			throw  new JwtException("Exception");
 		}
 	}
 

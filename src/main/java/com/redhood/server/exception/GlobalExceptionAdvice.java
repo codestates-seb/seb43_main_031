@@ -3,6 +3,8 @@ package com.redhood.server.exception;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.redhood.server.response.ErrorResponse;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.JwtException;
 import org.apache.tomcat.util.http.fileupload.impl.FileSizeLimitExceededException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import java.util.List;
 
@@ -35,6 +38,7 @@ public class GlobalExceptionAdvice {
         final ErrorResponse.ExceptionStatus response = ErrorResponse.exceptionStatus(e.getExceptionCode());
         return new ResponseEntity<>(response, HttpStatus.valueOf(e.getExceptionCode().getStatus()));
     }
+
     @ExceptionHandler
     public ResponseEntity handleAmazonServiceException(AmazonServiceException e) {
         final ErrorResponse.ExceptionStatus response = ErrorResponse.exceptionStatus(e.getStatusCode(),e.getMessage());
@@ -52,4 +56,5 @@ public class GlobalExceptionAdvice {
                 ErrorResponse.exceptionStatus(HttpStatus.BAD_REQUEST,e.getMessage());
         return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
 }

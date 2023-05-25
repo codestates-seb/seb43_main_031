@@ -7,7 +7,7 @@ public enum ExceptionCode {
     MEMBER_EXISTS(409, "Member exists"),
     EMAIL_EXISTS(409, "Email exists"),
     PASSWORD_NOT_MATCH(404, "Password does not match"),
-    NICKNAME_EXISTS(409, "Nickname exists"),
+    JWT_EXPIRATION(403, "JWT Expired"),
     AUTHOR_NOT_MATCH(409, "Author and requester do not match"),
     ALREADY_ACCEPT(409, "Already in accept"),
     ALREADY_REQUEST(409, "Already in request"),

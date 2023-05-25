@@ -2,6 +2,8 @@ package com.redhood.server.security.config;
 import com.redhood.server.security.jwt.JwtAuthenticationFilter;
 import com.redhood.server.security.jwt.JwtTokenProvider;
 
+import com.redhood.server.security.jwt.MemberAccessDeniedHandler;
+import com.redhood.server.security.jwt.MemberAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,6 +48,12 @@ public class SecurityConfig{
 				.csrf().disable()
 				//토큰 기반 인증이므로 세션 사용 안함
 				.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+				.and()
+				.formLogin().disable()
+				.httpBasic().disable()
+				.exceptionHandling()
+				.authenticationEntryPoint(new MemberAuthenticationEntryPoint())  // 추가
+				.accessDeniedHandler(new MemberAccessDeniedHandler())
 				.and()
 				//URL 관리(요청에 대한 사용 권한 체크)
 				.authorizeHttpRequests(authorize -> authorize

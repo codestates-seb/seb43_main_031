@@ -7,6 +7,8 @@ import com.redhood.server.board.entity.Board;
 import com.redhood.server.board.mapper.BoardMapper;
 import com.redhood.server.board.service.BoardService;
 
+import com.redhood.server.exception.BusinessLogicException;
+import com.redhood.server.exception.ExceptionCode;
 import com.redhood.server.security.UserDetailsImpl;
 import org.springframework.data.domain.*;
 import org.springframework.data.querydsl.QPageRequest;
@@ -17,6 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.ValidationException;
 import javax.validation.constraints.Positive;
