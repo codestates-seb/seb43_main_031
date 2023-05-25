@@ -108,7 +108,6 @@ export default function Header() {
               <HeaderMenuItemStyle
                 onClick={() => {
                   dispatch(setUserInfo(null));
-
                   dispatch(clearToken(null));
                   navigate("/login");
                 }}

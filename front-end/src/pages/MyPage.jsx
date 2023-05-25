@@ -110,7 +110,7 @@ export default function MyPage() {
     setModal(false);
     setMember(currentUser);
   };
-
+  console.log(currentUser);
   const onImageUpload = event => {
     const formData = new FormData();
     formData.append("file", event.target.files[0]);

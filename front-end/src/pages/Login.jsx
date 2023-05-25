@@ -6,8 +6,6 @@ import axios from "axios";
 import styled from "styled-components";
 import { setToken, setUserInfo } from "../redux/features/userSlice";
 
-import kakaoLogin from "../img/kakao_login.png";
-
 const Main = styled.div`
   width: 100vw;
   min-height: calc(100vh - 53px);
@@ -136,9 +134,29 @@ export default function Login() {
     }
   };
 
+  /* eslint-disable */
   const handleKakaoLogin = () => {
-    alert("준비중입니다.");
+    window.Kakao.Auth.login({
+      scope: "profile_nickname,profile_image,account_email,gender",
+      success: function (authObj) {
+        window.Kakao.API.request({
+          url: "/v2/user/me",
+          success: function (res) {
+            const kakaoAccount = res.kakao_account;
+            const userInfo = {
+              email: kakaoAccount.email,
+              images: kakaoAccount.profile.profile_image_url,
+              memberId: 53, // 백엔드에서 해줘야함
+              memberStatus: "ACTIVE",
+              nickName: kakaoAccount.profile.nickname,
+            };
+            dispatch(setUserInfo(userInfo));
+          },
+        });
+      },
+    });
   };
+  /* eslint-enable */
 
   return (
     <Main>

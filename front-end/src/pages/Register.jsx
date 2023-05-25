@@ -218,9 +218,7 @@ export default function Register() {
       });
   };
 
-  const handleKakaoRegister = () => {
-    alert("준비중입니다.");
-  };
+  const handleKakaoRegister = () => {};
 
   return (
     <Main>
