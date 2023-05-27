@@ -54,9 +54,13 @@ const HeaderMenuStyle = styled.div`
   align-items: center;
   gap: 10px;
   margin-right: 8px;
+  min-width: 200px;
+  overflow: scroll;
 `;
 
 const HeaderMenuItemStyle = styled.div`
+  min-width: 50px;
+  text-align: center;
   :hover {
     cursor: pointer;
     color: var(--primary-color);
