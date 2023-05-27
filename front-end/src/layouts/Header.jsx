@@ -100,49 +100,47 @@ export default function Header() {
             }}
           />
         </MobileHeaderLodgoStyle>
-        <HeaderMenuStyle>
-          {user ? (
-            <>
-              <HeaderMenuItemStyle>
-                <Link to="/boards">게시판</Link>
-              </HeaderMenuItemStyle>
-              <HeaderMenuItemStyle>
-                <Link to="/my-page">마이페이지</Link>
-              </HeaderMenuItemStyle>
-              <HeaderMenuItemStyle
-                onClick={() => {
-                  dispatch(setUserInfo(null));
+        {user ? (
+          <HeaderMenuStyle>
+            <HeaderMenuItemStyle>
+              <Link to="/boards">게시판</Link>
+            </HeaderMenuItemStyle>
+            <HeaderMenuItemStyle>
+              <Link to="/my-page">마이페이지</Link>
+            </HeaderMenuItemStyle>
+            <HeaderMenuItemStyle
+              onClick={() => {
+                dispatch(setUserInfo(null));
+                dispatch(clearToken(null));
+                navigate("/login");
+              }}
+              onKeyDown={event => {
+                if (event.key === "Enter" || event.key === " ") {
                   dispatch(clearToken(null));
                   navigate("/login");
-                }}
-                onKeyDown={event => {
-                  if (event.key === "Enter" || event.key === " ") {
-                    dispatch(clearToken(null));
-                    navigate("/login");
-                  }
-                }}
-              >
-                로그아웃
-              </HeaderMenuItemStyle>
-            </>
-          ) : (
-            <>
-              <HeaderMenuItemStyle>
-                <Link to="/boards">게시판</Link>
-              </HeaderMenuItemStyle>
-              <HeaderMenuItemStyle>
-                <Link to="/register">회원가입</Link>
-              </HeaderMenuItemStyle>
-              <HeaderMenuItemStyle
-                onClick={() => {
-                  navigate("/login");
-                }}
-              >
-                로그인
-              </HeaderMenuItemStyle>
-            </>
-          )}
-        </HeaderMenuStyle>
+                }
+              }}
+            >
+              로그아웃
+            </HeaderMenuItemStyle>
+          </HeaderMenuStyle>
+        ) : (
+          <HeaderMenuStyle>
+            <HeaderMenuItemStyle>
+              <Link to="/boards">게시판</Link>
+            </HeaderMenuItemStyle>
+            <HeaderMenuItemStyle>
+              <Link to="/register">회원가입</Link>
+            </HeaderMenuItemStyle>
+            <HeaderMenuItemStyle
+              onClick={() => {
+                navigate("/login");
+              }}
+            >
+              로그인
+            </HeaderMenuItemStyle>
+          </HeaderMenuStyle>
+        )}
       </HeaderStyle>
     </HeaderWrapperStyle>
   );
