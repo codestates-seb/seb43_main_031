@@ -17,7 +17,6 @@ const HeaderStyle = styled.div`
   align-items: center;
   height: 50px;
   line-height: 50px;
-  max-width: 720px;
   margin: auto;
 `;
 
@@ -30,22 +29,8 @@ const HeaderLogoStyle = styled.div`
   :hover {
     cursor: pointer;
   }
-  @media (max-width: 500px) {
-    display: none;
-  }
-`;
-
-const MobileHeaderLodgoStyle = styled.div`
-  display: flex;
-  height: 100%;
-  display: flex;
-  font-size: 1.3rem;
-  font-weight: 700;
-  :hover {
-    cursor: pointer;
-  }
-  @media (min-width: 501px) {
-    display: none;
+  img {
+    max-width: 50px;
   }
 `;
 
@@ -54,12 +39,10 @@ const HeaderMenuStyle = styled.div`
   align-items: center;
   gap: 10px;
   margin-right: 8px;
-  min-width: 200px;
   overflow: scroll;
 `;
 
 const HeaderMenuItemStyle = styled.div`
-  min-width: 50px;
   text-align: center;
   :hover {
     cursor: pointer;
@@ -91,15 +74,6 @@ export default function Header() {
             빨간망토
           </div>
         </HeaderLogoStyle>
-        <MobileHeaderLodgoStyle>
-          <img
-            src={redHoodImg}
-            alt="logo"
-            onClick={() => {
-              navigate("/");
-            }}
-          />
-        </MobileHeaderLodgoStyle>
         {user ? (
           <HeaderMenuStyle>
             <HeaderMenuItemStyle>
