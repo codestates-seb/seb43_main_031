@@ -18,6 +18,7 @@ const HeaderStyle = styled.div`
   height: 50px;
   line-height: 50px;
   margin: auto;
+  max-width: 720px;
 `;
 
 const HeaderLogoStyle = styled.div`
@@ -39,7 +40,6 @@ const HeaderMenuStyle = styled.div`
   align-items: center;
   gap: 10px;
   margin-right: 8px;
-  overflow: scroll;
 `;
 
 const HeaderMenuItemStyle = styled.div`
