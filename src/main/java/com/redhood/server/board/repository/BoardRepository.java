@@ -27,15 +27,9 @@ public interface BoardRepository extends JpaRepository<Board, Long> {
 
     Page<Board> findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCaseAndBoardStatusNot(String guTag, String dongTag,Board.BoardStatus boardStatus,Pageable pageable);
 
-    //Page<Board> findByGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(String guTag, String dongTag, Pageable pageable);
-
-
-    //Page<Board> findByTitleContainingIgnoreCaseAndGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCase(String title, String guTag, String dongTag, Pageable pageable);
 
     Page<Board> findByTitleContainingIgnoreCaseAndGuTagContainingIgnoreCaseAndDongTagContainingIgnoreCaseAndBoardStatusNot(String title, String guTag, String dongTag, Board.BoardStatus boardStatus,Pageable pageable);
 
-
-    //Page<Board> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 
     Page<Board> findByTitleContainingIgnoreCaseAndBoardStatusNot(String title,  Board.BoardStatus boardStatus, Pageable pageable);
 

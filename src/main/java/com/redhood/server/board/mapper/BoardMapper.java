@@ -44,6 +44,7 @@ public class BoardMapper {
         board.setGuTag(boardPatchDto.getGuTag());
         board.setDetailAddress(boardPatchDto.getDetailAddress());
         board.setCost(boardPatchDto.getCost());
+        board.setCompleted(boardPatchDto.isCompleted());
         board.setExpiredDateTime(boardPatchDto.getExpiredDateTime());
         return board;
     }

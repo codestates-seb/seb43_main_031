@@ -29,5 +29,6 @@ public class BoardPatchDto {
     private String guTag;
     @NotBlank(message = "상세주소는 공백이 아니어야 합니다.")
     private String detailAddress;
+    private boolean completed;
     private Board.BoardStatus boardStatus;
 }

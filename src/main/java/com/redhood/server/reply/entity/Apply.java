@@ -33,6 +33,8 @@ public class Apply extends Timestamped {
     @JoinColumn(name = "BOARD_ID")
     private Board board;
 
+
+
     public enum ApplyStatus {
         APPLY_REQUEST("요청중"),
         APLLY_ACCEPT("승인");

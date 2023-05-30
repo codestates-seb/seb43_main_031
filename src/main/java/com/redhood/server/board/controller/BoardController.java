@@ -60,6 +60,23 @@ public class BoardController {
         return new ResponseEntity<>(mapper.boardToBoardResponseDto(response), HttpStatus.OK);
     }
 
+    @PatchMapping("/completed/{boardId}")
+    public ResponseEntity completeBoard(@PathVariable("boardId") @Positive long boardId,
+                                        @AuthenticationPrincipal UserDetailsImpl userDetails) {
+
+        Board board = boardService.findBoard(boardId);
+        if(board == null) {
+            return ResponseEntity.notFound().build();
+        }
+        if(board.isCompleted()) {
+            return ResponseEntity.badRequest().body("Board is already completed");
+        }
+        board.setCompleted(true);
+        Board updatedBoard = boardService.updateBoard(userDetails,board);
+
+        return new ResponseEntity<>(mapper.boardToBoardResponseDto(updatedBoard), HttpStatus.OK);
+    }
+
     @GetMapping("/{boardId}")
     public ResponseEntity getBoard(@PathVariable("boardId") @Positive long boardId) {
         Board response = boardService.findBoard(boardId);

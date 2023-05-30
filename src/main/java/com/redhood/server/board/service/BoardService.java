@@ -1,5 +1,6 @@
 package com.redhood.server.board.service;
 
+import com.redhood.server.board.dto.BoardResponseDto;
 import com.redhood.server.board.entity.Board;
 import com.redhood.server.board.repository.BoardRepository;
 import com.redhood.server.exception.BusinessLogicException;
@@ -62,6 +63,8 @@ public class BoardService {
                 .ifPresent(guTag -> findBoard.setGuTag(guTag));
         Optional.ofNullable(board.getDetailAddress())
                 .ifPresent(detailAddress -> findBoard.setDetailAddress(detailAddress));
+        Optional.ofNullable(board.isCompleted())
+                .ifPresent(completed -> findBoard.setCompleted(completed));
         Optional.ofNullable(board.getExpiredDateTime())
                 .ifPresent(expiredDateTime -> findBoard.setExpiredDateTime(expiredDateTime));
         Optional.ofNullable(board.getBoardStatus())
@@ -93,6 +96,7 @@ public class BoardService {
 
     public Page<Board> getBoards(Pageable pageable) {
         return this.boardRepository.findAllByBoardStatusNot(Board.BoardStatus.ADOPTION_DELETE, pageable);
+
     }
 
 
