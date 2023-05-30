@@ -3,7 +3,7 @@
 <br/>
 
 <div  align="center">
-  <img width="80%" src="https://content.presspage.com/uploads/2658/c1920_logo-stackoverflow-banner.jpg?64224" alt="roobits">
+  <img width="80%" src="https://ifh.cc/g/bfOSfx.png" alt="redhood">
 </div>
 
 </br>
@@ -12,7 +12,7 @@
 - **`프로젝트 명` :** 빨간망토
 - **`프로젝트 기간` :** 2023.04.11 ~ 2023.04.27
 - `팀원` : 강수암(팀장),오다경, 최예슬, 남지훈(팀장), 백철현, 전지영
-- **`배포 링크` :** [배포링크]()
+- **`배포 링크` :** [빨간망토 바로 가기](http://codestates-redhood.s3-website.ap-northeast-2.amazonaws.com/boards)
 
 <br/>
 
@@ -59,8 +59,6 @@
 
 
 
-
-
 <br/>
 
 ## :notebook: 사용자 요구사항 정의서
@@ -78,20 +76,3 @@
 
 
 <br/>
-
-### ✉️ Commit  Message
-
-|Message|설명|
-|:---:|:---|
-|[feat]|새로운 기능을 추가할 경우|
-|[fix]|버그를 고친 경우|
-|[design]|CSS 등 사용자 UI 디자인 변경|
-|[style]|코드 포맷변경, 세미콜론 누락, 코드수정이 없는 경우.|
-|[refactor] |프로덕션 코드 리펙토링할 경우|
-|[comment]|필요한 주석 추가 및 변경|
-|[docs]|문서를 수정한 경우|
-|[test]|테스트 코드 작업을할 경우|
-|[chore]|빌드 테스트 업데이트, 패키지 매니저를 설정하는 경우|
-|[rename]|파일 혹은 폴더명을 수정하거나 옮기는 작업만 하는 경우|
-|[remove]|삭제하는 작업만 수행한 경우|
-|[init]|브랜치 초기화 및 초기셋팅 관련된 설정일 경우|
