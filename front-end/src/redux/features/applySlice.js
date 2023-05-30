@@ -2,22 +2,37 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const applySlice = createSlice({
   name: "apply",
-  initialState: [],
+  initialState: {
+    applies: [],
+    isApplied: false,
+  },
   reducers: {
     addApply(state, action) {
-      return [...state, action.payload];
+      return {
+        ...state,
+        applies: [...state.applies, action.payload],
+      };
     },
     deleteApply(state, action) {
-      return state.filter(item => item.applyId !== action.payload);
+      return {
+        ...state,
+        applies: state.applies.filter(item => item.applyId !== action.payload),
+      };
     },
     setApply(state, action) {
-      return action.payload;
+      return {
+        ...state,
+        applies: action.payload,
+      };
     },
-    filterApplyByBoardId(state, action) {
-      return action.payload.filter(apply => apply.board.boardId === action.payload.id);
+    setIsApplied(state, action) {
+      return {
+        ...state,
+        isApplied: action.payload,
+      };
     },
   },
 });
 
-export const { addApply, deleteApply, setApply, filterApplyByBoardId } = applySlice.actions;
+export const { addApply, deleteApply, setApply, setIsApplied } = applySlice.actions;
 export default applySlice.reducer;
