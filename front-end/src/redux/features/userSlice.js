@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 
-// 받아온 토큰을 Bearer로 보내서 올바른 토큰을 보내지 못했다. 이부분은 체크해서 기록하자
 const userSlice = createSlice({
   name: "user",
   initialState: {
