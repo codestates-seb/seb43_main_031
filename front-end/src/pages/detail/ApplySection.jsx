@@ -6,7 +6,7 @@ import axios from "axios";
 import styled from "styled-components";
 
 import { useNavigate, useParams } from "react-router-dom";
-import { addApply, deleteApply, setApply, setIsApplied } from "../../redux/features/applySlice";
+import { addApply, deleteApply, setApply } from "../../redux/features/applySlice";
 
 import UserBox from "./UserBox";
 import DetailSubHeader from "./SubHeader";
@@ -83,13 +83,13 @@ const ApplyBtn = styled.button`
   padding: 1rem;
   border: none;
   border-radius: 2rem;
-  background-color: ${props => props.bg || "var(--primary-color)"};
+  background-color: var(--primary-color);
   color: #fff;
   font-size: 1.2rem;
   cursor: pointer;
 
   &:hover {
-    background-color: ${props => props.hoverBg || "rgba(190, 24, 31, 0.8)"};
+    background-color: rgba(190, 24, 31, 0.8);
   }
 `;
 
@@ -97,18 +97,17 @@ const ApplyBtn = styled.button`
 function ApplySection() {
   const { id } = useParams();
   const navigate = useNavigate();
-
   const [selectedApply, setSelectedApply] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
 
   const dispatch = useDispatch();
   const currentUser = useSelector(state => state.user.userInfo);
   const token = useSelector(state => state.user.token);
-  const applys = useSelector(state => state.apply.applies) || [];
-  const isApplied = useSelector(state => state.apply.isApplied);
+  const applys = useSelector(state => state.apply) || [];
 
   // 렌더링 시 모든 신청글 조회
   useEffect(() => {
+    // setIsLoading(true);
     (async () => {
       try {
         const response = await axios(`${process.env.REACT_APP_BASE_URL}/applys/boardId/${id}`, {
@@ -117,6 +116,7 @@ function ApplySection() {
           },
         });
         dispatch(setApply(response.data.data));
+        // setIsLoading(false);
       } catch (err) {
         alert("신청을 불러오지 못했습니다.");
       }
@@ -128,7 +128,6 @@ function ApplySection() {
     if (currentUser === null) {
       alert("신청을 하기 위해선 로그인이 필요합니다.");
       navigate("/login");
-      return;
     }
     try {
       e.preventDefault();
@@ -141,7 +140,6 @@ function ApplySection() {
         },
       });
       dispatch(addApply(response.data.data));
-      dispatch(setIsApplied(true));
     } catch (err) {
       if (currentUser !== null) return alert("신청을 생성하지 못했습니다.");
     }
@@ -156,7 +154,6 @@ function ApplySection() {
         },
       });
       dispatch(deleteApply(id));
-      dispatch(setIsApplied(false));
     } catch (err) {
       alert("신청 삭제를 실패하였습니다.");
     }
@@ -168,7 +165,6 @@ function ApplySection() {
   };
 
   if (applys.length === undefined) return null;
-
   return (
     <StyledContainer>
       <DetailSubHeader count={applys.length} title="개의 신청" />
@@ -214,20 +210,7 @@ function ApplySection() {
           </StyledListBlock>
         );
       })}
-      {isApplied ? (
-        <ApplyBtn
-          onClick={handleSubmit}
-          disabled={isApplied}
-          bg={isApplied && "var(--cancle-btn-color)"}
-          hoverBg={isApplied && "none"}
-        >
-          신청완료
-        </ApplyBtn>
-      ) : (
-        <ApplyBtn onClick={handleSubmit} disabled={isApplied}>
-          신청하기
-        </ApplyBtn>
-      )}
+      <ApplyBtn onClick={handleSubmit}>신청하기</ApplyBtn>
     </StyledContainer>
   );
 }
