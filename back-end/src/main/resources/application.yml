@@ -1,0 +1,32 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://database-2.cis3ogboscdu.ap-northeast-2.rds.amazonaws.com:13306/redhood?useSSL=false&serverTimezone=UTC
+    username: admin
+    password: Baek102504!
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  properties:
+    hibernate:
+      dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+
+amazon:
+  aws:
+    accesskey: AKIAZAIMFDB7DGYXHOGG
+    secretkey: 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
+    s3:
+      region: ap-northeast-2
+      bucket: redhood
+
+email:
+  address:
+    admin: admin@gmail.com
+
+jwt:
+  header: Authorization
+  secret: dkssudgktpdydkdkfjdksfidfkjdflsuijj1dksduskdfjkdfj123
+#  access-token-expiration-minutes: 30
+#  refresh-token-expiration-minutes: 420
+
+
